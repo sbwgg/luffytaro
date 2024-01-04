@@ -106,9 +106,7 @@ const VideoPlayerRow = ({
   const defaultUrl = streamingLink?.sources?.find(
     (url) => url?.quality === "auto"
   );
-  const subtitles = streamingLink?.subtitles?.filter(
-    (sub) => sub.lang !== "Thumbnails"
-  );
+
   const thumbnails = streamingLink?.subtitles?.find(
     (thum) => thum.lang === "Thumbnails"
   );
@@ -144,54 +142,56 @@ const VideoPlayerRow = ({
             title={animeInfo.anime.info.name}
             src={defaultUrl?.url || ""}
             onEnd={() => {
+              setWatchedTime((prev) => prev.filter((item) => item.ep !== ep));
+
               if (autonext) {
                 router.push(`/watch/${nextEp.episodeId}`);
               }
-              setWatchedTime((prev) => prev.filter((item) => item.ep !== ep));
             }}
             autoplay={autoplay}
-            onStarted={() =>
-              storedWatchTime
-                ? (playerRef.current!.currentTime =
-                    storedWatchTime?.currentTime)
-                : null
-            }
+            onStarted={() => {
+              if (storedWatchTime?.currentTime) {
+                playerRef.current!.currentTime = storedWatchTime?.currentTime;
+              }
+            }}
             onTimeUpdate={(detail) => {
-              const currentTime = Math.floor(detail.currentTime);
+              const currentTime = detail.currentTime;
 
-              if (currentSkiptime) {
-                if (
-                  currentTime > currentSkiptime.intro.start &&
-                  currentTime < currentSkiptime.intro.end
-                ) {
+              if (
+                currentSkiptime &&
+                currentTime >= currentSkiptime.intro.start &&
+                currentTime <= currentSkiptime.intro.end
+              ) {
+                if (autoskipIntro) {
+                  playerRef.current!.currentTime = currentSkiptime.intro.end;
+                } else {
                   setShowSkipbutton((prev) => ({ ...prev, intro: true }));
-                  if (autoskipIntro) {
-                    playerRef.current!.currentTime = currentSkiptime.intro.end;
-                  }
-                } else {
-                  setShowSkipbutton((prev) => ({ ...prev, intro: false }));
                 }
-
-                if (
-                  currentTime > currentSkiptime.outro.start &&
-                  currentTime < currentSkiptime.outro.end
-                ) {
-                  setShowSkipbutton((prev) => ({ ...prev, outro: true }));
-                  if (autoskipIntro) {
-                    playerRef.current!.currentTime = currentSkiptime.outro.end;
-                  }
-                } else {
-                  setShowSkipbutton((prev) => ({ ...prev, outro: false }));
-                }
+              } else {
+                setShowSkipbutton((prev) => ({ ...prev, intro: false }));
               }
 
-              if (currentTime >= 1) {
+              if (
+                currentSkiptime &&
+                currentTime >= currentSkiptime.outro.start &&
+                currentTime <= currentSkiptime.outro.end
+              ) {
+                if (autoskipIntro) {
+                  playerRef.current!.currentTime = currentSkiptime.outro.end;
+                } else {
+                  setShowSkipbutton((prev) => ({ ...prev, outro: true }));
+                }
+              } else {
+                setShowSkipbutton((prev) => ({ ...prev, outro: false }));
+              }
+
+              if (currentTime > 1) {
                 setWatchedTime((prev) =>
                   !prev.some((item) => item.ep === ep)
                     ? [
                         ...prev,
                         {
-                          currentTime,
+                          currentTime: Math.floor(currentTime),
                           endTime: Math.floor(duration),
                           episodeNo: episodeServer.episodeNo,
                           infoId,
@@ -203,7 +203,7 @@ const VideoPlayerRow = ({
                         item.ep === ep
                           ? {
                               ...item,
-                              currentTime,
+                              currentTime: Math.floor(currentTime),
                               lastViewed: true,
                               endTime: Math.floor(duration),
                             }
@@ -216,21 +216,20 @@ const VideoPlayerRow = ({
             }}
           >
             <MediaProvider>
-              {subtitles?.map((sub, i) => (
-                <Fragment key={i}>
-                  <Track
-                    src={sub.url}
-                    kind="subtitles"
-                    label={sub.lang}
-                    default={sub.lang === "English"}
-                  />
-                </Fragment>
-              ))}
+              {streamingLink?.subtitles
+                ?.filter((sub) => sub.lang !== "Thumbnails")
+                .map((sub, i) => (
+                  <Fragment key={i}>
+                    <Track
+                      src={sub.url}
+                      kind="subtitles"
+                      label={sub.lang}
+                      lang={sub.lang}
+                      default={sub.lang === "English"}
+                    />
+                  </Fragment>
+                ))}
             </MediaProvider>
-            <DefaultVideoLayout
-              thumbnails={thumbnails?.url}
-              icons={defaultLayoutIcons}
-            />
             {showSkipbutton?.intro || showSkipbutton?.outro ? (
               <button
                 onClick={() => {
@@ -247,6 +246,10 @@ const VideoPlayerRow = ({
                 Skip {showSkipbutton.intro ? "Intro" : "Outro"}
               </button>
             ) : null}
+            <DefaultVideoLayout
+              thumbnails={thumbnails?.url}
+              icons={defaultLayoutIcons}
+            />
           </MediaPlayer>
         )}
       </div>
