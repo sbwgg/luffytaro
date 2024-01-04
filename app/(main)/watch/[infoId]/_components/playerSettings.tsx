@@ -39,7 +39,7 @@ const PlayerSettings = ({
   const router = useRouter();
 
   return (
-    <div>
+    <div className="px-3 lg:px-0">
       <div className="flex flex-wrap gap-3 items-center justify-between">
         <div className="flex items-center gap-x-3 text-xs sm:text-[12.5px]">
           <button onClick={() => setAutoplay(!autoplay)}>

@@ -271,13 +271,13 @@ const VideoPlayerRow = ({
       />
 
       {metaAnilistInfo.nextAiringEpisode ? (
-        <div className="text-sm mt-5 text-zinc-300">
+        <div className="text-sm mt-5 text-zinc-300 lg:px-0 px-3">
           <NextEpisodeTime
             nextAiringEpisode={metaAnilistInfo?.nextAiringEpisode}
           />
         </div>
       ) : (
-        <div className="mt-5 text-zinc-300 text-sm">
+        <div className="mt-5 text-zinc-300 text-sm lg:px-0 px-3">
           <p>Next episode: None</p>
           <p>Aired time: Finish airing</p>
           <p>Time remaining: None</p>

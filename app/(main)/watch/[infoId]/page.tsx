@@ -144,7 +144,7 @@ const WatchPage = async ({
         You are watching {animeInfo.anime.info.name}{" "}
         {isFiller?.isFiller && "filler"} episode {episodeServer.episodeNo}
       </p>
-      <div className="lg:flex lg:px-10 px-3">
+      <div className="lg:flex lg:px-10 ">
         <div className="flex-1">
           <VideoPlayerRow
             episodeServer={episodeServer}
@@ -156,7 +156,7 @@ const WatchPage = async ({
             animeInfo={animeInfo}
           />
         </div>
-        <div className="basis-[19.4rem] flex flex-col lg:px-3 lg:mt-0 mt-5 rounded-md">
+        <div className="basis-[19.4rem] flex flex-col px-3 lg:mt-0 mt-5 rounded-md">
           <EpisodeRow animeEpisodes={animeEpisodes} ep={ep} />
         </div>
       </div>
