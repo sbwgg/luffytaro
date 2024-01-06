@@ -4,24 +4,21 @@ import db from "@/lib/prismadb";
 import getUser from "@/utils/user";
 import { revalidatePath } from "next/cache";
 
-export async function actionChangeProfile(profile: string) {
+export async function actionChangeProfile(url: string) {
   const user = await getUser();
 
   try {
-    const d = await db.user.update({
+    await db.user.update({
       where: {
         id: user?.id,
       },
       data: {
-        profile: profile,
+        profile: url,
       },
     });
-
-    revalidatePath("/");
-    return {
-      message: d,
-    };
   } catch (error) {
     console.log(error);
   }
+
+  revalidatePath("/profile");
 }

@@ -4,6 +4,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { EpisodeServerType, SkiptimeType } from "../page";
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
+import "@vidstack/react/player/styles/base.css";
 import {
   MediaPlayer,
   MediaPlayerInstance,

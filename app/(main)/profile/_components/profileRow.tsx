@@ -4,14 +4,16 @@ import { UploadDropzone } from "@/utils/uploadthing";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import defaultProfile from "@/image/defaultprofile.jpg";
-import actionEditProfile from "@/action/profile/actionEditProfile";
 import { Button } from "@/components/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
-import { actionChangeProfile } from "@/action/profile/actionChangeProfile";
-import { actionChangePassword } from "@/action/profile/actionChangePassword";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import actionEditProfile from "@/action/profile/actionEditProfile";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { IoClose } from "react-icons/io5";
+import { actionChangePassword } from "@/action/profile/actionChangePassword";
+import { actionChangeProfile } from "@/action/profile/actionChangeProfile";
 
 interface ProfileRowProp {
   user: {
@@ -37,29 +39,62 @@ const SaveButton = () => {
   );
 };
 
+const SavePassButton = () => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      disabled={pending}
+      className="bg-red-500 hover:bg-red-400 rounded-full mt-4 w-full"
+    >
+      {pending ? "Loading..." : "Save"}
+    </Button>
+  );
+};
+
 const ProfileRow = ({ user }: ProfileRowProp) => {
-  const [state, dispatch] = useFormState(actionEditProfile, null);
-  const [statePassword, dispatchPassword] = useFormState(
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const ref = useRef<HTMLFormElement>(null);
+  const router = useRouter();
+  const [state, dispatchEditProfile] = useFormState(actionEditProfile, null);
+  const [statePass, dispatchChangePass] = useFormState(
     actionChangePassword,
     null
   );
-  const router = useRouter();
-  const [userProfile, setUserProfile] = useState("");
-  const ref = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (statePassword?.message || state?.message) {
+    if (showChangePassword) {
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showChangePassword]);
+
+  useEffect(() => {
+    if (state?.message) {
       toast("Success", {
-        description: "Saved changes",
+        description: "Changes save successfully",
+        action: {
+          label: "X",
+          onClick: () => {},
+        },
+      });
+    }
+
+    if (statePass?.message) {
+      toast("Success", {
+        description: "Change password successfully",
         action: {
           label: "X",
           onClick: () => {},
         },
       });
       ref.current?.reset();
-      router.refresh();
+      setShowChangePassword(false);
     }
-  }, [statePassword?.message, state?.message, router]);
+  }, [state?.message, statePass?.message]);
 
   return (
     <div className="mt-5 flex-1 max-w-[50rem] mx-3">
@@ -71,14 +106,18 @@ const ProfileRow = ({ user }: ProfileRowProp) => {
             <UploadDropzone
               endpoint="imageUploader"
               onClientUploadComplete={(res) => {
-                // Do something with the response
                 if (res) {
-                  setUserProfile(res[0]?.url);
+                  actionChangeProfile(res[0]?.url);
                 }
-                alert("Upload Completed");
+                toast("Success", {
+                  description: "Change profile successfully",
+                  action: {
+                    label: "X",
+                    onClick: () => {},
+                  },
+                });
               }}
               onUploadError={(error: Error) => {
-                // Do something with the error.
                 alert(`ERROR! ${error.message}`);
               }}
             />
@@ -97,51 +136,23 @@ const ProfileRow = ({ user }: ProfileRowProp) => {
             />
           </div>
           <form
-            ref={ref}
-            action={async (formData: FormData) => {
-              const currentPassword = formData.get("currentPassword");
-              const newPassword = formData.get("newPassword");
-              const confirmPassword = formData.get("confirmPassword");
-              const email = formData.get("email");
+            action={(formData: FormData) => {
               const username = formData.get("username");
+              const email = formData.get("email");
 
-              if (
-                email === user?.email &&
-                username === user?.username &&
-                !userProfile &&
-                !currentPassword &&
-                !newPassword &&
-                !confirmPassword
-              ) {
-                return toast("No changes made", {
+              if (username === user?.username && email === user?.email) {
+                return toast("Ooops!", {
+                  description: "No changes made",
                   action: {
                     label: "X",
-                    onClick: () => console.log("Undo"),
+                    onClick: () => {},
                   },
                 });
               }
 
-              if (
-                (user?.email !== email || username !== user.username) &&
-                !currentPassword &&
-                !newPassword &&
-                !confirmPassword
-              ) {
-                dispatch(formData);
-              }
+              dispatchEditProfile(formData);
 
-              if (currentPassword || newPassword || confirmPassword) {
-                dispatchPassword(formData);
-              }
-
-              if (
-                userProfile &&
-                !currentPassword &&
-                !newPassword &&
-                !confirmPassword
-              ) {
-                actionChangeProfile(userProfile);
-              }
+              router.refresh();
             }}
             className="flex flex-col justify-center flex-1"
           >
@@ -153,12 +164,12 @@ const ProfileRow = ({ user }: ProfileRowProp) => {
                 placeholder="Username"
                 className={cn(
                   "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
-                  state?.errors?.username && "border-red-500 border"
+                  state?.errors?.username && "border border-red-500"
                 )}
               />
               {state?.errors?.username && (
-                <p className="text-red-500 text-sm mt-2 text-center">
-                  {state?.errors?.username}
+                <p className="text-sm text-red-500 text-center mt-1">
+                  {state.errors.username}
                 </p>
               )}
             </div>
@@ -170,69 +181,106 @@ const ProfileRow = ({ user }: ProfileRowProp) => {
                 placeholder="Email"
                 className={cn(
                   "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
-                  state?.errors?.email && "border-red-500 border"
+                  state?.errors?.email && "border border-red-500"
                 )}
               />
               {state?.errors?.email && (
-                <p className="text-red-500 text-sm mt-2 text-center">
-                  {state?.errors?.email}
+                <p className="text-sm text-red-500 text-center mt-1">
+                  {state.errors.email}
                 </p>
               )}
             </div>
-
-            <div className="mb-2">
-              <input
-                type="password"
-                name="currentPassword"
-                placeholder="Current password"
-                className={cn(
-                  "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
-                  statePassword?.errors?.currentPassword &&
-                    "border-red-500 border"
-                )}
-              />
-              {statePassword?.errors?.currentPassword && (
-                <p className="text-red-500 text-sm mt-2 text-center">
-                  {statePassword?.errors?.currentPassword}
-                </p>
-              )}
-            </div>
-            <div className="mb-2">
-              <input
-                type="password"
-                name="newPassword"
-                placeholder="New password"
-                className={cn(
-                  "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
-                  statePassword?.errors?.newPassword && "border-red-500 border"
-                )}
-              />
-              {statePassword?.errors?.newPassword && (
-                <p className="text-red-500 text-sm mt-2 text-center">
-                  {statePassword?.errors?.newPassword}
-                </p>
-              )}
-            </div>
-            <div>
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm password"
-                className={cn(
-                  "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
-                  statePassword?.errors?.confirmPassword &&
-                    "border-red-500 border"
-                )}
-              />
-              {statePassword?.errors?.confirmPassword && (
-                <p className="text-red-500 text-sm mt-2 text-center">
-                  {statePassword?.errors?.confirmPassword}
-                </p>
-              )}
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={() => setShowChangePassword(true)}
+                className="flex items-center gap-x-2"
+              >
+                <RiLockPasswordFill />
+                Change password
+              </button>
             </div>
 
             <SaveButton />
           </form>
+
+          <div
+            className={cn(
+              "fixed inset-0 bg-black/50 flex items-center justify-center z-[600] duration-300",
+              showChangePassword ? "opacity-1 visible" : "invisible opacity-0"
+            )}
+          >
+            <form
+              ref={ref}
+              action={dispatchChangePass}
+              className="relative flex-1 max-w-[30rem] bg-black py-10 sm:px-10 px-3 border border-zinc-900 rounded-xl mx-3"
+            >
+              <button
+                type="button"
+                onClick={() => setShowChangePassword(false)}
+                className="absolute right-3 top-3 scale-[1.2]"
+              >
+                <IoClose />
+              </button>
+              <h1 className="mb-5">Change password</h1>
+
+              <div className="mb-2">
+                <input
+                  type="password"
+                  name="currentPassword"
+                  required
+                  placeholder="Current password"
+                  className={cn(
+                    "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
+                    statePass?.errors?.currentPassword &&
+                      "border border-red-500"
+                  )}
+                />
+                {statePass?.errors?.currentPassword && (
+                  <p className="text-sm text-red-500 text-center mt-1">
+                    {statePass.errors.currentPassword}
+                  </p>
+                )}
+              </div>
+              <div className="mb-2">
+                <input
+                  type="password"
+                  name="newPassword"
+                  required
+                  placeholder="New password"
+                  className={cn(
+                    "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
+                    statePass?.errors?.newPassword && "border border-red-500"
+                  )}
+                />
+                {statePass?.errors?.newPassword && (
+                  <p className="text-sm text-red-500 text-center mt-1">
+                    {statePass.errors.newPassword}
+                  </p>
+                )}
+              </div>
+              <div>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  required
+                  placeholder="Confirm password"
+                  className={cn(
+                    "p-2 px-5 w-full bg-zinc-800 rounded-full outline-none placeholder:text-sm",
+                    statePass?.errors?.confirmPassword &&
+                      "border border-red-500"
+                  )}
+                />
+                {statePass?.errors?.confirmPassword && (
+                  <p className="text-sm text-red-500 text-center mt-1">
+                    {statePass.errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+
+              <SavePassButton />
+            </form>
+          </div>
         </div>
       </div>
     </div>

@@ -72,7 +72,7 @@ const SpotlightAnimeCard = ({ s }: SpotlightAnimeCardProp) => {
               </p>
             )}
             {s.otherInfo[3] && (
-              <p className="flex items-center gap-x-1 bg-red-500 italic p-1 px-2 rounded text-xs">
+              <p className="flex items-center gap-x-1 bg-red-500 p-1 px-2 rounded text-xs">
                 {s.otherInfo[3]}
               </p>
             )}

@@ -187,7 +187,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
         </div>
 
         <p className="mt-3">
-          <span className="font-semibold">Genres:</span>{" "}
+          <span className="font-semibold">Studios:</span>{" "}
           {animeInfo?.anime?.moreInfo?.studios}
         </p>
         <p className="mt-3">

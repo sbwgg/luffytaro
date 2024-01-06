@@ -1,22 +1,21 @@
 "use server";
 
-import z from "zod";
 import db from "@/lib/prismadb";
 import getUser from "@/utils/user";
 import { revalidatePath } from "next/cache";
+import z from "zod";
 
 const schema = z.object({
-  username: z.string().min(1, { message: "Please provide a username" }),
+  username: z.string().min(1).max(10),
   email: z.string().email(),
 });
 
 export default async function actionEditProfile(
-  state: any,
+  prevState: any,
   formData: FormData
 ) {
   const user = await getUser();
-  const username = formData.get("username");
-  const email = formData.get("email");
+  const { username, email } = Object.fromEntries(formData.entries());
 
   const validatedFields = schema.safeParse({
     username,
@@ -29,24 +28,25 @@ export default async function actionEditProfile(
     };
   }
 
+  const data = validatedFields.data;
+
   try {
-    const d = await db.user.update({
+    const updatedProfile = await db.user.update({
       where: {
         id: user?.id,
       },
       data: {
-        username: validatedFields.data.username,
-        email: validatedFields.data.email,
+        username: data.username,
+        email: data.email,
       },
     });
 
-    revalidatePath("/");
     return {
-      message: d,
+      message: updatedProfile,
     };
-  } catch {
-    return {
-      message: "Editing profile error",
-    };
+  } catch (error) {
+    console.log(error);
   }
+
+  revalidatePath("/");
 }

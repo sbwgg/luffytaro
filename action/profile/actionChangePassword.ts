@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import z from "zod";
 import db from "@/lib/prismadb";
 import getUser from "@/utils/user";
+import { revalidatePath } from "next/cache";
+import z from "zod";
 import bcrypt from "bcrypt";
 
 const schema = z
@@ -13,15 +13,15 @@ const schema = z
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Confirm password and New password did not match",
-    path: ["confirmPassword", "newPassword"],
+    message: "New password and Confirm password dont match!",
+    path: ["confirmPassword"],
   });
 
-export async function actionChangePassword(state: any, formData: FormData) {
+export async function actionChangePassword(prevState: any, formData: FormData) {
   const user = await getUser();
-  const currentPassword = formData.get("currentPassword");
-  const newPassword = formData.get("newPassword");
-  const confirmPassword = formData.get("confirmPassword");
+  const { currentPassword, newPassword, confirmPassword } = Object.fromEntries(
+    formData.entries()
+  );
 
   const validatedFields = schema.safeParse({
     currentPassword,
@@ -35,27 +35,33 @@ export async function actionChangePassword(state: any, formData: FormData) {
     };
   }
 
-  const userPassword = await db.user.findUnique({
+  const currentUser = await db.user.findUnique({
     where: {
       id: user?.id,
     },
   });
 
-  const passwordConfirm = await bcrypt.compare(
-    validatedFields.data.currentPassword,
-    userPassword?.password as string
+  const comparePassword = await bcrypt.compare(
+    currentPassword as string,
+    currentUser?.password as string
   );
 
-  if (!passwordConfirm)
-    return { errors: { currentPassword: ["Wrong password"] } };
+  if (currentPassword === newPassword) {
+    return {
+      errors: { newPassword: ["Please provide a stronger password!"] },
+    };
+  }
 
-  if (currentPassword === newPassword)
-    return { errors: { newPassword: ["Please provide a stronger password!"] } };
+  if (!comparePassword) {
+    return {
+      errors: { currentPassword: ["Wrong password!"] },
+    };
+  }
 
   const hashPassword = await bcrypt.hash(newPassword as string, 10);
 
   try {
-    const d = await db.user.update({
+    const updatedPassword = await db.user.update({
       where: {
         id: user?.id,
       },
@@ -64,11 +70,12 @@ export async function actionChangePassword(state: any, formData: FormData) {
       },
     });
 
-    revalidatePath("/");
     return {
-      message: d,
+      message: updatedPassword,
     };
   } catch (error) {
     console.log(error);
   }
+
+  revalidatePath("/profile");
 }
