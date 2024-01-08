@@ -7,9 +7,9 @@ import { IoMdPlay } from "react-icons/io";
 import { AnimeInfoType } from "../page";
 import NextEpisodeTime from "@/components/nextEpisodeTime";
 import Description from "./description";
-import db from "@/lib/prismadb";
 import AddToListButton from "./addToListButton";
 import getUser from "@/utils/user";
+import { getWatchList } from "@/get-data/watch-list/getWatchList";
 
 interface AnimeInfoProp {
   animeInfo: AnimeInfoType;
@@ -36,13 +36,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
     { cache: "no-store" }
   ).then((res) => res.json());
   const user = await getUser();
-  const watchList =
-    user &&
-    (await db.watchList.findMany({
-      where: {
-        userId: user?.id,
-      },
-    }));
+  const watchList = await getWatchList();
 
   return (
     <div className="flex lg:flex-row flex-col gap-x-10 px-3 lg:px-10 xl:px-24 pt-28">

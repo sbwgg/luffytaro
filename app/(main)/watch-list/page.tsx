@@ -1,19 +1,11 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
-import db from "@/lib/prismadb";
-import getUser from "@/utils/user";
 import WatchListRow from "./_components/watchListRow";
 import "./_components/watchList.css";
+import { getWatchList } from "@/get-data/watch-list/getWatchList";
 
 const WatchListPage = async () => {
-  const user = await getUser();
-  const watchList = user
-    ? await db.watchList.findMany({
-        where: {
-          userId: user?.id,
-        },
-      })
-    : null;
+  const watchList = await getWatchList();
 
   return (
     <div className="pt-28">

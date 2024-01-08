@@ -89,27 +89,23 @@ const WatchListCard = ({
                   onClick={async () => {
                     if (s !== "Remove") {
                       setShowStatus("");
-                      const res = await actionEditWatchlist(item.id, s);
-                      if (res?.status) {
-                        toast("Success", {
-                          description: `This anime status change to ${res?.status}`,
-                          action: {
-                            label: "X",
-                            onClick: () => {},
-                          },
-                        });
-                      }
+                      await actionEditWatchlist(item.id, s, "profile");
+                      toast("Success", {
+                        description: `Change to ${s}`,
+                        action: {
+                          label: "X",
+                          onClick: () => {},
+                        },
+                      });
                     } else {
                       setShowStatus("");
-                      await actionRemoveAnime(item.id).finally(() => {
-                        toast("Success", {
-                          description:
-                            "This anime has been removed from your Watch List.",
-                          action: {
-                            label: "X",
-                            onClick: () => {},
-                          },
-                        });
+                      await actionRemoveAnime(item.id, "profile");
+                      toast("success", {
+                        description: `Remove ${item?.name} to your Watch List`,
+                        action: {
+                          label: "X",
+                          onClick: () => {},
+                        },
                       });
                     }
                   }}

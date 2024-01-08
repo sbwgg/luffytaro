@@ -3,9 +3,13 @@
 import { revalidatePath } from "next/cache";
 import db from "@/lib/prismadb";
 
-export default async function actionEditWatchlist(id: string, status: string) {
+export default async function actionEditWatchlist(
+  id: string | undefined,
+  status: string,
+  path: string
+) {
   try {
-    const d = await db.watchList.update({
+    await db.watchList.update({
       where: {
         id,
       },
@@ -13,10 +17,9 @@ export default async function actionEditWatchlist(id: string, status: string) {
         status,
       },
     });
-
-    revalidatePath("/");
-    return d;
   } catch (error) {
     console.log(error);
   }
+
+  revalidatePath(`/${path}`);
 }
