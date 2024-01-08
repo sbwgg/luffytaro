@@ -1,7 +1,7 @@
 import db from "@/lib/prismadb";
 import getUser from "@/utils/user";
 
-export async function getWatchList() {
+export default async function getWatchList() {
   const user = await getUser();
 
   try {
@@ -10,6 +10,7 @@ export async function getWatchList() {
         userId: user?.id,
       },
     });
+
     return data;
   } catch {
     return null;

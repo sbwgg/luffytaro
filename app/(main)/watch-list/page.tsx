@@ -1,8 +1,11 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
-import WatchListRow from "./_components/watchListRow";
+const WatchListRow = dynamic(() => import("./_components/watchListRow"), {
+  ssr: false,
+});
 import "./_components/watchList.css";
-import { getWatchList } from "@/get-data/watch-list/getWatchList";
+import dynamic from "next/dynamic";
+import getWatchList from "@/get-data/watch-list/getWatchList";
 
 const WatchListPage = async () => {
   const watchList = await getWatchList();

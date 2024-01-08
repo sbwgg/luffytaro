@@ -9,7 +9,7 @@ import NextEpisodeTime from "@/components/nextEpisodeTime";
 import Description from "./description";
 import AddToListButton from "./addToListButton";
 import getUser from "@/utils/user";
-import { getWatchList } from "@/get-data/watch-list/getWatchList";
+import getWatchList from "@/get-data/watch-list/getWatchList";
 
 interface AnimeInfoProp {
   animeInfo: AnimeInfoType;
