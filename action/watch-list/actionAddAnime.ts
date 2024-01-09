@@ -20,7 +20,7 @@ export default async function actionAddAnime(anime: anime, status: string) {
   const user = await getUser();
 
   try {
-    await db.watchList.create({
+    const data = await db.watchList.create({
       data: {
         userId: user?.id as string,
         ...anime,
@@ -29,6 +29,7 @@ export default async function actionAddAnime(anime: anime, status: string) {
     });
 
     revalidatePath(`/${anime.infoId}`);
+    return data;
   } catch (error) {
     console.log(error);
   }

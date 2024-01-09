@@ -9,7 +9,6 @@ import NextEpisodeTime from "@/components/nextEpisodeTime";
 import Description from "./description";
 import AddToListButton from "./addToListButton";
 import getUser from "@/utils/user";
-import getWatchList from "@/get-data/watch-list/getWatchList";
 
 interface AnimeInfoProp {
   animeInfo: AnimeInfoType;
@@ -36,7 +35,6 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
     { cache: "no-store" }
   ).then((res) => res.json());
   const user = await getUser();
-  const watchList = await getWatchList();
 
   return (
     <div className="flex lg:flex-row flex-col gap-x-10 px-3 lg:px-10 xl:px-24 pt-28">
@@ -109,11 +107,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
                 Watch now
               </Link>
             )}
-            <AddToListButton
-              watchList={watchList}
-              animeInfo={animeInfo}
-              user={user}
-            />
+            <AddToListButton animeInfo={animeInfo} user={user} />
           </div>
 
           <div className="text-[14px]">

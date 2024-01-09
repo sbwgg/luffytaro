@@ -8,13 +8,14 @@ export default async function actionRemoveAnime(
   path: string | undefined
 ) {
   try {
-    await db.watchList.delete({
+    const data = await db.watchList.delete({
       where: {
         id,
       },
     });
 
     revalidatePath(`/${path}`);
+    return data;
   } catch (error) {
     console.log(error);
   }

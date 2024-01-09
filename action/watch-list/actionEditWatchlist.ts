@@ -9,7 +9,7 @@ export default async function actionEditWatchlist(
   path: string
 ) {
   try {
-    await db.watchList.update({
+    const data = await db.watchList.update({
       where: {
         id,
       },
@@ -19,6 +19,7 @@ export default async function actionEditWatchlist(
     });
 
     revalidatePath(`/${path}`);
+    return data;
   } catch (error) {
     console.log(error);
   }
