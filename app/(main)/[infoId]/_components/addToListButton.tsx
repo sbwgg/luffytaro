@@ -45,7 +45,7 @@ const AddToListButton = ({ animeInfo, user }: AddToListButtonProp) => {
   const queryClient = useQueryClient();
   const [showStatus, setShowStatus] = useState(false);
 
-  const { data: watchList, isLoading } = useQuery({
+  const { data: watchList } = useQuery({
     queryKey: ["watch-list", user?.id],
     queryFn: async () => {
       try {
@@ -180,7 +180,9 @@ const AddToListButton = ({ animeInfo, user }: AddToListButtonProp) => {
           "bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full md:rounded"
         )}
       >
-        {isLoading ? (
+        {mutateAddAnimeToWatchList.isPending ||
+        mutateEditAnimeStatus.isPending ||
+        mutateRemoveAnimeFromWatchList.isPending ? (
           "Loading..."
         ) : (
           <span className="flex items-center gap-x-2">
@@ -196,14 +198,22 @@ const AddToListButton = ({ animeInfo, user }: AddToListButtonProp) => {
             <button
               key={item}
               onClick={() => handleAddToList(item)}
-              disabled={isLoading || item === isAdded?.status}
+              disabled={
+                mutateAddAnimeToWatchList.isPending ||
+                mutateEditAnimeStatus.isPending ||
+                mutateRemoveAnimeFromWatchList.isPending ||
+                item === isAdded?.status
+              }
               className={cn(
                 "p-3 rounded-none lg:hover:bg-zinc-300 w-full",
                 item === "Remove" && "text-red-500",
                 isAdded?.status === item
                   ? "font-bold flex items-center justify-center gap-x-2"
                   : "",
-                isAdded?.status === item || isLoading
+                isAdded?.status === item ||
+                  mutateAddAnimeToWatchList.isPending ||
+                  mutateEditAnimeStatus.isPending ||
+                  mutateRemoveAnimeFromWatchList.isPending
                   ? "cursor-not-allowed"
                   : ""
               )}
