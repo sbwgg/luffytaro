@@ -17,9 +17,9 @@ export default async function actionEditWatchlist(
         status,
       },
     });
+
+    revalidatePath(`/${path}`);
   } catch (error) {
     console.log(error);
   }
-
-  revalidatePath(`/${path}`);
 }

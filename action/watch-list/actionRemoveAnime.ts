@@ -5,7 +5,7 @@ import db from "@/lib/prismadb";
 
 export default async function actionRemoveAnime(
   id: string | undefined,
-  path: string
+  path: string | undefined
 ) {
   try {
     await db.watchList.delete({
@@ -13,9 +13,9 @@ export default async function actionRemoveAnime(
         id,
       },
     });
+
+    revalidatePath(`/${path}`);
   } catch (error) {
     console.log(error);
   }
-
-  revalidatePath(`/${path}`);
 }

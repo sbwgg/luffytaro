@@ -65,10 +65,10 @@ const AddToListButton = ({
   user,
 }: AddToListButtonProp) => {
   const [showStatus, setShowStatus] = useState(false);
-  const [_, setTransition] = useTransition();
-  const [optimistic, setOptimistic] = useOptimistic<OptimisticType[] | null>(
-    watchList
-  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [optimisticWatchList, setOptimisticWatchList] = useOptimistic<
+    OptimisticType[] | null
+  >(watchList);
 
   const addAnime = {
     poster: animeInfo.anime.info.poster,
@@ -82,13 +82,74 @@ const AddToListButton = ({
     infoId: animeInfo.anime.info.id,
   };
 
-  const isAdded = optimistic?.find(
+  const isAdded = optimisticWatchList?.find(
     (item) => item.infoId === animeInfo.anime.info.id
   );
 
   const addToListStatus = isAdded
     ? ["Watching", "On-Hold", "Plan to watch", "Dropped", "Completed", "Remove"]
     : ["Watching", "On-Hold", "Plan to watch", "Dropped", "Completed"];
+
+  async function handleAddToList(item: string) {
+    setIsLoading(true);
+
+    if (!user?.id)
+      return alert(`Login to add ${animeInfo.anime} to your Watch List`);
+
+    try {
+      if (!isAdded?.id) {
+        const data = await actionAddAnime(addAnime, item);
+        setOptimisticWatchList(
+          (prev) => [...(prev as OptimisticType[]), data] as OptimisticType[]
+        );
+        if (data) {
+          toast("Success", {
+            description: `${data.name} is added to your watch list`,
+            action: {
+              label: "X",
+              onClick: () => {},
+            },
+          });
+        }
+      }
+
+      if (isAdded && item !== "Remove") {
+        await actionEditWatchlist(isAdded.id, item, isAdded.infoId);
+        setOptimisticWatchList(
+          (prev) =>
+            prev?.map((i) =>
+              i.id === isAdded.id ? { ...i, status: item } : i
+            ) as OptimisticType[]
+        );
+        toast("Success", {
+          description: `Status change to ${item}`,
+          action: {
+            label: "X",
+            onClick: () => {},
+          },
+        });
+      }
+
+      if (item === "Remove") {
+        await actionRemoveAnime(isAdded?.id, isAdded?.infoId);
+        setOptimisticWatchList(
+          (prev) =>
+            prev?.filter((i) => i.id !== isAdded?.id) as OptimisticType[]
+        );
+        toast("Success", {
+          description: `${isAdded?.name} was removed`,
+          action: {
+            label: "X",
+            onClick: () => {},
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="relative">
@@ -98,82 +159,36 @@ const AddToListButton = ({
           "bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full md:rounded"
         )}
       >
-        <span className="flex items-center gap-x-2">
-          {isAdded ? <BiSolidEdit /> : <FaPlus />}{" "}
-          {isAdded?.id ? "Edit Watch list" : "Add to list"}
-        </span>
+        {isLoading ? (
+          "Loading..."
+        ) : (
+          <span className="flex items-center gap-x-2">
+            {isAdded ? <BiSolidEdit /> : <FaPlus />}{" "}
+            {isAdded?.id ? "Edit Watch list" : "Add to list"}
+          </span>
+        )}
       </button>
 
       {showStatus && (
         <div className="absolute top-[3rem] w-[10rem] bg-white rounded-lg text-black text-xs overflow-hidden">
           {addToListStatus.map((item) => (
-            <button
-              key={item}
-              disabled={item === isAdded?.status}
-              onClick={() => {
-                if (!user?.id) {
-                  return alert(
-                    "Please login to add this anime to your Watch List"
-                  );
-                }
-
-                setShowStatus(false);
-                setTransition(async () => {
-                  if (!isAdded?.id && item !== "Remove") {
-                    const res = await actionAddAnime(addAnime, item);
-                    setOptimistic(
-                      (prev) =>
-                        [...(prev as OptimisticType[]), res] as
-                          | OptimisticType[]
-                          | null
-                    );
-                    toast("Success", {
-                      description: `Added ${addAnime.name} to your Watch List`,
-                    });
-                  }
-
-                  if (isAdded?.id && item !== "Remove") {
-                    actionEditWatchlist(
-                      isAdded.id,
-                      item,
-                      animeInfo.anime.info.id
-                    );
-                    setOptimistic(
-                      (prev) =>
-                        prev?.map((i) =>
-                          i.id === isAdded.id ? { ...i, status: item } : i
-                        ) as OptimisticType[]
-                    );
-                    toast("Success", {
-                      description: `Change status to ${item}`,
-                    });
-                  }
-
-                  if (item === "Remove") {
-                    actionRemoveAnime(isAdded?.id, animeInfo.anime.info.id);
-                    setOptimistic(
-                      (prev) =>
-                        prev?.filter(
-                          (i) => i.id !== isAdded?.id
-                        ) as OptimisticType[]
-                    );
-                    toast("Success", {
-                      description: `Removed ${isAdded?.name} to your Watch List`,
-                    });
-                  }
-                });
-              }}
-              className={cn(
-                "p-3 rounded-none lg:hover:bg-zinc-300 w-full",
-                item === "Remove" && "text-red-500",
-                isAdded?.status === item
-                  ? "font-bold flex items-center justify-center gap-x-2"
-                  : "",
-                isAdded?.status === item && "cursor-not-allowed"
-              )}
-            >
-              {item} {isAdded?.status === item && <FaCheck />}
-            </button>
+            <form key={item} action={() => handleAddToList(item)}>
+              <button
+                disabled={isLoading || item === isAdded?.status}
+                className={cn(
+                  "p-3 rounded-none lg:hover:bg-zinc-300 w-full",
+                  item === "Remove" && "text-red-500",
+                  isAdded?.status === item
+                    ? "font-bold flex items-center justify-center gap-x-2"
+                    : "",
+                  isAdded?.status === item || isLoading
+                    ? "cursor-not-allowed"
+                    : ""
+                )}
+              >
+                {item} {isAdded?.status === item && <FaCheck />}
+              </button>
+            </form>
           ))}
         </div>
       )}
