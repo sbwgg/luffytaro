@@ -141,8 +141,11 @@ const WatchPage = async ({
   return (
     <div className="pt-20">
       <p className="lg:px-10 px-3 mb-3 text-xs sm:text-sm text-zinc-400">
-        You are watching {animeInfo.anime.info.name}{" "}
-        {isFiller?.isFiller && "filler"} episode {episodeServer.episodeNo}
+        You are watching{" "}
+        <span className="text-red-500">
+          {animeInfo.anime.info.name} {isFiller?.isFiller && "filler"} episode{" "}
+          {episodeServer.episodeNo}
+        </span>
       </p>
       <div className="lg:flex lg:px-10 ">
         <div className="flex-1">

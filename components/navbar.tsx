@@ -66,7 +66,7 @@ export default function Navbar({ user }: NavbarProp) {
             priority
           />
           <Link href="/" className="text-sm md:text-xl font-medium">
-            LuffyTaro
+            LUFFYTARO
           </Link>
         </div>
 

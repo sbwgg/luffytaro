@@ -109,7 +109,11 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
                 Watch now
               </Link>
             )}
-            <AddToListButton animeInfo={animeInfo} user={user} />
+            {animeInfo.anime.moreInfo.status === "Not yet aired" ? (
+              <p>UPCOMING</p>
+            ) : (
+              <AddToListButton animeInfo={animeInfo} user={user} />
+            )}
           </div>
 
           <div className="text-[14px]">
@@ -122,7 +126,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
               LuffyTaro website.
             </p>
 
-            <div className="mt-5">
+            <div className="mt-5 text-zinc-400">
               {nextAiringEpisode ? (
                 <NextEpisodeTime nextAiringEpisode={nextAiringEpisode} />
               ) : (

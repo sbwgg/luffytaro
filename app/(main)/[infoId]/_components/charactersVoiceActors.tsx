@@ -74,7 +74,7 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
                   className="flex flex-col justify-center border-b border-dashed border-zinc-700 pb-8  bg-zinc-900 rounded-md"
                 >
                   <div>
-                    <p className="mb-3 italic">Character</p>
+                    <p className="mb-3">Character</p>
                     <div className="flex items-center gap-x-3 flex-1 mb-5">
                       <Image
                         src={character.image}
@@ -85,9 +85,7 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
                         className="w-[3rem] h-[3rem] object-cover rounded-full shrink-0"
                       />
                       <div className="space-y-2">
-                        <p className="italic text-[13px]">
-                          {character.name.full}
-                        </p>
+                        <p className="text-[13px]">{character.name.full}</p>
                         <p className="text-xs text-zinc-400">
                           {character.role}
                         </p>
@@ -96,7 +94,7 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
                   </div>
 
                   <div>
-                    <p className="mb-3 italic">Voice actors</p>
+                    <p className="mb-3">Voice actors</p>
                     <div className="grid grid-cols-2 gap-3">
                       {character.voiceActors.map((cv) => (
                         <div className="flex items-center gap-3" key={cv.id}>
@@ -109,7 +107,7 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
                             className="w-[3rem] h-[3rem] object-cover rounded-full shrink-0"
                           />
                           <div className="space-y-2">
-                            <p className="italic text-[13px]">{cv.name.full}</p>
+                            <p className="text-[13px]">{cv.name.full}</p>
                             <p className="text-xs text-zinc-400">
                               {cv.language}
                             </p>
@@ -150,7 +148,7 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
                   className="w-[3rem] h-[3rem] object-cover rounded-full shrink-0"
                 />
                 <div className="space-y-2">
-                  <p className="italic text-[13px]">{character.name.full}</p>
+                  <p className="text-[13px]">{character.name.full}</p>
                   <p className="text-xs text-zinc-400">{character.role}</p>
                 </div>
               </div>
@@ -165,7 +163,7 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
                   className="w-[3rem] h-[3rem] object-cover rounded-full shrink-0"
                 />
                 <div className="space-y-2">
-                  <p className="italic text-[13px] text-end">
+                  <p className="text-[13px] text-end">
                     {character?.voiceActors[0]?.name.full}
                   </p>
                   <p className="text-end text-zinc-400 text-xs">

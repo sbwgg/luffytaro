@@ -86,7 +86,7 @@ const PlayerSettings = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-x-4 gap-y-1 flex-wrap mt-5 bg-zinc-900/70 p-2 px-4">
+      <div className="flex items-center gap-x-4 gap-y-1 flex-wrap mt-5">
         {episodeServer.sub.length ? (
           <div className="flex items-center flex-wrap gap-x-1 gap-y-1">
             <p className="text-xs text-zinc-400 mr-3">SUB:</p>
@@ -97,7 +97,7 @@ const PlayerSettings = ({
                   setCategory("sub");
                 }}
                 className={cn(
-                  "bg-black sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
+                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
                   server === sub.serverName &&
                     category === "sub" &&
                     "bg-red-500"
@@ -120,7 +120,7 @@ const PlayerSettings = ({
                   setCategory("dub");
                 }}
                 className={cn(
-                  "bg-black sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
+                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
                   server === dub.serverName &&
                     category === "dub" &&
                     "bg-red-500"

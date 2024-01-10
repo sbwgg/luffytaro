@@ -19,7 +19,7 @@ import {
 
 const Footer = () => {
   return (
-    <div className="flex flex-col items-center px-3 py-10 lg:px-10 mt-24 border-t border-zinc-800">
+    <div className="flex flex-col items-center px-3 py-5 lg:px-10 mt-24 border-t border-zinc-800">
       <div className="flex items-center gap-x-3">
         <Image
           src={LuffyTaro}
@@ -30,12 +30,12 @@ const Footer = () => {
           priority
         />
         <Link href="/" className="text-sm md:text-xl font-medium">
-          LuffyTaro
+          LUFFYTARO
         </Link>
       </div>
 
       <div className="mt-5">
-        <p className="text-gray-400 text-center sm:text-base text-sm">
+        <p className="text-zinc-500 text-center text-sm">
           LuffyTaro does not store any files on our server, we only linked to
           the media which is hosted on 3rd party services.
         </p>

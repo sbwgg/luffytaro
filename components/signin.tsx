@@ -48,7 +48,7 @@ const Signin = () => {
 
   return (
     <div className="flex items-center justify-center fixed inset-0 bg-black/60 text-white z-[600]">
-      <div className="sm:px-[3.5rem] px-10 py-12 bg-black/70 rounded flex-1 max-w-[27rem] mx-3 relative">
+      <div className="sm:px-[3.5rem] px-10 py-12 bg-black rounded flex-1 max-w-[27rem] mx-3 relative">
         <button
           onClick={() => {
             setIsClose();
@@ -59,7 +59,7 @@ const Signin = () => {
           <IoClose />
         </button>
         <h1 className="text-2xl font-bold mb-7">
-          {isSignUp ? "Sign Up" : "Sign in"}
+          {isSignUp ? "Sign Up" : "Sign In"}
         </h1>
 
         <form

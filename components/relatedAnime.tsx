@@ -24,7 +24,7 @@ const RelatedAnime = ({ relatedAnime }: RelatedAnimeProp) => {
   const [showmore, setShowmore] = useState<number | undefined>(6);
 
   return (
-    <div className="mt-5 bg-zinc-900 px-4 py-2">
+    <div className="mt-5 bg-zinc-900/50 px-4 py-2">
       {relatedAnime?.slice(0, showmore).map((related, i) => (
         <div
           key={related.id}
@@ -73,7 +73,7 @@ const RelatedAnime = ({ relatedAnime }: RelatedAnimeProp) => {
         <div className="flex py-3">
           <button
             onClick={() => setShowmore((prev) => (prev === 6 ? undefined : 6))}
-            className="bg-red-500 flex-1 p-3 text-sm rounded-lg"
+            className="bg-red-500 flex-1 p-3 text-sm"
           >
             {showmore ? "Show more" : "Show less"}
           </button>
