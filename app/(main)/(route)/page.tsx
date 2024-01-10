@@ -127,9 +127,9 @@ const HomePage = async () => {
       <ContinueWatching />
 
       <div className="px-3 lg:px-10 mt-5">
-        <h1 className="text-xl">
+        <h1 className="sm:text-xl text-md">
           <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-          Trending animes
+          TRENDING ANIME
         </h1>
 
         <TrendingAnime trending={animeHome.trendingAnimes} />
@@ -137,10 +137,10 @@ const HomePage = async () => {
 
       <div className="lg:flex gap-x-4 px-3 lg:px-10 mt-10">
         <div className="flex-1">
-          <h1 className="text-xl">
+          <h1 className="sm:text-xl">
             <Link href={`/category/recently-updated`}>
               <span className="p-1 mr-3 bg-red-500  rounded-lg" />
-              Latest episode &#62;
+              LATEST EPISODE &#62;
             </Link>
           </h1>
 
@@ -150,10 +150,10 @@ const HomePage = async () => {
             ))}
           </div>
 
-          <h1 className="text-xl mt-10">
+          <h1 className="sm:text-xl mt-10">
             <Link href={`/category/top-upcoming`}>
               <span className="p-1 mr-3 bg-red-500  rounded-lg" />
-              Top upcoming &#62;
+              TOP UPCOMING &#62;
             </Link>
           </h1>
 
@@ -172,9 +172,18 @@ const HomePage = async () => {
       </div>
 
       <div className="px-3 lg:px-10 mt-10">
-        <h1 className="text-xl mt-10">
+        <h1 className="sm:text-xl">
+          <span className="p-1 mr-3 bg-red-500 rounded-lg" />
+          ESTIMATED SCHEDULE
+        </h1>
+
+        <EstimatedSchedule />
+      </div>
+
+      <div className="px-3 lg:px-10 mt-10">
+        <h1 className="sm:text-xl mt-10">
           <span className="p-1 mr-3 bg-red-500  rounded-lg" />
-          Genre
+          GENRE
         </h1>
 
         <div className="flex items-center gap-1 flex-wrap mt-5">
@@ -182,12 +191,12 @@ const HomePage = async () => {
             <Link
               href={`/genre/${g.toLowerCase()}`}
               className={cn(
-                "p-2 rounded text-sm",
-                greenGenre.includes(i) && "bg-green-700",
-                pinkGenre.includes(i) && "bg-pink-700",
-                blueGenre.includes(i) && "bg-blue-700",
-                yellowGenre.includes(i) && "bg-yellow-700",
-                whiteGnre.includes(i) && "bg-white text-black"
+                "p-2 sm:text-sm text-xs",
+                greenGenre.includes(i) && "text-green-700 bg-zinc-900",
+                pinkGenre.includes(i) && "text-pink-700 bg-zinc-900",
+                blueGenre.includes(i) && "text-blue-700 bg-zinc-900",
+                yellowGenre.includes(i) && "text-yellow-700 bg-zinc-900",
+                whiteGnre.includes(i) && "text-white bg-zinc-900"
               )}
               key={g}
             >
@@ -195,15 +204,6 @@ const HomePage = async () => {
             </Link>
           ))}
         </div>
-      </div>
-
-      <div className="px-3 lg:px-10 mt-10">
-        <h1 className="text-xl">
-          <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-          Estimated schedule
-        </h1>
-
-        <EstimatedSchedule />
       </div>
     </main>
   );

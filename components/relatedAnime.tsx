@@ -24,7 +24,7 @@ const RelatedAnime = ({ relatedAnime }: RelatedAnimeProp) => {
   const [showmore, setShowmore] = useState<number | undefined>(6);
 
   return (
-    <div className="mt-5 bg-zinc-900 px-4 py-2 rounded-xl">
+    <div className="mt-5 bg-zinc-900 px-4 py-2">
       {relatedAnime?.slice(0, showmore).map((related, i) => (
         <div
           key={related.id}

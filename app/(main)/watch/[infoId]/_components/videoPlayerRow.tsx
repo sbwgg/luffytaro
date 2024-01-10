@@ -242,7 +242,7 @@ const VideoPlayerRow = ({
                           currentSkiptime?.outro.end)
                     : null;
                 }}
-                className="absolute bottom-[4.8rem] sm:bottom-[5.5rem] left-[.7rem] sm:left-5 sm:text-base text-sm italic p-1 px-3 bg-white text-black rounded z-[100]"
+                className="absolute bottom-[4.8rem] sm:bottom-[5.5rem] left-[.7rem] sm:left-5 sm:text-base text-sm p-1 px-3 bg-white text-black z-[100]"
               >
                 Skip {showSkipbutton.intro ? "Intro" : "Outro"}
               </button>
@@ -272,16 +272,14 @@ const VideoPlayerRow = ({
       />
 
       {metaAnilistInfo.nextAiringEpisode ? (
-        <div className="text-sm mt-5 text-zinc-300 lg:px-0 px-3">
+        <div className="text-sm mt-5 text-zinc-400 lg:px-0 px-3">
           <NextEpisodeTime
             nextAiringEpisode={metaAnilistInfo?.nextAiringEpisode}
           />
         </div>
       ) : (
-        <div className="mt-5 text-zinc-300 text-sm lg:px-0 px-3">
-          <p>Next episode: None</p>
+        <div className="mt-5 text-zinc-400 text-sm lg:px-0 px-3">
           <p>Aired time: Finish airing</p>
-          <p>Time remaining: None</p>
         </div>
       )}
     </>

@@ -28,15 +28,14 @@ const Top10AnimeCard = ({ top, index }: Top10AnimeCardProp) => {
     >
       <p
         className={cn(
-          "w-[3rem] flex items-center text-xl shrink-0 font-semibold",
-          top.rank <= 3 ? "text-red-500" : ""
+          "w-[3rem] flex items-center sm:text-xl text-lg shrink-0 font-semibold"
         )}
       >
         <span className={cn(top.rank <= 3 ? "border-b-2 border-red-500" : "")}>
           {top.rank < 10 ? `0${top.rank}` : top.rank}
         </span>
       </p>
-      <div className="flex gap-x-2 flex-1">
+      <div className="flex gap-x-5 flex-1">
         <div className="shrink-0">
           <Link href={`/${top.id}`}>
             <Image
@@ -46,7 +45,7 @@ const Top10AnimeCard = ({ top, index }: Top10AnimeCardProp) => {
               height={100}
               quality={100}
               priority
-              className="w-[4rem] h-[5.5rem] object-cover rounded-md shrink-0"
+              className="w-[3.6rem] h-[5rem] object-cover  shrink-0"
             />
           </Link>
         </div>

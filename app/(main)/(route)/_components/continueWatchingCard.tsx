@@ -93,7 +93,7 @@ const ContinueWatchingCard = ({
         <Link href={`/watch/${anime.infoId}?ep=${anime.ep}`}>
           <span className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent via-transparent" />
           <div className="absolute bottom-2 inset-x-2">
-            <div className="flex justify-between text-sm mb-1">
+            <div className="flex justify-between sm:text-sm text-xs mb-1">
               <p>{formatSeconds()}</p>
               <p>{formatDuration()}</p>
             </div>
@@ -106,7 +106,7 @@ const ContinueWatchingCard = ({
               width={500}
               height={400}
               priority
-              className="h-[14rem] w-full object-cover rounded-lg"
+              className="h-[14rem] w-full object-cover"
             />
           ) : (
             <Skeleton className="bg-zinc-800 h-[14rem] w-full object-cover rounded" />
@@ -114,12 +114,12 @@ const ContinueWatchingCard = ({
         </Link>
       </div>
       <div>
-        <p className="text- mt-2 truncate hover:text-red-500">
+        <p className="text-sm mt-2 truncate hover:text-red-500">
           <Link href={`/watch/${anime.infoId}?ep=${anime.ep}`}>
             {animeInfo?.anime?.info?.name}
           </Link>
         </p>
-        <div className="flex gap-x-2 text-zinc-300 items-center mt-1 text-sm">
+        <div className="flex gap-x-2 text-zinc-400 items-center mt-1 text-xs">
           <p>{animeInfo?.anime.info.stats.type}</p>
           &#x2022;
           <p>{animeInfo?.anime.info.stats.duration}</p>

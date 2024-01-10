@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Pathway_Extreme } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "@/lib/reactquery";
 import ProgressbarProvider from "@/lib/progressbar";
 import Signin from "@/components/signin";
 
-const poppins = Poppins({
+const pathway_extreme = Pathway_Extreme({
   weight: ["100", "200", "300", "400", "500", "600"],
   subsets: ["latin"],
 });
@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={poppins.className}>
+      <body className={pathway_extreme.className}>
         <ReactQueryProvider>
           <Signin />
           <ProgressbarProvider>{children}</ProgressbarProvider>

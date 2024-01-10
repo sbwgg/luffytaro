@@ -37,7 +37,14 @@
 
 .gridCard {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+@media screen and (max-width: 527px) {
+  .gridCard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
 }
 
 @media screen and (max-width: 360px) {
@@ -49,7 +56,7 @@
 
 .ellip {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

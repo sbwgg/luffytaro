@@ -166,9 +166,9 @@ const WatchPage = async ({
 
       <div className="lg:flex gap-x-4 px-3 lg:px-10 mt-12">
         <div className="flex-1">
-          <h1 className="text-xl cursor-pointer">
+          <h1 className="sm:text-xl cursor-pointer">
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-            Recommended for you
+            RECOMMENDED FOR YOU
           </h1>
 
           <div className="gridCard gap-x-2 gap-y-8 mt-5">
@@ -181,9 +181,9 @@ const WatchPage = async ({
         <div className="basis-[19.5rem] lg:mt-0 mt-10">
           {animeInfo.relatedAnimes.length ? (
             <div>
-              <h1 className="text-xl cursor-pointer">
+              <h1 className="sm:text-xl cursor-pointer">
                 <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-                Related anime
+                RELATED ANIME
               </h1>
 
               <RelatedAnime relatedAnime={animeInfo.relatedAnimes} />
@@ -192,12 +192,12 @@ const WatchPage = async ({
 
           {animeInfo.mostPopularAnimes.length ? (
             <div className="mt-10">
-              <h1 className="text-xl cursor-pointer">
+              <h1 className="sm:text-xl cursor-pointer">
                 <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-                Most popular
+                MOST POPULAR
               </h1>
 
-              <div className="mt-5 bg-zinc-900 px-4 py-2 rounded-xl">
+              <div className="mt-5 bg-zinc-900 px-4 py-2">
                 {animeInfo.mostPopularAnimes.map((mostPopular, i) => (
                   <MostPopularAnime
                     key={mostPopular.id}

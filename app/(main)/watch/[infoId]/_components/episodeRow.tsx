@@ -41,13 +41,13 @@ const EpisodeRow = ({ animeEpisodes, ep }: EpisodeRowProp) => {
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <p className="italic text-sm">Episodes:</p>
+        <p className="text-sm">EPISODES:</p>
 
         {animeEpisodes.episodes.length > 100 && (
           <select
             onChange={(e) => setEpshowed(parseInt(e.target.value))}
             value={epshowed === undefined ? defaultValue : epshowed}
-            className="bg-zinc-900 italic text-sm"
+            className="bg-zinc-900 text-sm"
           >
             {dropDownEp.map((d) => (
               <option key={d.value} value={d.value}>
@@ -68,7 +68,7 @@ const EpisodeRow = ({ animeEpisodes, ep }: EpisodeRowProp) => {
                 <Link
                   href={`/watch/${episode.episodeId}`}
                   className={cn(
-                    "bg-zinc-900 hover:bg-zinc-700 p-[.5rem] text-sm text-center rounded ",
+                    "bg-zinc-900 hover:bg-zinc-700 p-[.5rem] text-sm text-center",
                     episode.episodeId.split("=")[1] === ep &&
                       "bg-red-500 hover:bg-red-500",
                     episode.episodeId.split("=")[1] === ep &&

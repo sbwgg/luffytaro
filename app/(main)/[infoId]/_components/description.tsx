@@ -7,7 +7,7 @@ const Description = ({ description }: { description: string }) => {
 
   return (
     <>
-      <p className="text-gray-300 italic">
+      <p className="text-zinc-400">
         {description.slice(0, seemore) +
           `${description.slice(0, seemore).length > 350 ? "" : "..."}`}
         {description.length > 350 && (

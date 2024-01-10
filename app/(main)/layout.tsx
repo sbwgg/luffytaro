@@ -14,7 +14,7 @@ export default async function MainLayout({
 
   return (
     <main className="bg-black text-white min-h-screen">
-      <div className="max-w-[100rem] mx-auto">
+      <div className="max-w-[85rem] mx-auto">
         <Navbar user={user} />
         <ScrollToTop />
         <Toaster richColors />

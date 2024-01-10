@@ -33,7 +33,7 @@ const GridCardAnime = async ({ anime }: LatestEpisodeProp) => {
   return (
     <div>
       <Link href={`/${anime.id}`}>
-        <div className="relative w-full h-[16rem]">
+        <div className="relative w-full sm:h-[16rem] h-[14rem]">
           <span className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
           {anime.rating && (
             <p className="absolute right-1 top-1 text-xs p-1 px-2 bg-red-500 rounded">
@@ -58,12 +58,12 @@ const GridCardAnime = async ({ anime }: LatestEpisodeProp) => {
             width={400}
             height={300}
             priority
-            className="w-full h-full rounded-lg object-cover shrink-0"
+            className="w-full h-full object-cover shrink-0"
           />
         </div>
       </Link>
       <div className="mt-2">
-        <p className="truncate hover:text-red-500">
+        <p className="truncate hover:text-red-500 text-sm">
           <Link href={`/${anime.id}`}>{anime.name}</Link>
         </p>
         {animeInfo?.anime?.info?.description && (
@@ -71,7 +71,7 @@ const GridCardAnime = async ({ anime }: LatestEpisodeProp) => {
             {animeInfo?.anime?.info?.description}
           </p>
         )}
-        <p className=" flex items-center gap-x-2 text-gray-300 mt-2 text-sm">
+        <p className="flex items-center gap-x-2 text-zinc-400 mt-2 text-xs">
           <span className="truncate">{anime.duration}</span> &#x2022;{" "}
           <span className="truncate">{anime.type}</span>
         </p>

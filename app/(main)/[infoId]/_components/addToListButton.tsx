@@ -175,6 +175,11 @@ const AddToListButton = ({ animeInfo, user }: AddToListButtonProp) => {
   return (
     <div className="relative">
       <button
+        disabled={
+          mutateAddAnimeToWatchList.isPending ||
+          mutateEditAnimeStatus.isPending ||
+          mutateRemoveAnimeFromWatchList.isPending
+        }
         onClick={() => setShowStatus(!showStatus)}
         className={cn(
           "bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full md:rounded"

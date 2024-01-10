@@ -109,7 +109,7 @@ const CategoryPage = async ({
     <div className="pt-24">
       <div className="lg:flex gap-x-4 px-3 lg:px-10">
         <div className="flex-1">
-          <h1 className="text-xl">
+          <h1 className="sm:text-xl uppercase">
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
             {categoryAnime.category}
           </h1>

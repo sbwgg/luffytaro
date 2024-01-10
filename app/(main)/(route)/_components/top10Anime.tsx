@@ -57,9 +57,9 @@ const Top10Anime = ({ top10anime }: Top10AnimeProp) => {
   return (
     <>
       <div className="flex items-center justify-between mb-5 lg:mt-0 mt-10">
-        <h1 className="text-xl">
-          <span className="p-1 mr-3 bg-red-500  rounded-lg" />
-          top 10
+        <h1 className="sm:text-xl">
+          <span className="p-1 mr-3 bg-red-500 rounded-lg" />
+          TOP 10
         </h1>
 
         <div>
@@ -69,7 +69,7 @@ const Top10Anime = ({ top10anime }: Top10AnimeProp) => {
               setTopDay("today");
             }}
             className={cn(
-              "p-2 text-sm rounded-l italic duration-300",
+              "p-2 text-sm duration-300",
               topDay === "today" ? "bg-red-500" : "bg-zinc-800"
             )}
           >
@@ -81,7 +81,7 @@ const Top10Anime = ({ top10anime }: Top10AnimeProp) => {
               setTopDay("week");
             }}
             className={cn(
-              "p-2 text-sm italic duration-300",
+              "p-2 text-sm duration-300",
               topDay === "week" ? "bg-red-500" : "bg-zinc-800"
             )}
           >
@@ -93,7 +93,7 @@ const Top10Anime = ({ top10anime }: Top10AnimeProp) => {
               setTopDay("month");
             }}
             className={cn(
-              "p-2 text-sm rounded-r italic duration-300",
+              "p-2 text-sm duration-300",
               topDay === "month" ? "bg-red-500" : "bg-zinc-800"
             )}
           >
@@ -103,9 +103,9 @@ const Top10Anime = ({ top10anime }: Top10AnimeProp) => {
       </div>
 
       {defaultTop.length < 1 ? (
-        <div className="p-3 bg-zinc-900/60 rounded-lg text-center">No results</div>
+        <div className="p-3 bg-zinc-900/60 text-center">No results</div>
       ) : (
-        <div className="p-3 bg-zinc-900/60 rounded-lg">
+        <div className="p-3 bg-zinc-900/60">
           {defaultTop.map((top, i) => (
             <Top10AnimeCard key={top.id} top={top} index={i} />
           ))}

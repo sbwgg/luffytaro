@@ -27,18 +27,18 @@ const Category = () => {
 
   return (
     <div className="mt-10">
-      <h1 className="text-xl">
-        <span className="p-1 mr-3 bg-red-500  rounded-lg" />
-        Categories
+      <h1 className="sm:text-xl">
+        <span className="p-1 mr-3 bg-red-500 rounded-lg" />
+        CATEGORIES
       </h1>
 
-      <div className="flex flex-wrap gap-2 mt-5">
+      <div className="flex flex-wrap gap-1 mt-5">
         {category.map((cat) => (
           <Link
             key={cat.name}
             href={`/category/${cat.url}`}
             className={cn(
-              "p-2 px-3 bg-zinc-900 rounded text-sm",
+              "p-2 px-3 bg-zinc-900 sm:text-sm text-xs",
               pathname === `/category/${cat.url}` ? "bg-red-500" : ""
             )}
           >

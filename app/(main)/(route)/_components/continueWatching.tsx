@@ -18,10 +18,10 @@ const ContinueWatching = () => {
     <>
       {allLastViewed.length < 1 ? null : (
         <div className="px-3 lg:px-10 mt-5 mb-10">
-          <h1 className="text-xl mb-5">
+          <h1 className="sm:text-xl text-md mb-5">
             <Link href="/continue-watching">
               <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-              Continue watching &#62;
+              CONTINUE WATCHING &#62;
             </Link>
           </h1>
 

@@ -35,7 +35,7 @@ const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
           width={400}
           height={100}
           priority
-          className="w-[5rem] h-[7rem] object-cover rounded"
+          className="w-[5rem] h-[7rem] object-cover"
         />
 
         <div>
@@ -68,7 +68,7 @@ const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
               {animeInfo?.anime?.info?.stats?.duration}
             </p>
           </div>
-          <p className="italic text-sm text-gray-300">
+          <p className="text-sm text-zinc-400">
             {animeInfo?.anime?.info?.description.slice(0, seemore) +
               `${
                 animeInfo?.anime?.info?.description?.length > 350 ? "..." : ""
@@ -83,18 +83,18 @@ const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
             )}
           </p>
 
-          <button className="mt-2 text-sm p-1 px-3 italic bg-white text-black font-medium rounded">
+          <button className="mt-2 text-xs p-1 px-3 bg-white text-black font-medium">
             <Link
               href={`/${animeInfo.anime.info.id}`}
               className="flex items-center gap-x-1"
             >
               <IoMdInformationCircle />
-              More details
+              MORE DETAILS
             </Link>
           </button>
 
           <div className="flex items-center gap-x-2 mt-5">
-            <h1 className="italic text-sm">Share this anime to your friend:</h1>
+            <h1 className="text-sm">Share this anime to your friend:</h1>
             <FacebookShareButton
               url={process.env.NEXT_PUBLIC_MAIN_URL!}
               hashtag="#shareLuffyTaro"

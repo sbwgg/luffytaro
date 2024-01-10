@@ -54,20 +54,13 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
         {trending.map((trend) => (
           <SwiperSlide key={trend.id}>
             <Link href={`/${trend.id}`}>
-              <div className="relative mb-2 overflow-hidden rounded-lg">
+              <div className="relative mb-2 overflow-hidden">
                 <div
                   className={cn(
-                    "absolute left-[-4.3rem] rotate-[-50deg] p-2 w-[11rem] flex justify-center z-[10]",
-                    trend.rank === 1
-                      ? "bg-yellow-500"
-                      : trend.rank === 2
-                      ? "bg-green-500"
-                      : trend.rank === 3
-                      ? "bg-blue-500"
-                      : "bg-red-500"
+                    "absolute left-0 bg-white text-black p-1 px-3 flex justify-center z-[10]"
                   )}
                 >
-                  <p className="rotate-[48deg]">#{trend.rank}</p>
+                  <p className="">#{trend.rank}</p>
                 </div>
                 <Image
                   src={trend.poster}
@@ -80,7 +73,7 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
               </div>
             </Link>
             <div>
-              <p className="truncate">{trend.name}</p>
+              <p className="truncate text-sm">{trend.name}</p>
             </div>
           </SwiperSlide>
         ))}

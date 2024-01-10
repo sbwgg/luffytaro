@@ -130,17 +130,17 @@ const SearchForm = () => {
                   width={100}
                   height={100}
                   priority
-                  className="w-[4rem] h-[5rem] object-cover rounded shrink-0"
+                  className="w-[4rem] h-[5rem] object-cover shrink-0"
                 />
 
                 <div className="overflow-hidden space-y-1 pr-3">
                   <p className="truncate text-[15px] group-hover/item:text-red-500">
                     {s.name}
                   </p>
-                  <p className="text-[13px] text-gray-300 truncate">
+                  <p className="text-[13px] text-zinc-400 truncate">
                     {s.jname}
                   </p>
-                  <p className="flex gap-x-1 text-[13px] text-gray-300">
+                  <p className="flex gap-x-1 text-[13px] text-zinc-400">
                     <span>{s.moreInfo[0]}</span>
                     &#x2022;
                     <span className="text-white">{s.moreInfo[1]}</span>
@@ -159,7 +159,7 @@ const SearchForm = () => {
               <Link
                 onClick={() => setInputValue("")}
                 href={`/search?keyw=${inputValue}`}
-                className="bg-red-500 p-3 flex justify-center italic text-sm"
+                className="bg-red-500 p-3 flex justify-center text-sm"
               >
                 View all results
               </Link>

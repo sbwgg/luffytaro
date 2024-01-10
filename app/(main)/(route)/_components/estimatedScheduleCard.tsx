@@ -12,7 +12,9 @@ interface EpisodesType {
   totalEpisodes: number;
 }
 
-export default function EstimatedScheduleCard({ sched }: ScheduleAnimeCardProp) {
+export default function EstimatedScheduleCard({
+  sched,
+}: ScheduleAnimeCardProp) {
   const { data: episodes } = useQuery({
     queryKey: ["anime-episodes", sched.id],
     queryFn: async () => {
@@ -32,12 +34,14 @@ export default function EstimatedScheduleCard({ sched }: ScheduleAnimeCardProp) 
       href={`/${sched.id}`}
       className="flex sm:gap-x-8 gap-x-5  py-4 border-b border-dashed border-zinc-700 group/items hover:text-red-500 group/yellowBg group/textColor group/play duration-200 transition-all"
     >
-      <p className="text-zinc-400 group-hover/items:text-red-500">
+      <p className="flex items-center text-zinc-400 group-hover/items:text-red-500 text-xs">
         {sched.time}
       </p>
-      <p className="flex-1 italic tracking-wider">{sched.name}</p>
-      <p className="text-[13px] flex items-center gap-x-1 group-hover/yellowBg:bg-red-500 group-hover/textColor:text-black py-1 px-3 rounded">
-        <IoIosPlay className="text-zinc-500 scale-[1.1] group-hover/play:text-black" />
+      <p className="flex items-center flex-1 sm:text-base text-sm">
+        {sched.name}
+      </p>
+      <p className="text-[13px] flex items-center gap-x-1 group-hover/yellowBg:bg-red-500 group-hover/textColor:text-white text-zinc-400 py-1 px-3">
+        <IoIosPlay className="text-zinc-500 scale-[1.1] group-hover/play:text-white" />
         <span>Episodes</span>
         <span>{episodes?.totalEpisodes}</span>
       </p>

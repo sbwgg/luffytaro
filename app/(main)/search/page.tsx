@@ -72,9 +72,9 @@ const SearchPage = async ({
     <div className="pt-24">
       <div className="lg:flex gap-x-4 px-3 lg:px-10">
         <div className="flex-1">
-          <h1 className="text-xl">
+          <h1 className="sm:text-xl">
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-            Search results for {keyw}
+            SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
 
           {!searchResult.animes.length ? (
@@ -101,12 +101,12 @@ const SearchPage = async ({
         </div>
 
         <div className="basis-[19.5rem] mt-10 lg:mt-0">
-          <h1 className="text-xl">
+          <h1 className="sm:text-xl">
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-            Most popular
+            MOST POPULAR
           </h1>
 
-          <div className="mt-5 bg-zinc-900 px-4 py-2 rounded-xl">
+          <div className="mt-5 bg-zinc-900 px-4 py-2">
             {searchResult.mostPopularAnimes.map((mostPopular, i) => (
               <MostPopularAnime
                 key={mostPopular.id}

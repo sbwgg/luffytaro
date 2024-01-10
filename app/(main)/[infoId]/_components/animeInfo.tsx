@@ -42,11 +42,13 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
         <div className="shrink-0 md:mb-0 mb-8 flex items-center md:items-start justify-center">
           <div className="relative xl:w-[12rem] xl:h-[12rem] w-[10rem] h-[10rem] rounded-full">
             {animeInfo?.anime?.info?.stats?.rating === "R+" ||
-              (animeInfo?.anime?.info?.stats?.rating === "R" && (
-                <span className="flex items-center justify-center absolute top-2 right-4 bg-red-500 text-xs rounded-full h-[2rem] w-[2rem]">
-                  18+
-                </span>
-              ))}
+            animeInfo?.anime?.info?.stats?.rating === "R" ? (
+              <span className="flex items-center justify-center absolute top-2 right-4 bg-red-500 text-xs rounded-full h-[2rem] w-[2rem]">
+                18+
+              </span>
+            ) : (
+              ""
+            )}
             <Image
               src={animeInfo?.anime?.info?.poster}
               alt="poster"
@@ -113,7 +115,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
           <div className="text-[14px]">
             <Description description={animeInfo.anime.info.description} />
 
-            <p className="mt-5 text-gray-300 italic">
+            <p className="mt-5 text-zinc-400">
               LuffyTaro is the best site to watch {animeInfo?.anime?.info?.name}{" "}
               SUB online, or you can even watch {animeInfo?.anime?.info?.name}{" "}
               DUB in HD quality. You can also find Studio Pierrot anime on
@@ -125,9 +127,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
                 <NextEpisodeTime nextAiringEpisode={nextAiringEpisode} />
               ) : (
                 <>
-                  <p>Next episode: None</p>
                   <p>Aired time: Finish airing</p>
-                  <p>Time remaining: None</p>
                 </>
               )}
             </div>
@@ -136,50 +136,53 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
       </div>
 
       <div className="basis-[13rem] text-sm lg:mt-0 mt-8">
-        <p className="mb-2">
-          <span className="font-semibold">Japanese:</span>{" "}
+        <p className="mb-2 text-zinc-400">
+          <span className="font-semibold text-white">Japanese:</span>{" "}
           {animeInfo?.anime?.moreInfo?.japanese}
         </p>
-        <p className="mb-2">
-          <span className="font-semibold">Synonyms:</span>{" "}
+        <p className="mb-2 text-zinc-400">
+          <span className="font-semibold text-white">Synonyms:</span>{" "}
           {animeInfo?.anime?.moreInfo?.synonyms}
         </p>
-        <p className="mb-2">
-          <span className="font-semibold">Aired:</span>{" "}
+        <p className="mb-2 text-zinc-400">
+          <span className="font-semibold text-white">Aired:</span>{" "}
           {animeInfo?.anime?.moreInfo?.aired}
         </p>
-        <p className="mb-2">
-          <span className="font-semibold">Premiered:</span>{" "}
+        <p className="mb-2 text-zinc-400">
+          <span className="font-semibold text-white">Premiered:</span>{" "}
           {animeInfo?.anime?.moreInfo?.premiered}
         </p>
-        <p className="mb-2">
-          <span className="font-semibold">Duration:</span>{" "}
+        <p className="mb-2 text-zinc-400">
+          <span className="font-semibold text-white">Duration:</span>{" "}
           {animeInfo?.anime?.moreInfo?.duration}
         </p>
-        <p className="mb-2">
-          <span className="font-semibold">Status:</span>{" "}
+        <p className="mb-2 text-zinc-400">
+          <span className="font-semibold text-white">Status:</span>{" "}
           {animeInfo?.anime?.moreInfo?.status}
         </p>
-        <p className="mb-2">
-          <span className="font-semibold">MAL Score:</span>{" "}
+        <p className="mb-2 text-zinc-400">
+          <span className="font-semibold text-white">MAL Score:</span>{" "}
           {animeInfo?.anime?.moreInfo?.malscore}
         </p>
 
         <div className="flex items-center gap-1 flex-wrap mt-3 border-y border-dashed border-zinc-800 py-3">
           <span className="font-semibold">Genres:</span>{" "}
           {animeInfo?.anime?.moreInfo?.genres.map((g) => (
-            <span className="px-2 py-1 rounded-full text-xs border" key={g}>
+            <span
+              className="px-2 py-1 rounded-full text-xs border text-zinc-400"
+              key={g}
+            >
               {g}
             </span>
           ))}
         </div>
 
-        <p className="mt-3">
-          <span className="font-semibold">Studios:</span>{" "}
+        <p className="mt-3 text-zinc-400">
+          <span className="font-semibold text-white">Studios:</span>{" "}
           {animeInfo?.anime?.moreInfo?.studios}
         </p>
-        <p className="mt-3">
-          <span className="font-semibold">Producers:</span>{" "}
+        <p className="mt-3 text-zinc-400">
+          <span className="font-semibold text-white">Producers:</span>{" "}
           {animeInfo?.anime?.moreInfo?.producers?.join(", ")}
         </p>
       </div>

@@ -14,13 +14,20 @@
 
 .gridCard {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+@media screen and (max-width: 527px) {
+  .gridCard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
 }
 
 @media screen and (max-width: 360px) {
   .gridCard {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   }
 }
 
@@ -34,10 +41,9 @@
 .ellip {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 2;
   overflow: hidden;
 }
-
 
 .highlight-intro-outro {
   /* Add your custom styles to highlight the TimeSlider during the intro and outro */

@@ -176,9 +176,9 @@ const MoreDetailPage = async ({ params }: { params: { infoId: string } }) => {
 
       {animeInfo.seasons.length ? (
         <div className="mt-10 px-3 lg:px-10">
-          <h1 className="text-xl">
+          <h1 className="sm:text-xl">
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-            More seasons
+            MORE SEASONS
           </h1>
 
           <div className="seasonGrid gap-2 mt-5">
@@ -222,9 +222,9 @@ const MoreDetailPage = async ({ params }: { params: { infoId: string } }) => {
 
       <div className="lg:flex gap-x-4 px-3 lg:px-10 mt-10">
         <div className="flex-1">
-          <h1 className="text-xl cursor-pointer">
+          <h1 className="sm:text-xl cursor-pointer">
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-            Recommended for you
+            RECOMMEND FOR YOU
           </h1>
 
           <div className="gridCard gap-x-2 gap-y-8 mt-5">
@@ -237,9 +237,9 @@ const MoreDetailPage = async ({ params }: { params: { infoId: string } }) => {
         <div className="basis-[19.5rem] lg:mt-0 mt-10">
           {animeInfo.relatedAnimes.length ? (
             <div>
-              <h1 className="text-xl cursor-pointer">
+              <h1 className="sm:text-xl cursor-pointer">
                 <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-                Related anime
+                RELATED ANIME
               </h1>
 
               <RelatedAnime relatedAnime={animeInfo.relatedAnimes} />
@@ -248,9 +248,9 @@ const MoreDetailPage = async ({ params }: { params: { infoId: string } }) => {
 
           {animeInfo.mostPopularAnimes.length ? (
             <div className="mt-10">
-              <h1 className="text-xl cursor-pointer">
+              <h1 className="sm:text-xl cursor-pointer">
                 <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-                Most popular
+                MOST POPULAR
               </h1>
 
               <div className="mt-5 bg-zinc-900 px-4 py-2 rounded-xl">

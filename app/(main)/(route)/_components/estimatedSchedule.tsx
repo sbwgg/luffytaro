@@ -111,7 +111,7 @@ const EstimatedSchedule = () => {
         </button>
         <Swiper
           ref={ref}
-          spaceBetween={13}
+          spaceBetween={8}
           breakpoints={{
             100: {
               slidesPerView: 3,
@@ -138,14 +138,16 @@ const EstimatedSchedule = () => {
               <button
                 onClick={() => setDefaultDate(date.value)}
                 className={cn(
-                  "flex items-center flex-col p-2 rounded-md w-full  duration-200 transition-all",
+                  "flex items-center flex-col p-2 w-full duration-200 transition-all",
                   defaultDate === date.value ? "bg-red-500 " : "bg-zinc-700/40"
                 )}
               >
-                <span className="font-semibold">{date.day.slice(0, 3)}</span>
+                <span className="font-semibold uppercase sm:text-base text-sm mb-1">
+                  {date.day.slice(0, 3)}
+                </span>
                 <span
                   className={cn(
-                    "text-sm",
+                    "text-xs",
                     defaultDate === date.value ? "text-white" : "text-zinc-400"
                   )}
                 >

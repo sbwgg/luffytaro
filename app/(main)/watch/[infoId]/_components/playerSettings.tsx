@@ -86,10 +86,10 @@ const PlayerSettings = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-x-4 gap-y-1 flex-wrap mt-5">
+      <div className="flex items-center gap-x-4 gap-y-1 flex-wrap mt-5 bg-zinc-900/70 p-2 px-4">
         {episodeServer.sub.length ? (
           <div className="flex items-center flex-wrap gap-x-1 gap-y-1">
-            <p className="text-xs sm:text-sm mr-3">SUB:</p>
+            <p className="text-xs text-zinc-400 mr-3">SUB:</p>
             {episodeServer.sub.map((sub) => (
               <button
                 onClick={() => {
@@ -97,7 +97,7 @@ const PlayerSettings = ({
                   setCategory("sub");
                 }}
                 className={cn(
-                  "italic bg-zinc-900 p-2 px-4 text-xs sm:text-sm rounded",
+                  "bg-black sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
                   server === sub.serverName &&
                     category === "sub" &&
                     "bg-red-500"
@@ -109,9 +109,10 @@ const PlayerSettings = ({
             ))}
           </div>
         ) : null}
+
         {episodeServer.dub.length ? (
           <div className="flex items-center flex-wrap gap-x-1 gap-y-1">
-            <p className="text-xs sm:text-sm mr-3">DUB</p>
+            <p className="text-xs text-zinc-400 mr-3">DUB:</p>
             {episodeServer.dub.map((dub) => (
               <button
                 onClick={() => {
@@ -119,7 +120,7 @@ const PlayerSettings = ({
                   setCategory("dub");
                 }}
                 className={cn(
-                  "italic bg-zinc-900 p-2 px-4 text-xs sm:text-sm rounded",
+                  "bg-black sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
                   server === dub.serverName &&
                     category === "dub" &&
                     "bg-red-500"

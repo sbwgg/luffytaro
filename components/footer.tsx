@@ -19,7 +19,7 @@ import {
 
 const Footer = () => {
   return (
-    <div className="flex flex-col items-center px-3 py-6 lg:px-10 mt-24">
+    <div className="flex flex-col items-center px-3 py-10 lg:px-10 mt-24 border-t border-zinc-800">
       <div className="flex items-center gap-x-3">
         <Image
           src={LuffyTaro}
@@ -35,37 +35,37 @@ const Footer = () => {
       </div>
 
       <div className="mt-5">
-        <p className="italic text-gray-400">
+        <p className="text-gray-400 text-center sm:text-base text-sm">
           LuffyTaro does not store any files on our server, we only linked to
           the media which is hosted on 3rd party services.
         </p>
       </div>
 
-      <div className="mt-5">
+      <div className="space-x-1 mt-5">
         <FacebookShareButton
           url={process.env.NEXT_PUBLIC_MAIN_URL!}
           hashtag="#shareLuffyTaro"
         >
-          <FacebookIcon round className="scale-[.8]" />
+          <FacebookIcon round className="sm:w-[3rem] w-[2.5rem]" />
         </FacebookShareButton>
 
         <FacebookMessengerShareButton
           url={process.env.NEXT_PUBLIC_MAIN_URL!}
           appId="768928146800344"
         >
-          <FacebookMessengerIcon round className="scale-[.8]" />
+          <FacebookMessengerIcon round className="sm:w-[3rem] w-[2.5rem]" />
         </FacebookMessengerShareButton>
 
         <RedditShareButton url={process.env.NEXT_PUBLIC_MAIN_URL!}>
-          <RedditIcon round className="scale-[.8]" />
+          <RedditIcon round className="sm:w-[3rem] w-[2.5rem]" />
         </RedditShareButton>
 
         <TelegramShareButton url={process.env.NEXT_PUBLIC_MAIN_URL!}>
-          <TelegramIcon round className="scale-[.8]" />
+          <TelegramIcon round className="sm:w-[3rem] w-[2.5rem]" />
         </TelegramShareButton>
 
         <TwitterShareButton url={process.env.NEXT_PUBLIC_MAIN_URL!}>
-          <TwitterIcon round className="scale-[.8]" />
+          <TwitterIcon round className="sm:w-[3rem] w-[2.5rem]" />
         </TwitterShareButton>
       </div>
     </div>

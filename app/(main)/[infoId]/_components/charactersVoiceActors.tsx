@@ -62,9 +62,9 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
               <IoClose className="scale-[1.3]" />
             </button>
 
-            <h1 className="text-lg sm:text-xl">
+            <h1 className="sm:text-xl">
               <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-              Characters & voice actors
+              CHARACTERS & VOICE ACTORS
             </h1>
 
             <div className="flex flex-col gap-3 mt-5">
@@ -128,10 +128,10 @@ const CharactersVoiceActors = ({ characters }: CharactersVoiceActorsProp) => {
       <div>
         <h1
           onClick={() => setShowMore(!showMore)}
-          className="text-xl cursor-pointer"
+          className="sm:text-xl cursor-pointer"
         >
           <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-          Characters & voice actors &#62;
+          CHARACTERS & VOICE ACTORS &#62;
         </h1>
 
         <div className="characterVoiceActor gap-1 mt-5">
