@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import actionSignUp from "@/action/auth/actionSignUp";
 import actionSignIn from "@/action/auth/actionSignIn";
 import { useFormState, useFormStatus } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SubmitButton = ({ isSignUp }: { isSignUp: boolean }) => {
   const { pending } = useFormStatus();
@@ -31,6 +32,7 @@ const Signin = () => {
   const isOpen = useOpenAuth((state) => state.isOpen);
   const [state, formAction] = useFormState(actionSignUp, null);
   const [stateSignIn, dispatch] = useFormState(actionSignIn, null);
+  const queryClient = useQueryClient();
 
   const ref = useRef<HTMLFormElement>(null);
 
@@ -40,9 +42,10 @@ const Signin = () => {
     }
 
     if (stateSignIn?.message?.id) {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
       setIsClose();
     }
-  }, [state?.message, stateSignIn?.message, setIsClose]);
+  }, [state?.message, stateSignIn?.message, setIsClose, queryClient]);
 
   if (!isOpen) return;
 

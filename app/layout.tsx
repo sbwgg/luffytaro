@@ -4,6 +4,7 @@ import "./globals.css";
 import ReactQueryProvider from "@/lib/reactquery";
 import ProgressbarProvider from "@/lib/progressbar";
 import Signin from "@/components/signin";
+import SocketProvider from "@/lib/socketProvider";
 
 const pathway_extreme = Pathway_Extreme({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -24,8 +25,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={pathway_extreme.className}>
         <ReactQueryProvider>
-          <Signin />
-          <ProgressbarProvider>{children}</ProgressbarProvider>
+          <SocketProvider>
+            <Signin />
+            <ProgressbarProvider>{children}</ProgressbarProvider>
+          </SocketProvider>
         </ReactQueryProvider>
       </body>
     </html>

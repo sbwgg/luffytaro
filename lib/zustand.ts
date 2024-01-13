@@ -8,6 +8,6 @@ interface UseOpenAuthProp {
 
 export const useOpenAuth = create<UseOpenAuthProp>((set) => ({
   isOpen: false,
-  setIsOpen: () => set((state) => ({ isOpen: true })),
-  setIsClose: () => set((state) => ({ isOpen: false })),
+  setIsOpen: () => set(() => ({ isOpen: true })),
+  setIsClose: () => set(() => ({ isOpen: false })),
 }));

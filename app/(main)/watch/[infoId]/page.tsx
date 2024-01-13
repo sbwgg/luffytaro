@@ -12,6 +12,10 @@ import GridCardAnime from "@/components/gridCardAnime";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import RelatedAnime from "@/components/relatedAnime";
 import AnimeDetails from "./_components/animeDetails";
+const CommentRow = dynamic(() => import("./_components/commentRow"), {
+  ssr: false,
+});
+import getUser from "@/utils/user";
 
 export interface EpisodeServerType {
   sub: {
@@ -107,7 +111,6 @@ const WatchPage = async ({
 }) => {
   const { infoId } = params;
   const { ep } = searchParams;
-
   const animeInfo: AnimeInfoType = await getAnimeInfo(infoId);
   const animeEpisodes: EpisodeType = await getAnimeEpisodes(infoId);
   const episodeServer: EpisodeServerType = await getEpisodeServer(infoId, ep);
@@ -133,10 +136,10 @@ const WatchPage = async ({
       cache: "no-store",
     }
   ).then((res) => res.json());
-
   const isFiller = animeEpisodes.episodes.find(
     (item) => item.episodeId == episodeServer.episodeId
   );
+  const user = await getUser();
 
   return (
     <div className="pt-20">
@@ -169,15 +172,21 @@ const WatchPage = async ({
 
       <div className="lg:flex gap-x-4 px-3 lg:px-10 mt-12">
         <div className="flex-1">
-          <h1 className="sm:text-xl cursor-pointer">
-            <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-            RECOMMENDED FOR YOU
-          </h1>
+          <div className="mb-10">
+            <CommentRow user={user} />
+          </div>
 
-          <div className="gridCard gap-x-2 gap-y-8 mt-5">
-            {animeInfo?.recommendedAnimes.map((recommend) => (
-              <GridCardAnime key={recommend.id} anime={recommend} />
-            ))}
+          <div>
+            <h1 className="sm:text-xl cursor-pointer">
+              <span className="p-1 mr-3 bg-red-500 rounded-lg" />
+              RECOMMENDED FOR YOU
+            </h1>
+
+            <div className="gridCard gap-x-2 gap-y-8 mt-5">
+              {animeInfo?.recommendedAnimes.map((recommend) => (
+                <GridCardAnime key={recommend.id} anime={recommend} />
+              ))}
+            </div>
           </div>
         </div>
 

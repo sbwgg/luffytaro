@@ -10,7 +10,7 @@ import SearchForm from "./searchForm";
 import { useOpenAuth } from "@/lib/zustand";
 import defaultProfile from "@/image/defaultprofile.jpg";
 import actionLogout from "@/action/auth/actionLogout";
-import { FaHeart, FaUser } from "react-icons/fa";
+import { FaBell, FaHeart, FaUser } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 
@@ -143,6 +143,13 @@ export default function Navbar({ user }: NavbarProp) {
                 >
                   <FaHeart />
                   Watch list
+                </Link>
+                <Link
+                  href="/notification"
+                  className="flex items-center gap-x-2 mb-[6px] rounded-full p-2 px-4 bg-zinc-700 hover:bg-zinc-800 duration-200 text-sm"
+                >
+                  <FaBell />
+                  Notification
                 </Link>
                 <div>
                   <button

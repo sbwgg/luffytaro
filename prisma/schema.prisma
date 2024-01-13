@@ -17,6 +17,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  comment Comment[]
+  replyComment ReplyComment[]
+
   @@unique([username, email])
 }
 
@@ -38,3 +41,37 @@ model WatchList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Comment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  comment String
+  spoiler Boolean?
+  like String[] @db.ObjectId
+  dislike String[] @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  replyComment ReplyComment[]
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+
+model ReplyComment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  commentId String @db.ObjectId
+  replyComment String
+  spoiler Boolean?
+  like String[] @db.ObjectId
+  dislike String[] @db.ObjectId
+  replyTo String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  user User @relation(fields: [userId], references: [id])
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+}
+
