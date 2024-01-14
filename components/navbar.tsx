@@ -13,6 +13,7 @@ import actionLogout from "@/action/auth/actionLogout";
 import { FaBell, FaHeart, FaUser } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
+import { useSocket } from "@/lib/socketProvider";
 
 interface NavbarProp {
   user: {
@@ -27,6 +28,7 @@ interface NavbarProp {
 
 export default function Navbar({ user }: NavbarProp) {
   const [activeNav, setActiveNav] = useState(false);
+  const { socket } = useSocket();
   const pathname = usePathname();
   const router = useRouter();
   const setIsOpen = useOpenAuth((state) => state.setIsOpen);
@@ -156,6 +158,7 @@ export default function Navbar({ user }: NavbarProp) {
                     disabled={pending}
                     onClick={async () => {
                       setTransition(() => actionLogout());
+                      socket.current.emit("sendLogout", user.id);
                       router.refresh();
                     }}
                     className="flex items-center gap-x-2 rounded-full p-2 px-4 bg-zinc-700 hover:bg-zinc-800 duration-200 w-full text-sm"

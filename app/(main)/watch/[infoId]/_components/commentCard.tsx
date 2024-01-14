@@ -8,13 +8,17 @@ import Nami from "@/image/defaultprofile.jpg";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { actionLikeComment } from "@/action/comment/actionLikeComment";
 import { actionDislikeComment } from "@/action/comment/actionDislikeComment";
-import { BsEmojiSmileFill } from "react-icons/bs";
+import { BsEmojiSmileFill, BsThreeDotsVertical } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import { actionReplyComment } from "@/action/replyComment/actionReplyComment";
 import ReplyCommentCard from "./replyCommentCard";
 import { useOpenAuth } from "@/lib/zustand";
 import EmojiPicker from "emoji-picker-react";
 import { formatNumber } from "@/utils/formatNumber";
+import TextareaAutosize from "react-textarea-autosize";
+import { actionSaveEditedComment } from "@/action/comment/actionSaveEditedComment";
+import { actionDeleteComment } from "@/action/comment/actionDeleteComment";
+import { toast } from "sonner";
 
 interface CommentCardProp {
   comment: CommentsType;
@@ -36,6 +40,9 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
   const [showEmoji, setShowEmoji] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showReplies, setShowReplies] = useState(false);
+  const [editComment, setEditComment] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const [deletePopup, setDeletePopup] = useState(false);
 
   const mutationLikeComment = useMutation({
     mutationFn: async () => {
@@ -142,7 +149,6 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
           )
         );
         socket.current.emit("sendReplyComment", data);
-        setShowInput(false);
       }
     },
   });
@@ -156,6 +162,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
     mutationReplyComment.mutate(formData);
     setShowReplies(true);
     setShowEmoji(false);
+    setShowInput(false);
     e.currentTarget.reset();
   };
 
@@ -174,31 +181,165 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
     textareaRef.current!.selectionEnd = start + emoji.length;
   };
 
+  const mutationSaveEditedComment = useMutation({
+    mutationFn: async (formData: FormData) => {
+      try {
+        const data = await actionSaveEditedComment(formData, comment.id);
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onSuccess: (data) => {
+      socket.current.emit("sendSaveEditedComment", data);
+      setEditComment(false);
+    },
+    onMutate: (variable) => {
+      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        old?.map((item) =>
+          item.id === comment.id
+            ? {
+                ...item,
+                comment: variable.get("editedComment") as string,
+                isEdited: true,
+              }
+            : item
+        )
+      );
+    },
+  });
+
+  const handleSaveEditedComment = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    mutationSaveEditedComment.mutate(formData);
+  };
+
+  const isMyComment = user?.id === comment.user.id;
+
+  const mutationDeleteComment = useMutation({
+    mutationFn: async () => {
+      try {
+        const data = await actionDeleteComment(comment.id);
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onSuccess: (data) => {
+      socket.current.emit("sendDeleteComment", data);
+      toast("Success", {
+        description: "Deleted Successfully",
+      });
+    },
+    onMutate: () => {
+      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        old?.filter((item) => item.id !== comment.id)
+      );
+    },
+  });
+
+  const DeletePopup = () => {
+    return (
+      <div className="flex justify-center items-center fixed inset-0 bg-black/20 z-[600]">
+        <div className="border border-zinc-600 p-5 text-white bg-black flex-1 max-w-[25rem] mx-3">
+          <div className="sm:p-5 p-1">
+            <h1 className="text-lg mb-2">Delete Comment</h1>
+            <p className="text-zinc-400">Delete your comment permanently?</p>
+          </div>
+          <div className="flex gap-2 justify-end mt-5">
+            <button
+              onClick={() => setDeletePopup(false)}
+              className="bg-white p-1 px-3 text-black text-base"
+            >
+              Cancel
+            </button>
+            <button
+              disabled={mutationDeleteComment.isPending}
+              onClick={() => mutationDeleteComment.mutate()}
+              className="bg-red-500 p-1 px-3 text-base"
+            >
+              {mutationDeleteComment.isPending ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex gap-3">
-      <Image
-        src={comment.user.profile || Nami}
-        alt="profile"
-        width={100}
-        height={100}
-        priority
-        className="w-[3rem] h-[3rem] rounded-lg shrink-0 border border-white/40"
-      />
+      <div>
+        <div className="relative shrink-0">
+          <Image
+            src={comment.user.profile || Nami}
+            alt="profile"
+            width={100}
+            height={100}
+            priority
+            className="sm:w-[3rem] w-[2.5rem] h-[2.5rem] sm:h-[3rem] rounded-lg border border-white/40"
+          />
+        </div>
+      </div>
 
       <div className="flex-1">
-        <p>{comment.user.username}</p>
-        <p className="text-xs text-zinc-400 mb-2">
-          {format(comment.createdAt)}
+        <div className="flex items-center justify-between">
+          <p>{comment.user.username}</p>
+          {isMyComment && (
+            <div className="relative">
+              <button onClick={() => setShowMore(!showMore)}>
+                <BsThreeDotsVertical />
+              </button>
+
+              {showMore && (
+                <div className="absolute -left-[6rem] top-0 text-sm bg-white text-black">
+                  <button
+                    onClick={() => {
+                      setShowMore(false);
+                      setDeletePopup(true);
+                    }}
+                    className="p-2 px-5"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+              {deletePopup && <DeletePopup />}
+            </div>
+          )}
+        </div>
+        <p className="flex gap-2 text-xs text-zinc-400 mb-2">
+          {format(comment.createdAt)} {comment.isEdited && <span>&#8226;</span>}{" "}
+          {comment.isEdited ? "edited" : ""}
         </p>
         <div>
-          <p
-            className={cn(
-              "relative break-words break-all whitespace-pre-wrap",
-              comment.spoiler && "blur-[3px]"
-            )}
-          >
-            {comment.comment}
-          </p>
+          {editComment && isMyComment ? (
+            <form onSubmit={handleSaveEditedComment}>
+              <TextareaAutosize
+                name="editedComment"
+                required
+                className="p-2 outline-none w-full bg-inherit resize-none border border-zinc-800"
+                defaultValue={comment.comment}
+              />
+              <div className="flex justify-end">
+                <Button
+                  disabled={mutationSaveEditedComment.isPending}
+                  className="text-xs"
+                >
+                  {mutationSaveEditedComment.isPending ? "Loading..." : "Save"}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <p
+              className={cn(
+                "relative break-words break-all whitespace-pre-wrap text-sm",
+                comment.spoiler && "blur-[3px]"
+              )}
+            >
+              {comment.comment}
+            </p>
+          )}
 
           {comment.spoiler && (
             <button
@@ -240,7 +381,14 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
             <AiFillDislike />{" "}
             <span>{formatNumber(comment.dislike.length)}</span>
           </button>
-          <button onClick={() => setShowInput(!showInput)}>Reply</button>
+          <button onClick={() => setShowInput(!showInput)}>
+            {showInput ? "Cancel" : "Reply"}
+          </button>
+          {isMyComment && (
+            <button onClick={() => setEditComment(!editComment)}>
+              {editComment ? "Cancel" : "Edit"}
+            </button>
+          )}
         </div>
 
         {/*  Reply Comment Input  */}
@@ -252,7 +400,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
               alt="profile"
               width={100}
               height={100}
-              className="w-[3rem] h-[3rem] rounded-lg border border-white/40"
+              className="sm:w-[3rem] w-[2.5rem] h-[2.5rem] sm:h-[3rem] rounded-lg border border-white/40"
               priority
             />
             <form onSubmit={handleReplyComment} className="flex-1">
@@ -262,13 +410,13 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
                   ref={textareaRef}
                   name="replyComment"
                   required
-                  className="w-full p-2 pr-12 text-black outline-none"
+                  className="w-full p-2 sm:pr-12 text-black outline-none"
                   placeholder={`Reply to ${comment.user.username}`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowEmoji(!showEmoji)}
-                  className="absolute right-4 scale-125 top-3 text-zinc-400"
+                  className="absolute right-4 scale-125 top-3 text-zinc-400 sm:block hidden"
                 >
                   <BsEmojiSmileFill />
                 </button>
@@ -289,7 +437,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
                     <p>Spoiler?</p>
                   </div>
                 </div>
-                <Button>Comment</Button>
+                <Button className="text-xs">Comment</Button>
               </div>
             </form>
           </div>

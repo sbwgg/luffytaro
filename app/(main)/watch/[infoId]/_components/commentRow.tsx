@@ -12,6 +12,7 @@ import CommentCard from "./commentCard";
 import { useSocket } from "@/lib/socketProvider";
 import { useOpenAuth } from "@/lib/zustand";
 import EmojiPicker from "emoji-picker-react";
+import { cn } from "@/lib/utils";
 
 interface UserProp {
   user: {
@@ -33,6 +34,7 @@ export interface ReplyCommentType {
   replyComment: string;
   replyTo: string | null;
   spoiler: boolean;
+  isEdited: boolean;
   updatedAt: Date;
   user: {
     id: string;
@@ -49,6 +51,7 @@ export interface CommentsType {
   id: string;
   like: string[];
   spoiler: boolean;
+  isEdited: boolean;
   updatedAt: Date;
   user: {
     id: string;
@@ -65,6 +68,7 @@ const CommentRow = ({ user }: UserProp) => {
   const setIsOpen = useOpenAuth((state) => state.setIsOpen);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [sort, setSort] = useState("Newest");
 
   const {
     data: comments,
@@ -95,6 +99,64 @@ const CommentRow = ({ user }: UserProp) => {
       if (data) {
         queryClient.invalidateQueries({ queryKey: ["comments"] });
       }
+    });
+
+    socket.current?.on("getSaveEditedComment", (data: CommentsType) => {
+      if (data) {
+        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+          old?.map((item) =>
+            item.id === data.id
+              ? { ...item, comment: data.comment, isEdited: true }
+              : item
+          )
+        );
+        queryClient.invalidateQueries({ queryKey: ["comments"] });
+      }
+    });
+
+    socket.current?.on("getSaveEditedReplyComent", (data: ReplyCommentType) => {
+      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        old?.map((item) =>
+          item.id === data.commentId
+            ? {
+                ...item,
+                replyComment: item.replyComment.map((item) =>
+                  item.id === data.id
+                    ? {
+                        ...item,
+                        replyComment: data.replyComment,
+                        isEdited: true,
+                      }
+                    : item
+                ),
+              }
+            : item
+        )
+      );
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
+    });
+
+    socket.current?.on("getDeleteComment", (data: CommentsType) => {
+      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        old?.filter((item) => item.id !== data.id)
+      );
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
+    });
+
+    socket.current?.on("getDeleteReplyComment", (data: ReplyCommentType) => {
+      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        old?.map((item) =>
+          item.id === data.commentId
+            ? {
+                ...item,
+                replyComment: item.replyComment.filter(
+                  (item) => item.id !== data.id
+                ),
+              }
+            : item
+        )
+      );
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
     });
   }, [queryClient, socket]);
 
@@ -144,6 +206,20 @@ const CommentRow = ({ user }: UserProp) => {
     textareaRef.current!.selectionEnd = start + emoji.length;
   };
 
+  const sortComments = (a: CommentsType, b: CommentsType) => {
+    const dateA = new Date(a.createdAt) as any;
+    const dateB = new Date(b.createdAt) as any;
+    if (sort === "Newest") {
+      return dateA - dateB;
+    } else if (sort === "Oldest") {
+      return dateB - dateA;
+    } else if (sort === "Best") {
+      return a.like.length - b.like.length;
+    }
+
+    return 1;
+  };
+
   return (
     <>
       <h1 className="sm:text-xl cursor-pointer">
@@ -156,7 +232,7 @@ const CommentRow = ({ user }: UserProp) => {
           alt="profile"
           width={100}
           height={100}
-          className="w-[3rem] h-[3rem] rounded-lg border border-white/40"
+          className="sm:w-[3rem] w-[2.5rem] h-[2.5rem] sm:h-[3rem] rounded-lg border border-white/40"
           priority
         />
         <form onSubmit={handleComment} className="flex-1">
@@ -166,13 +242,13 @@ const CommentRow = ({ user }: UserProp) => {
               name="comment"
               ref={textareaRef}
               required
-              className="w-full p-2 pr-12 text-black outline-none"
+              className="w-full p-2 sm:pr-12 text-black outline-none"
               placeholder="Join the discussion"
             />
             <button
               type="button"
               onClick={() => setShowEmoji(!showEmoji)}
-              className="absolute right-4 scale-125 top-3 text-zinc-400"
+              className="absolute right-4 scale-125 top-3 text-zinc-400 sm:block hidden"
             >
               <BsEmojiSmileFill />
             </button>
@@ -193,25 +269,55 @@ const CommentRow = ({ user }: UserProp) => {
                 <p>Spoiler?</p>
               </div>
             </div>
-            <Button>Comment</Button>
+            <Button className="text-xs">Comment</Button>
           </div>
         </form>
       </div>
 
+      {comments && comments?.length > 100 && (
+        <div className="flex items-center gap-3 mt-7 mb-7 text-zinc-400 text-sm">
+          <button
+            onClick={() => setSort("Best")}
+            className={cn(
+              sort === "Best" && "text-white border-b-2 border-white"
+            )}
+          >
+            Best
+          </button>
+          <button
+            onClick={() => setSort("Newest")}
+            className={cn(
+              sort === "Newest" && "text-white border-b-2 border-white"
+            )}
+          >
+            Newest
+          </button>
+          <button
+            onClick={() => setSort("Oldest")}
+            className={cn(
+              sort === "Oldest" && "text-white border-b-2 border-white"
+            )}
+          >
+            Oldest
+          </button>
+        </div>
+      )}
+
       {isSuccess && comments && comments?.length >= 1 ? (
         <div className="mt-5">
           {comments
+            .sort((a, b) => sortComments(a, b))
             ?.map((c) => (
               <CommentCard key={c.id} comment={c} user={user} socket={socket} />
             ))
             .reverse()}
         </div>
-      ) : (
+      ) : null}
+      {isSuccess && comments && comments.length < 1 ? (
         <div className="min-h-[30dvh] flex items-center justify-center text-zinc-400">
           No comments
         </div>
-      )}
-
+      ) : null}
       {isLoading && (
         <div className="min-h-[30dvh] flex items-center justify-center text-zinc-400">
           Loading...

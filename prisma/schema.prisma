@@ -47,6 +47,7 @@ model Comment {
   userId String @db.ObjectId
   comment String
   spoiler Boolean?
+  isEdited Boolean @default(false)
   like String[] @db.ObjectId
   dislike String[] @db.ObjectId
   createdAt DateTime @default(now())
@@ -64,6 +65,7 @@ model ReplyComment {
   commentId String @db.ObjectId
   replyComment String
   spoiler Boolean?
+  isEdited Boolean @default(false)
   like String[] @db.ObjectId
   dislike String[] @db.ObjectId
   replyTo String?
