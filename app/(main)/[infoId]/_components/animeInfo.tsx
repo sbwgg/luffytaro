@@ -129,11 +129,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
             <div className="mt-5 text-zinc-400">
               {nextAiringEpisode ? (
                 <NextEpisodeTime nextAiringEpisode={nextAiringEpisode} />
-              ) : (
-                <>
-                  <p>Aired time: Finish airing</p>
-                </>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

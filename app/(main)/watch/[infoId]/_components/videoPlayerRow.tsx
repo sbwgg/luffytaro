@@ -271,17 +271,13 @@ const VideoPlayerRow = ({
         prevEp={prevEp?.episodeId}
       />
 
-      {metaAnilistInfo.nextAiringEpisode ? (
+      {metaAnilistInfo?.nextAiringEpisode ? (
         <div className="text-sm mt-5 text-zinc-400 lg:px-0 px-3">
           <NextEpisodeTime
             nextAiringEpisode={metaAnilistInfo?.nextAiringEpisode}
           />
         </div>
-      ) : (
-        <div className="mt-5 text-zinc-400 text-sm lg:px-0 px-3">
-          <p>Aired time: Finish airing</p>
-        </div>
-      )}
+      ) : null}
     </>
   );
 };

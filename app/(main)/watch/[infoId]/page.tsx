@@ -90,6 +90,31 @@ const getEpisodeServer = async (infoId: string, ep: string) => {
   return res.json();
 };
 
+const getMetaAnilistInfo = async (alID: string) => {
+  const res = await fetch(
+    `${process.env.CONSUMET_URL}/meta/anilist/info/${alID}`,
+    {
+      cache: "no-store",
+    }
+  );
+  if (!res.ok) {
+    return null;
+  }
+  return res.json();
+};
+
+const getSkipTime = async (alID: string) => {
+  const res = await fetch(`https://api.anify.tv/skip-times/${alID}`, {
+    next: {
+      revalidate: 60,
+    },
+  });
+  if (!res.ok) {
+    return null;
+  }
+  return res.json();
+};
+
 export const generateMetadata = async ({
   params,
 }: {
@@ -122,20 +147,8 @@ const WatchPage = async ({
       },
     }
   ).then((res) => res.json());
-  const skiptime: SkiptimeType = await fetch(
-    `https://api.anify.tv/skip-times/${alID}`,
-    {
-      next: {
-        revalidate: 60,
-      },
-    }
-  ).then((res) => res.json());
-  const metaAnilistInfo: MetaAnilistInfoType = await fetch(
-    `${process.env.CONSUMET_URL}/meta/anilist/info/${alID}`,
-    {
-      cache: "no-store",
-    }
-  ).then((res) => res.json());
+  const skiptime: SkiptimeType = await getSkipTime(alID);
+  const metaAnilistInfo: MetaAnilistInfoType = await getMetaAnilistInfo(alID);
   const isFiller = animeEpisodes.episodes.find(
     (item) => item.episodeId == episodeServer.episodeId
   );

@@ -41,9 +41,7 @@ const SocketProvider = ({
 
     socket.current.emit("sendUser", user?.id);
 
-    socket.current.on("getUser", (users: ConnectedType[]) => {
-      console.log(users);
-    });
+    socket.current.on("getUser", (users: ConnectedType[]) => {});
   }, [user?.id, socket]);
 
   return <Context.Provider value={{ socket }}>{children}</Context.Provider>;
