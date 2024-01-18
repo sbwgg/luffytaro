@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { CommentsType } from "./commentRow";
 import Image from "next/image";
 import { format } from "timeago.js";
@@ -19,6 +19,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { actionSaveEditedComment } from "@/action/comment/actionSaveEditedComment";
 import { actionDeleteComment } from "@/action/comment/actionDeleteComment";
 import { toast } from "sonner";
+import { actionNotifLikeDislikeComment } from "@/action/notification/actionNotifLikeDislikeComment";
 
 interface CommentCardProp {
   comment: CommentsType;
@@ -31,9 +32,19 @@ interface CommentCardProp {
     updatedAt: Date;
   } | null;
   socket: any;
+  infoId: string;
+  ep: string;
+  crId: string;
 }
 
-const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
+const CommentCard = ({
+  comment,
+  user,
+  socket,
+  infoId,
+  ep,
+  crId,
+}: CommentCardProp) => {
   const queryClient = useQueryClient();
   const [showInput, setShowInput] = useState(false);
   const setIsOpen = useOpenAuth((state) => state.setIsOpen);
@@ -43,19 +54,33 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
   const [editComment, setEditComment] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
+  const commentRef = useRef<HTMLParagraphElement>(null);
 
   const mutationLikeComment = useMutation({
     mutationFn: async () => {
       try {
-        actionLikeComment(comment.id, user?.id);
+        await actionLikeComment(comment.id, user?.id);
       } catch (error) {
         console.log(error);
       }
     },
+    onSuccess: async () => {
+      const data = await actionNotifLikeDislikeComment(
+        user?.id,
+        comment.user.id,
+        comment.id,
+        infoId,
+        ep
+      );
+      socket.current.emit("sendNotification", {
+        data,
+        notifRecieverId: comment.user.id,
+      });
+    },
     onMutate: () => {
       const isLiked = comment.like.includes(user?.id as string);
       if (isLiked) {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === comment.id
               ? { ...item, like: item.like.filter((id) => id !== user?.id) }
@@ -63,7 +88,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
           )
         );
       } else {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === comment.id
               ? ({
@@ -86,10 +111,23 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
         console.log(error);
       }
     },
+    onSuccess: async () => {
+      const data = await actionNotifLikeDislikeComment(
+        user?.id,
+        comment.user.id,
+        comment.id,
+        infoId,
+        ep
+      );
+      socket.current.emit("sendNotification", {
+        data,
+        notifRecieverId: comment.user.id,
+      });
+    },
     onMutate: () => {
       const isDisliked = comment.dislike.includes(user?.id as string);
       if (isDisliked) {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === comment.id
               ? {
@@ -100,7 +138,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
           )
         );
       } else {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === comment.id
               ? ({
@@ -117,7 +155,6 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
 
   const handleLikeComment = () => {
     if (!user?.id) return setIsOpen();
-
     mutationLikeComment.mutate();
   };
 
@@ -130,7 +167,14 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
   const mutationReplyComment = useMutation({
     mutationFn: async (formData: FormData) => {
       try {
-        const data = await actionReplyComment(formData, comment.id, user?.id);
+        const data = await actionReplyComment(
+          formData,
+          comment.id,
+          user?.id,
+          comment.user.id,
+          infoId,
+          ep
+        );
         return data;
       } catch (error) {
         console.log(error);
@@ -138,7 +182,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
     },
     onSuccess: (data) => {
       if (data) {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === data.commentId
               ? ({
@@ -149,11 +193,15 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
           )
         );
         socket.current.emit("sendReplyComment", data);
+        socket.current.emit("sendNotification", {
+          data,
+          notifRecieverId: comment.user.id,
+        });
       }
     },
   });
 
-  const handleReplyComment = (e: FormEvent<HTMLFormElement>) => {
+  const handleReplyComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!user?.id) return setIsOpen();
@@ -192,10 +240,13 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
     },
     onSuccess: (data) => {
       socket.current.emit("sendSaveEditedComment", data);
+      toast("Success", {
+        description: "Edited Successfully",
+      });
       setEditComment(false);
     },
     onMutate: (variable) => {
-      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+      queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
         old?.map((item) =>
           item.id === comment.id
             ? {
@@ -233,7 +284,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
       });
     },
     onMutate: () => {
-      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+      queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
         old?.filter((item) => item.id !== comment.id)
       );
     },
@@ -266,6 +317,25 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
       </div>
     );
   };
+
+  useEffect(() => {
+    if (comment.id === crId) {
+      commentRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [comment.id, crId]);
+
+  const replyCommentNotif = comment.replyComment.find(
+    (item) => item.id === crId
+  );
+
+  useEffect(() => {
+    if (replyCommentNotif) {
+      setShowReplies(true);
+    }
+  }, [replyCommentNotif, setShowReplies]);
 
   return (
     <div className="flex gap-3">
@@ -332,9 +402,11 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
             </form>
           ) : (
             <p
+              ref={commentRef}
               className={cn(
                 "relative break-words break-all whitespace-pre-wrap text-sm",
-                comment.spoiler && "blur-[3px]"
+                comment.spoiler && "blur-[3px]",
+                crId === comment.id && "font-semibold"
               )}
             >
               {comment.comment}
@@ -432,7 +504,7 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
                     <input
                       name="spoiler"
                       type="checkbox"
-                      className="rounded-full"
+                      className="rounded-full accent-red-500"
                     />
                     <p>Spoiler?</p>
                   </div>
@@ -452,6 +524,9 @@ const CommentCard = ({ comment, user, socket }: CommentCardProp) => {
                 user={user}
                 commentId={comment.id}
                 socket={socket}
+                infoId={infoId}
+                ep={ep}
+                crId={crId}
               />
             ))}
           </div>

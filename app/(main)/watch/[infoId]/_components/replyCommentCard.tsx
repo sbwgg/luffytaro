@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { BsEmojiSmileFill, BsThreeDotsVertical } from "react-icons/bs";
 import { format } from "timeago.js";
@@ -18,6 +18,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { actionSaveEditedReplyComment } from "@/action/replyComment/actionSaveEditedReplyComment";
 import { actionDeleteReplyComment } from "@/action/replyComment/actionDeleteReplyComment";
 import { toast } from "sonner";
+import { actionNotifLikeDislikeReplyComment } from "@/action/notification/actionNotifLikeDislikeReplyComment";
 
 interface ReplyCommentCardProp {
   replyComment: {
@@ -48,6 +49,9 @@ interface ReplyCommentCardProp {
   } | null;
   commentId: string;
   socket: any;
+  infoId: string;
+  ep: string;
+  crId: string;
 }
 
 const ReplyCommentCard = ({
@@ -55,6 +59,9 @@ const ReplyCommentCard = ({
   user,
   commentId,
   socket,
+  infoId,
+  ep,
+  crId,
 }: ReplyCommentCardProp) => {
   const [showInput, setShowInput] = useState(false);
   const queryClient = useQueryClient();
@@ -64,6 +71,7 @@ const ReplyCommentCard = ({
   const [editComment, setEditComment] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
+  const replyCommentRef = useRef<HTMLParagraphElement>(null);
 
   const mutationLikeReplyComment = useMutation({
     mutationFn: async () => {
@@ -73,10 +81,23 @@ const ReplyCommentCard = ({
         console.log(e);
       }
     },
+    onSuccess: async () => {
+      const data = await actionNotifLikeDislikeReplyComment(
+        user?.id,
+        replyComment.user.id,
+        replyComment.id,
+        infoId,
+        ep
+      );
+      socket.current.emit("sendNotification", {
+        data,
+        notifRecieverId: replyComment.user.id,
+      });
+    },
     onMutate: () => {
       const isLiked = replyComment.like.includes(user?.id as string);
       if (isLiked) {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === commentId
               ? ({
@@ -94,7 +115,7 @@ const ReplyCommentCard = ({
           )
         );
       } else {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === commentId
               ? ({
@@ -126,10 +147,23 @@ const ReplyCommentCard = ({
         console.log(error);
       }
     },
+    onSuccess: async () => {
+      const data = await actionNotifLikeDislikeReplyComment(
+        user?.id,
+        replyComment.user.id,
+        replyComment.id,
+        infoId,
+        ep
+      );
+      socket.current.emit("sendNotification", {
+        data,
+        notifRecieverId: replyComment.user.id,
+      });
+    },
     onMutate: () => {
       const isDisliked = replyComment.dislike.includes(user?.id as string);
       if (isDisliked) {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === commentId
               ? ({
@@ -147,7 +181,7 @@ const ReplyCommentCard = ({
           )
         );
       } else {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === commentId
               ? ({
@@ -187,7 +221,10 @@ const ReplyCommentCard = ({
           formData,
           commentId,
           user?.id,
-          user?.username
+          replyComment.user.id,
+          infoId,
+          ep,
+          replyComment.user.username
         );
         return data;
       } catch (error) {
@@ -196,7 +233,7 @@ const ReplyCommentCard = ({
     },
     onSuccess: (data) => {
       if (data) {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === data.commentId
               ? ({
@@ -207,6 +244,10 @@ const ReplyCommentCard = ({
           )
         );
         socket.current.emit("sendReplyComment", data);
+        socket.current.emit("sendNotification", {
+          data,
+          notifRecieverId: replyComment.user.id,
+        });
       }
     },
   });
@@ -253,9 +294,12 @@ const ReplyCommentCard = ({
     onSuccess: (data) => {
       setEditComment(false);
       socket.current.emit("sendSaveEditedReplyComent", data);
+      toast("Success", {
+        description: "Edited Successfully",
+      });
     },
     onMutate: (variable) => {
-      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+      queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
         old?.map((item) =>
           item.id === commentId
             ? {
@@ -302,7 +346,7 @@ const ReplyCommentCard = ({
       });
     },
     onMutate: () => {
-      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+      queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
         old?.map((item) =>
           item.id === commentId
             ? {
@@ -346,6 +390,15 @@ const ReplyCommentCard = ({
       </div>
     );
   };
+
+  useEffect(() => {
+    if (replyComment.id === crId) {
+      replyCommentRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [replyComment.id, crId]);
 
   return (
     <div className="flex gap-3 mb-5">
@@ -410,9 +463,11 @@ const ReplyCommentCard = ({
             </form>
           ) : (
             <p
+              ref={replyCommentRef}
               className={cn(
                 "relative break-words break-all whitespace-pre-wrap text-sm",
-                replyComment.spoiler && "blur-[3px]"
+                replyComment.spoiler && "blur-[3px]",
+                replyComment.id === crId && "font-extrabold"
               )}
             >
               {replyComment.replyTo ? (
@@ -517,7 +572,7 @@ const ReplyCommentCard = ({
                     <input
                       name="spoiler"
                       type="checkbox"
-                      className="rounded-full"
+                      className="rounded-full accent-red-500"
                     />
                     <p>Spoiler?</p>
                   </div>

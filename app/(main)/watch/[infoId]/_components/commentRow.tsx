@@ -14,7 +14,7 @@ import { useOpenAuth } from "@/lib/zustand";
 import EmojiPicker from "emoji-picker-react";
 import { cn } from "@/lib/utils";
 
-interface UserProp {
+interface CommentRowProp {
   user: {
     id: string;
     username: string;
@@ -23,6 +23,9 @@ interface UserProp {
     createdAt: Date;
     updatedAt: Date;
   } | null;
+  infoId: string;
+  ep: string;
+  crId: string;
 }
 
 export interface ReplyCommentType {
@@ -41,6 +44,7 @@ export interface ReplyCommentType {
     profile: string;
     username: string;
   };
+  episodeId: string;
   userId: string;
 }
 
@@ -59,10 +63,11 @@ export interface CommentsType {
     username: string;
   };
   userId: string;
+  episodeId: string;
   replyComment: ReplyCommentType[];
 }
 
-const CommentRow = ({ user }: UserProp) => {
+const CommentRow = ({ user, infoId, ep, crId }: CommentRowProp) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
   const setIsOpen = useOpenAuth((state) => state.setIsOpen);
@@ -75,11 +80,11 @@ const CommentRow = ({ user }: UserProp) => {
     isSuccess,
     isLoading,
   } = useQuery({
-    queryKey: ["comments"],
+    queryKey: ["comments", ep],
     queryFn: async () => {
       try {
         const res = await axios.get<CommentsType[]>(
-          `${process.env.NEXT_PUBLIC_MAIN_URL}/api/comment`
+          `${process.env.NEXT_PUBLIC_MAIN_URL}/api/comment?episodeId=${ep}`
         );
         return res.data;
       } catch (error) {
@@ -91,31 +96,31 @@ const CommentRow = ({ user }: UserProp) => {
   useEffect(() => {
     socket.current?.on("getComment", (data: CommentsType) => {
       if (data) {
-        queryClient.invalidateQueries({ queryKey: ["comments"] });
+        queryClient.invalidateQueries({ queryKey: ["comments", ep] });
       }
     });
 
     socket.current?.on("getReplyComment", (data: ReplyCommentType) => {
       if (data) {
-        queryClient.invalidateQueries({ queryKey: ["comments"] });
+        queryClient.invalidateQueries({ queryKey: ["comments", ep] });
       }
     });
 
     socket.current?.on("getSaveEditedComment", (data: CommentsType) => {
       if (data) {
-        queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+        queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
           old?.map((item) =>
             item.id === data.id
               ? { ...item, comment: data.comment, isEdited: true }
               : item
           )
         );
-        queryClient.invalidateQueries({ queryKey: ["comments"] });
+        queryClient.invalidateQueries({ queryKey: ["comments", ep] });
       }
     });
 
     socket.current?.on("getSaveEditedReplyComent", (data: ReplyCommentType) => {
-      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+      queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
         old?.map((item) =>
           item.id === data.commentId
             ? {
@@ -133,18 +138,18 @@ const CommentRow = ({ user }: UserProp) => {
             : item
         )
       );
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["comments", ep] });
     });
 
     socket.current?.on("getDeleteComment", (data: CommentsType) => {
-      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+      queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
         old?.filter((item) => item.id !== data.id)
       );
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["comments", ep] });
     });
 
     socket.current?.on("getDeleteReplyComment", (data: ReplyCommentType) => {
-      queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
+      queryClient.setQueryData<CommentsType[]>(["comments", ep], (old) =>
         old?.map((item) =>
           item.id === data.commentId
             ? {
@@ -156,14 +161,14 @@ const CommentRow = ({ user }: UserProp) => {
             : item
         )
       );
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["comments", ep] });
     });
-  }, [queryClient, socket]);
+  }, [queryClient, socket, ep]);
 
   const mutateSendComment = useMutation({
     mutationFn: async (formData: FormData) => {
       try {
-        const data = await actionComment(formData, user?.id);
+        const data = await actionComment(formData, user?.id, ep);
         return data;
       } catch (error) {
         console.log(error);
@@ -171,7 +176,7 @@ const CommentRow = ({ user }: UserProp) => {
     },
     onSuccess: (data) => {
       if (data) {
-        queryClient.setQueryData(["comments"], (old) => [
+        queryClient.setQueryData(["comments", ep], (old) => [
           ...(old as CommentsType[]),
           data,
         ]);
@@ -264,7 +269,7 @@ const CommentRow = ({ user }: UserProp) => {
                 <input
                   name="spoiler"
                   type="checkbox"
-                  className="rounded-full"
+                  className="rounded-full accent-red-500"
                 />
                 <p>Spoiler?</p>
               </div>
@@ -308,7 +313,15 @@ const CommentRow = ({ user }: UserProp) => {
           {comments
             .sort((a, b) => sortComments(a, b))
             ?.map((c) => (
-              <CommentCard key={c.id} comment={c} user={user} socket={socket} />
+              <CommentCard
+                key={c.id}
+                comment={c}
+                user={user}
+                socket={socket}
+                infoId={infoId}
+                ep={ep}
+                crId={crId}
+              />
             ))
             .reverse()}
         </div>

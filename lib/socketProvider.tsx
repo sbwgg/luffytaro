@@ -38,11 +38,13 @@ const SocketProvider = ({
 
   useEffect(() => {
     socket.current = io(`ws://localhost:8080`);
+  }, []);
 
+  useEffect(() => {
     socket.current.emit("sendUser", user?.id);
 
     socket.current.on("getUser", (users: ConnectedType[]) => {});
-  }, [user?.id, socket]);
+  }, [user?.id]);
 
   return <Context.Provider value={{ socket }}>{children}</Context.Provider>;
 };

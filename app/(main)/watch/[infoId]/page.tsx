@@ -132,10 +132,10 @@ const WatchPage = async ({
   searchParams,
 }: {
   params: { infoId: string };
-  searchParams: { ep: string };
+  searchParams: { ep: string; crId: string };
 }) => {
   const { infoId } = params;
-  const { ep } = searchParams;
+  const { ep, crId } = searchParams;
   const animeInfo: AnimeInfoType = await getAnimeInfo(infoId);
   const animeEpisodes: EpisodeType = await getAnimeEpisodes(infoId);
   const episodeServer: EpisodeServerType = await getEpisodeServer(infoId, ep);
@@ -186,7 +186,7 @@ const WatchPage = async ({
       <div className="lg:flex gap-x-4 px-3 lg:px-10 mt-12">
         <div className="flex-1">
           <div className="mb-10">
-            <CommentRow user={user} />
+            <CommentRow user={user} infoId={infoId} ep={ep} crId={crId} />
           </div>
 
           <div>

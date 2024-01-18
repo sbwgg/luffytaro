@@ -3,7 +3,11 @@
 import db from "@/lib/prismadb";
 import { revalidatePath } from "next/cache";
 
-export const actionComment = async (formData: FormData, userId?: string) => {
+export const actionComment = async (
+  formData: FormData,
+  userId: string | undefined,
+  episodeId: string
+) => {
   const comment = formData.get("comment") as string;
   const isSpoiler = formData.get("spoiler") as string;
 
@@ -15,6 +19,7 @@ export const actionComment = async (formData: FormData, userId?: string) => {
         userId: userId as string,
         comment,
         spoiler,
+        episodeId,
       },
       include: {
         user: {

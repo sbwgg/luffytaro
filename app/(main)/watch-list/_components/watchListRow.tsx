@@ -62,7 +62,7 @@ const WatchListRow = ({ watchList }: WatchListRowProp) => {
           No {filterStatus || "anime watch list"}
         </div>
       ) : (
-        <div className="gridCard gap-2 w-full">
+        <div className="gridCard gap-2 gap-y-7 w-full">
           {watchList
             ?.filter((i) => i.status.includes(filterStatus))
             .map((item) => (

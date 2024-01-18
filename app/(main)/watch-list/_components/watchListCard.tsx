@@ -73,7 +73,7 @@ const WatchListCard = ({
   return (
     <>
       <div>
-        <div className="relative w-full h-[16rem]">
+        <div className="relative w-full h-[14rem] md:h-[16rem]">
           <button
             onClick={() =>
               setShowStatus((prev) => (prev === item.id ? "" : item.id))
@@ -155,13 +155,14 @@ const WatchListCard = ({
               width={400}
               height={300}
               priority
-              className="w-full h-full rounded-lg object-cover shrink-0"
+              className="w-full h-full object-cover shrink-0"
             />
           </Link>
         </div>
         <div className="mt-2">
           <p className="truncate hover:text-red-500">
             <Link
+              className="text-sm"
               href={
                 episodes?.episodes[0]?.episodeId && !filteredWatchedTime?.ep
                   ? `/watch/${episodes.episodes[0].episodeId}`

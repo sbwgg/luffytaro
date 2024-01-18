@@ -1,6 +1,7 @@
 "use server";
 
 import db from "@/lib/prismadb";
+import { revalidatePath } from "next/cache";
 
 export const actionLikeComment = async (commentId: string, userId?: string) => {
   const comment = await db.comment.findUnique({
@@ -22,6 +23,8 @@ export const actionLikeComment = async (commentId: string, userId?: string) => {
         },
       },
     });
+
+    revalidatePath("/");
   } else {
     await db.comment.update({
       where: {
@@ -36,5 +39,7 @@ export const actionLikeComment = async (commentId: string, userId?: string) => {
         },
       },
     });
+
+    revalidatePath("/");
   }
 };

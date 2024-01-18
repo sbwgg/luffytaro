@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { TbFaceIdError } from "react-icons/tb";
 import { AnimeInfoType, MetaAnilistInfoType } from "@/app/(main)/[infoId]/page";
 import NextEpisodeTime from "@/components/nextEpisodeTime";
+import { Poster } from "@vidstack/react";
 
 interface VideoPlayerRowProp {
   episodeServer: EpisodeServerType;
@@ -136,7 +137,7 @@ const VideoPlayerRow = ({
           </div>
         ) : (
           <MediaPlayer
-            playsinline
+            playsinline={true}
             aspectRatio="16/9"
             ref={playerRef}
             key={episodeServer.episodeId}
@@ -217,6 +218,11 @@ const VideoPlayerRow = ({
             }}
           >
             <MediaProvider>
+              {/*   <Poster
+                className="absolute inset-0 block h-full w-full bg-black rounded-md opacity-0 transition-opacity data-[visible]:opacity-100 [&>img]:h-full [&>img]:w-full [&>img]:object-cover"
+                src={animeInfo.anime.info.poster}
+                alt="Girl walks into campfire with gnomes surrounding her friend ready for their next meal!"
+              /> */}
               {streamingLink?.subtitles
                 ?.filter((sub) => sub.lang !== "Thumbnails")
                 .map((sub, i) => (

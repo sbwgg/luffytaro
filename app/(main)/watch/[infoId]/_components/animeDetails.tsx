@@ -71,7 +71,10 @@ const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
           <p className="text-sm text-zinc-400">
             {animeInfo?.anime?.info?.description.slice(0, seemore) +
               `${
-                animeInfo?.anime?.info?.description?.length > 350 ? "..." : ""
+                animeInfo?.anime?.info?.description.slice(0, seemore)?.length >
+                350
+                  ? ""
+                  : "..."
               }`}{" "}
             {animeInfo?.anime?.info?.description?.length > 350 && (
               <span

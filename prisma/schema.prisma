@@ -16,10 +16,29 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  notifSend Notification[] @relation("NotifSend")
+
   comment Comment[]
   replyComment ReplyComment[]
 
   @@unique([username, email])
+}
+
+model Notification {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  notifSenderId String @db.ObjectId
+  notifReceiverId String @db.ObjectId
+
+  commentId String? @db.ObjectId
+  notifMessage String
+  url String?
+
+  select Boolean @default(false)
+  markAllAsRead Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notifSender User @relation("NotifSend", fields: [notifSenderId], references: [id])
 }
 
 model WatchList {
@@ -43,6 +62,7 @@ model WatchList {
 model Comment {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @db.ObjectId
+  episodeId String
   comment String
   spoiler Boolean?
   isEdited Boolean @default(false)
@@ -61,6 +81,7 @@ model ReplyComment {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @db.ObjectId
   commentId String @db.ObjectId
+  episodeId String
   replyComment String
   spoiler Boolean?
   isEdited Boolean @default(false)

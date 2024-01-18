@@ -97,10 +97,10 @@ const PlayerSettings = ({
                   setCategory("sub");
                 }}
                 className={cn(
-                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
+                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm text-zinc-400",
                   server === sub.serverName &&
                     category === "sub" &&
-                    "bg-red-500"
+                    "bg-red-500 text-white"
                 )}
                 key={sub.serverId}
               >
@@ -120,10 +120,10 @@ const PlayerSettings = ({
                   setCategory("dub");
                 }}
                 className={cn(
-                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm",
+                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm text-zinc-400",
                   server === dub.serverName &&
                     category === "dub" &&
-                    "bg-red-500"
+                    "bg-red-500 text-white"
                 )}
                 key={dub.serverId}
               >

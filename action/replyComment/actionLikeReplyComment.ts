@@ -1,6 +1,7 @@
 "use server";
 
 import db from "@/lib/prismadb";
+import { revalidatePath } from "next/cache";
 
 export const actionLikeReplyComment = async (
   replyCommentId: string,
@@ -25,6 +26,8 @@ export const actionLikeReplyComment = async (
         },
       },
     });
+
+    revalidatePath("/");
   } else {
     await db.replyComment.update({
       where: {
@@ -37,5 +40,7 @@ export const actionLikeReplyComment = async (
         dislike: replyComment?.dislike.filter((id) => id !== userId),
       },
     });
+
+    revalidatePath("/");
   }
 };

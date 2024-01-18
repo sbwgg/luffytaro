@@ -138,6 +138,19 @@ const getAnimeInfo = async (infoId: string) => {
   return res.json();
 };
 
+const getMetaAnilistInfo = async (alID: string) => {
+  const res = await fetch(
+    `${process.env.CONSUMET_URL}/meta/anilist/info/${alID}`,
+    {
+      cache: "no-store",
+    }
+  );
+  if (!res.ok) {
+    return null;
+  }
+  return res.json();
+};
+
 export const generateMetadata = async ({
   params,
 }: {
@@ -160,18 +173,13 @@ const MoreDetailPage = async ({ params }: { params: { infoId: string } }) => {
       },
     }
   ).then((res) => res.json());
-  const metaAnilistInfo: MetaAnilistInfoType = await fetch(
-    `${process.env.CONSUMET_URL}/meta/anilist/info/${alID}`,
-    {
-      cache: "no-store",
-    }
-  ).then((res) => res.json());
+  const metaAnilistInfo: MetaAnilistInfoType = await getMetaAnilistInfo(alID);
 
   return (
     <div>
       <AnimeInfo
         animeInfo={animeInfo}
-        nextAiringEpisode={metaAnilistInfo.nextAiringEpisode}
+        nextAiringEpisode={metaAnilistInfo?.nextAiringEpisode}
       />
 
       {animeInfo.seasons.length ? (

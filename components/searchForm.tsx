@@ -99,7 +99,7 @@ const SearchForm = () => {
               setShowSuggest(true);
             }}
             value={inputValue}
-            className="p-2 text-sm text-zinc-500 outline-none rounded pl-10 lg:w-[20rem] flex-1"
+            className="p-2 text-sm text-zinc-500 outline-none rounded pl-10 lg:w-[18.5rem] flex-1"
             placeholder="Search anime..."
           />
         </form>
@@ -130,11 +130,11 @@ const SearchForm = () => {
                   width={100}
                   height={100}
                   priority
-                  className="w-[4rem] h-[5rem] object-cover shrink-0"
+                  className="w-[3rem] h-full object-cover shrink-0"
                 />
 
                 <div className="overflow-hidden space-y-1 pr-3">
-                  <p className="truncate text-[15px] group-hover/item:text-red-500">
+                  <p className="truncate text-[15px] group-hover/item:text-red-500 text-sm">
                     {s.name}
                   </p>
                   <p className="text-[13px] text-zinc-400 truncate">
