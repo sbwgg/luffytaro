@@ -37,7 +37,7 @@ const SocketProvider = ({
   const socket = useRef<any>(null);
 
   useEffect(() => {
-    socket.current = io(`ws://localhost:8080`);
+    socket.current = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
   }, []);
 
   useEffect(() => {
