@@ -98,7 +98,7 @@ const getMetaAnilistInfo = async (alID: string) => {
     }
   );
   if (!res.ok) {
-    throw new Error("Failed to fetch anilist");
+    return null;
   }
   return res.json();
 };
@@ -110,7 +110,7 @@ const getSkipTime = async (alID: string) => {
     },
   });
   if (!res.ok) {
-    throw new Error("Failed to fetch skip time");
+    return null;
   }
   return res.json();
 };

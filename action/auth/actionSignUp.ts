@@ -26,12 +26,12 @@ export default async function actionSignUp(prevState: any, formData: FormData) {
 
   const { username, email, password } = validatedFields.data;
 
-  const user = await db.user.findFirst({
+  const user = await db.user.findUnique({
     where: {
       username,
     },
   });
-  const userEmail = await db.user.findFirst({
+  const userEmail = await db.user.findUnique({
     where: {
       email,
     },

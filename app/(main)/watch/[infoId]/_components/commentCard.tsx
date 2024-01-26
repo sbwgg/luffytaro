@@ -416,10 +416,14 @@ const CommentCard = ({
           {comment.spoiler && (
             <button
               onClick={() =>
-                queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
-                  old?.map((item) =>
-                    item.id === comment.id ? { ...item, spoiler: false } : item
-                  )
+                queryClient.setQueryData<CommentsType[]>(
+                  ["comments", ep],
+                  (old) =>
+                    old?.map((item) =>
+                      item.id === comment.id
+                        ? { ...item, spoiler: false }
+                        : item
+                    )
                 )
               }
               className="bg-white text-black text-xs p-1 mt-2"

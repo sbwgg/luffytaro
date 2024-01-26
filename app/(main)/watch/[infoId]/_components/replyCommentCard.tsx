@@ -481,19 +481,21 @@ const ReplyCommentCard = ({
           {replyComment.spoiler && (
             <button
               onClick={() =>
-                queryClient.setQueryData<CommentsType[]>(["comments"], (old) =>
-                  old?.map((item) =>
-                    item.id === commentId
-                      ? ({
-                          ...item,
-                          replyComment: item.replyComment.map((item) =>
-                            item.id === replyComment.id
-                              ? { ...item, spoiler: false }
-                              : item
-                          ),
-                        } as CommentsType)
-                      : item
-                  )
+                queryClient.setQueryData<CommentsType[]>(
+                  ["comments", ep],
+                  (old) =>
+                    old?.map((item) =>
+                      item.id === commentId
+                        ? ({
+                            ...item,
+                            replyComment: item.replyComment.map((item) =>
+                              item.id === replyComment.id
+                                ? { ...item, spoiler: false }
+                                : item
+                            ),
+                          } as CommentsType)
+                        : item
+                    )
                 )
               }
               className="bg-white text-black text-xs p-1 mt-2"

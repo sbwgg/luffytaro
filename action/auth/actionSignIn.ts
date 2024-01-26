@@ -24,7 +24,7 @@ export default async function actionSignIn(prev: any, formData: FormData) {
     };
   }
 
-  const user = await db.user.findFirst({
+  const user = await db.user.findUnique({
     where: {
       username: formData.get("username") as string,
     },
