@@ -136,7 +136,7 @@ const VideoPlayerRow = ({
           </div>
         ) : (
           <>
-            {/*  <MediaPlayer
+            <MediaPlayer
               playsinline={true}
               aspectRatio="16/9"
               ref={playerRef}
@@ -252,7 +252,7 @@ const VideoPlayerRow = ({
                 thumbnails={thumbnails?.url}
                 icons={defaultLayoutIcons}
               />
-            </MediaPlayer> */}
+            </MediaPlayer>
           </>
         )}
       </div>
