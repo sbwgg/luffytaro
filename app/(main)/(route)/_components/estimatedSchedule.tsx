@@ -88,6 +88,7 @@ const EstimatedSchedule = () => {
 
   const { data: schedule } = useQuery({
     queryKey: ["schedule", defaultDate],
+    enabled: defaultDate !== undefined,
     queryFn: async () => {
       try {
         const res = await axios.get<ScheduleType>(

@@ -41,6 +41,7 @@ export default function Navbar({ user }: NavbarProp) {
 
   const { data: notifications } = useQuery({
     queryKey: ["notifications", user?.id],
+    enabled: user?.id !== undefined,
     queryFn: async () => {
       try {
         const res = await axios.get<NotificationType[]>(

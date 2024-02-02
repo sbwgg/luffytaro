@@ -8,10 +8,11 @@ import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
 import { Skeleton } from "@/components/ui/skeleton";
+import { localStorageWatchedTime } from "./continueWatching";
 
 interface ContinueWatchingCardProp {
   anime: WatchedTimeType;
-  setWatchedTime: React.Dispatch<React.SetStateAction<WatchedTimeType[]>>;
+  setWatchedTime: React.Dispatch<React.SetStateAction<localStorageWatchedTime>>;
 }
 
 const ContinueWatchingCard = ({
@@ -79,13 +80,18 @@ const ContinueWatchingCard = ({
     return progress;
   };
 
+  function onRemoveWatchedTime() {
+    setWatchedTime((prev) => ({
+      ...prev,
+      watchedTime: prev.watchedTime.filter((item) => item.ep !== anime.ep),
+    }));
+  }
+
   return (
     <div>
       <div className="relative shrink-0">
         <button
-          onClick={() =>
-            setWatchedTime((prev) => prev.filter((w) => w.ep !== anime.ep))
-          }
+          onClick={onRemoveWatchedTime}
           className="absolute top-2 right-2 scale-[1.1] rounded-full p-1 bg-black/60 backdrop-blur-sm z-[10]"
         >
           <IoClose />

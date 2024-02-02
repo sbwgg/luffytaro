@@ -2,16 +2,16 @@
 
 import { useLocalStorage } from "@uidotdev/usehooks";
 import React from "react";
-import { WatchedTimeType } from "../../watch/[infoId]/_components/videoPlayerRow";
 import ContinueWatchingCard from "../../(route)/_components/continueWatchingCard";
+import { localStorageWatchedTime } from "../../(route)/_components/continueWatching";
 
 const ContinueWatching = () => {
-  const [watchedTime, setWatchedTime] = useLocalStorage<WatchedTimeType[]>(
-    "watched-time",
-    []
-  );
+  const [watchedTime, setWatchedTime] =
+    useLocalStorage<localStorageWatchedTime>("artplayer_settings", {
+      watchedTime: [],
+    });
 
-  const allLastViewed = watchedTime.filter((w) => w.lastViewed);
+  const allLastViewed = watchedTime.watchedTime.filter((w) => w.lastViewed);
 
   return (
     <>

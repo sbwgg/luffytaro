@@ -115,6 +115,16 @@ const getSkipTime = async (alID: string) => {
   return res.json();
 };
 
+const getBannerImage = async (alID: string) => {
+  const res = await fetch(`https://api.anify.tv/info/${alID}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    return null;
+  }
+  return res.json();
+};
+
 export const generateMetadata = async ({
   params,
 }: {
@@ -152,6 +162,7 @@ const WatchPage = async ({
   const isFiller = animeEpisodes.episodes.find(
     (item) => item.episodeId == episodeServer.episodeId
   );
+  const bannerImage = await getBannerImage(alID);
   const user = await getUser();
 
   return (
@@ -172,7 +183,7 @@ const WatchPage = async ({
             infoId={infoId}
             ep={ep}
             metaAnilistInfo={metaAnilistInfo}
-            animeInfo={animeInfo}
+            bannerImage={bannerImage?.bannerImage}
           />
         </div>
         <div className="basis-[19.4rem] flex flex-col px-3 lg:mt-0 mt-5 rounded-md">

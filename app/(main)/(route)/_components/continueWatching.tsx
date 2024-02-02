@@ -6,13 +6,17 @@ import { WatchedTimeType } from "../../watch/[infoId]/_components/videoPlayerRow
 import ContinueWatchingCard from "./continueWatchingCard";
 import Link from "next/link";
 
-const ContinueWatching = () => {
-  const [watchedTime, setWatchedTime] = useLocalStorage<WatchedTimeType[]>(
-    "watched-time",
-    []
-  );
+export type localStorageWatchedTime = {
+  watchedTime: WatchedTimeType[];
+};
 
-  const allLastViewed = watchedTime.filter((w) => w.lastViewed);
+const ContinueWatching = () => {
+  const [watchedTime, setWatchedTime] =
+    useLocalStorage<localStorageWatchedTime>("artplayer_settings", {
+      watchedTime: [],
+    });
+
+  const allLastViewed = watchedTime.watchedTime.filter((w) => w.lastViewed);
 
   return (
     <>
