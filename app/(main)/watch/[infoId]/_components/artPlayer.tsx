@@ -5,20 +5,7 @@ import { StreamingLinkType } from "./videoPlayerRow";
 import artplayerPluginHlsQuality from "artplayer-plugin-hls-quality";
 
 type PlayerProp = {
-  streamingLink: StreamingLinkType | null;
-  currentSkiptime:
-    | {
-        intro: {
-          end: number;
-          start: number;
-        };
-        outro: {
-          end: number;
-          start: number;
-        };
-        number: number;
-      }
-    | undefined;
+  streamingLink: StreamingLinkType | undefined;
   option: {
     id: string;
     poster: string;
@@ -26,7 +13,7 @@ type PlayerProp = {
     volume: number;
     isLive: boolean;
     muted: boolean;
-    autoplay: false;
+    autoplay: boolean;
     pip: boolean;
     autoSize: boolean;
     autoMini: boolean;
@@ -51,49 +38,48 @@ type PlayerProp = {
 
 export default function Player({
   streamingLink,
-  currentSkiptime,
   option,
   getInstance,
 }: PlayerProp) {
   const artRef = useRef(null);
 
-  const filteresSub = streamingLink?.subtitles.filter(
-    (item) => item.lang !== "Thumbnails"
+  const filteresSub = streamingLink?.tracks.filter(
+    (item) => item.kind !== "Thumbnails"
   );
 
-  const sub = filteresSub?.map(({ lang, url }) => ({
-    default: lang === "English",
-    html: lang,
-    url,
+  const sub = filteresSub?.map(({ label, file }) => ({
+    default: label === "English",
+    html: label,
+    url: file,
   }));
 
   const intro = useMemo(() => {
     const currentIntro = [];
-    if (currentSkiptime) {
+    if (streamingLink) {
       for (
-        let i = currentSkiptime.intro.start;
-        i < currentSkiptime.intro.end;
+        let i = streamingLink.intro.start;
+        i < streamingLink.intro.end;
         i++
       ) {
         currentIntro.push({ time: i, text: "Intro" });
       }
     }
     return currentIntro;
-  }, [currentSkiptime]);
+  }, [streamingLink]);
 
   const outro = useMemo(() => {
     const currentOutro = [];
-    if (currentSkiptime) {
+    if (streamingLink) {
       for (
-        let i = currentSkiptime.outro.start;
-        i < currentSkiptime.outro.end;
+        let i = streamingLink.outro.start;
+        i < streamingLink.outro.end;
         i++
       ) {
         currentOutro.push({ time: i, text: "Outro" });
       }
     }
     return currentOutro;
-  }, [currentSkiptime]);
+  }, [streamingLink]);
 
   useEffect(() => {
     const art = new Artplayer({
@@ -105,9 +91,6 @@ export default function Player({
       },
       theme: "red",
       lang: navigator.language.toLowerCase(),
-      moreVideoAttr: {
-        crossOrigin: "anonymous",
-      },
       plugins: [
         artplayerPluginHlsQuality({
           setting: true,

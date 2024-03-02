@@ -16,11 +16,11 @@ const ContinueWatching = () => {
       watchedTime: [],
     });
 
-  const allLastViewed = watchedTime.watchedTime.filter((w) => w.lastViewed);
+  const allLastViewed = watchedTime?.watchedTime?.filter((w) => w.lastViewed);
 
   return (
     <>
-      {allLastViewed.length < 1 ? null : (
+      {allLastViewed?.length < 1 ? null : (
         <div className="px-3 lg:px-10 mt-5 mb-10">
           <h1 className="sm:text-xl text-md mb-5">
             <Link href="/continue-watching">
@@ -31,7 +31,7 @@ const ContinueWatching = () => {
 
           <div className="gridCard gap-2 gap-y-8">
             {allLastViewed
-              .map((item) => (
+              ?.map((item) => (
                 <ContinueWatchingCard
                   key={item.ep}
                   anime={item}

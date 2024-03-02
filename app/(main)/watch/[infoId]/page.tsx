@@ -103,26 +103,21 @@ const getMetaAnilistInfo = async (alID: string) => {
   return res.json();
 };
 
-const getSkipTime = async (alID: string) => {
-  const res = await fetch(`https://api.anify.tv/skip-times/${alID}`, {
-    next: {
-      revalidate: 60,
-    },
-  });
-  if (!res.ok) {
-    return null;
-  }
-  return res.json();
-};
-
 const getBannerImage = async (alID: string) => {
   const res = await fetch(`https://api.anify.tv/info/${alID}`, {
     cache: "no-store",
   });
+  const contentType = res.headers.get("Content-Type");
+
+  if (contentType !== "application/json") {
+    return { bannerImage: "" };
+  }
+
   if (!res.ok) {
     return null;
   }
-  return res.json();
+
+  res.json();
 };
 
 export const generateMetadata = async ({
@@ -157,7 +152,6 @@ const WatchPage = async ({
       },
     }
   ).then((res) => res.json());
-  const skiptime: SkiptimeType = await getSkipTime(alID);
   const metaAnilistInfo: MetaAnilistInfoType = await getMetaAnilistInfo(alID);
   const isFiller = animeEpisodes.episodes.find(
     (item) => item.episodeId == episodeServer.episodeId
@@ -179,7 +173,6 @@ const WatchPage = async ({
           <VideoPlayerRow
             episodeServer={episodeServer}
             animeEpisodes={animeEpisodes}
-            skiptime={skiptime}
             infoId={infoId}
             ep={ep}
             metaAnilistInfo={metaAnilistInfo}

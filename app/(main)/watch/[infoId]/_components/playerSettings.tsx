@@ -4,15 +4,10 @@ import { cn } from "@/lib/utils";
 import { FaForward, FaBackward } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 interface PlayerSettingsProp {
   episodeServer: EpisodeServerType;
-  setAutoplay: React.Dispatch<React.SetStateAction<boolean>>;
-  autoplay: boolean;
-  setAutonext: React.Dispatch<React.SetStateAction<boolean>>;
-  autonext: boolean;
-  setAutoskipIntro: React.Dispatch<React.SetStateAction<boolean>>;
-  autoskipIntro: boolean;
   setServer: React.Dispatch<React.SetStateAction<string>>;
   server: string;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
@@ -23,12 +18,6 @@ interface PlayerSettingsProp {
 
 const PlayerSettings = ({
   episodeServer,
-  setAutoplay,
-  autoplay,
-  setAutonext,
-  autonext,
-  setAutoskipIntro,
-  autoskipIntro,
   setServer,
   server,
   setCategory,
@@ -37,6 +26,9 @@ const PlayerSettings = ({
   prevEp,
 }: PlayerSettingsProp) => {
   const router = useRouter();
+  const [autoplay, setAutoplay] = useLocalStorage("autoplay", false);
+  const [autonext, setAutonext] = useLocalStorage("autonext", false);
+  const [autoskipIntro, setAutoskipIntro] = useLocalStorage("autoskip", false);
 
   return (
     <div className="px-3 lg:px-0">
@@ -93,14 +85,22 @@ const PlayerSettings = ({
             {episodeServer.sub.map((sub) => (
               <button
                 onClick={() => {
-                  setServer(sub.serverName);
+                  setServer(
+                    sub.serverName === "vidsrc"
+                      ? "vidstreaming"
+                      : sub.serverName
+                  );
                   setCategory("sub");
                 }}
                 className={cn(
                   "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm text-zinc-400",
                   server === sub.serverName &&
                     category === "sub" &&
-                    "bg-red-500 text-white"
+                    "bg-red-500 text-white sm:hover:bg-red-500",
+                  server === "vidstreaming" &&
+                    sub.serverName === "vidsrc" &&
+                    category === "sub" &&
+                    "bg-red-500 text-white sm:hover:bg-red-500"
                 )}
                 key={sub.serverId}
               >
@@ -116,14 +116,22 @@ const PlayerSettings = ({
             {episodeServer.dub.map((dub) => (
               <button
                 onClick={() => {
-                  setServer(dub.serverName);
+                  setServer(
+                    dub.serverName === "vidsrc"
+                      ? "vidstreaming"
+                      : dub.serverName
+                  );
                   setCategory("dub");
                 }}
                 className={cn(
                   "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm text-zinc-400",
                   server === dub.serverName &&
                     category === "dub" &&
-                    "bg-red-500 text-white"
+                    "bg-red-500 text-white sm:hover:bg-red-500",
+                  server === "vidstreaming" &&
+                    dub.serverName === "vidsrc" &&
+                    category === "dub" &&
+                    "bg-red-500 text-white sm:hover:bg-red-500"
                 )}
                 key={dub.serverId}
               >

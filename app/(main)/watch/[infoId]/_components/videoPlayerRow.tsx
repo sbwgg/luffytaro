@@ -1,41 +1,49 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
-import { EpisodeServerType, SkiptimeType } from "../page";
-import "@vidstack/react/player/styles/default/theme.css";
-import "@vidstack/react/player/styles/default/layouts/video.css";
-import "@vidstack/react/player/styles/base.css";
+import React, { useCallback } from "react";
+import { EpisodeServerType } from "../page";
 import axios from "axios";
 import PlayerSettings from "./playerSettings";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { EpisodeType } from "@/app/(main)/[infoId]/_components/animeInfo";
 import { useRouter } from "next/navigation";
 import { TbFaceIdError } from "react-icons/tb";
-import { AnimeInfoType, MetaAnilistInfoType } from "@/app/(main)/[infoId]/page";
+import { MetaAnilistInfoType } from "@/app/(main)/[infoId]/page";
 import NextEpisodeTime from "@/components/nextEpisodeTime";
 import Artplayer from "./artPlayer";
 import artplayer from "artplayer";
+import { useQuery } from "@tanstack/react-query";
 
 interface VideoPlayerRowProp {
   episodeServer: EpisodeServerType;
   animeEpisodes: EpisodeType;
-  skiptime: SkiptimeType;
   infoId: string;
   ep: string;
   metaAnilistInfo: MetaAnilistInfoType;
-  bannerImage: string;
+  bannerImage: string | undefined;
 }
 
 export interface StreamingLinkType {
+  tracks: {
+    file: string;
+    label?: string;
+    kind: string;
+    default: boolean;
+  }[];
+  intro: {
+    start: number;
+    end: number;
+  };
+  outro: {
+    start: number;
+    end: number;
+  };
   sources: {
-    isM3U8: boolean;
-    quality: string;
     url: string;
+    type: string;
   }[];
-  subtitles: {
-    lang: string;
-    url: string;
-  }[];
+  anilistID: number;
+  malID: number;
 }
 
 export interface WatchedTimeType {
@@ -50,49 +58,35 @@ export interface WatchedTimeType {
 const VideoPlayerRow = ({
   episodeServer,
   animeEpisodes,
-  skiptime,
   infoId,
   ep,
   metaAnilistInfo,
   bannerImage,
 }: VideoPlayerRowProp) => {
   const router = useRouter();
-  const [streamingLink, setStreamingLink] = useState<StreamingLinkType | null>(
-    null
-  );
-  const [autoplay, setAutoplay] = useLocalStorage("autoplay", false);
-  const [autonext, setAutonext] = useLocalStorage("autonext", false);
-  const [autoskipIntro, setAutoskipIntro] = useLocalStorage("autoskip", false);
   const [server, setServer] = useLocalStorage("server", "vidstreaming");
   const [category, setCategory] = useLocalStorage("category", "sub");
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-
+  const {
+    data: streamingLink,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["streaming-link", episodeServer.episodeId, server, category],
+    enabled: episodeServer.episodeId !== undefined,
+    queryFn: async () => {
       try {
         const res = await axios.get<StreamingLinkType>(
           `${process.env.NEXT_PUBLIC_ANIWATCH_URL}/anime/episode-srcs?id=${episodeServer.episodeId}&server=${server}&category=${category}`
         );
-        setStreamingLink(res.data);
         return res.data;
-      } catch {
-        setStreamingLink(null);
-      } finally {
-        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
       }
-    })();
-  }, [episodeServer.episodeId, server, category]);
+    },
+  });
 
-  const defaultUrl = streamingLink?.sources?.find(
-    (url) => url?.quality === "auto"
-  );
-
-  const currentSkiptime = skiptime?.episodes?.find(
-    (num) => num?.number === episodeServer?.episodeNo
-  );
-
+  const defaultUrl = streamingLink?.sources?.find((url) => url?.type === "hls");
   const currentEpWatching = animeEpisodes?.episodes?.findIndex(
     (item) => item?.episodeId === episodeServer?.episodeId
   );
@@ -101,47 +95,52 @@ const VideoPlayerRow = ({
 
   const getInstance = useCallback(
     (art: artplayer) => {
-      if (autoplay) {
-        art.play();
-        art.poster = "";
-      }
+      art.on("ready", () => {
+        const autoplay = JSON.parse(localStorage.getItem("autoplay") as string);
+        if (autoplay) {
+          art.play();
+          art.poster = "";
+        }
+      });
 
-      if (autonext) {
-        art.on("video:ended", () => {
-          const storedWatchedTime = art.storage.get(
-            "watchedTime"
-          ) as WatchedTimeType[];
-          const removeWatchedTime = storedWatchedTime.filter(
-            (item) => item.ep !== ep
-          );
-          art.storage.set("watchedTime", removeWatchedTime);
+      art.on("video:ended", () => {
+        const autonext = JSON.parse(localStorage.getItem("autonext") as string);
+        const storedWatchedTime = art.storage.get(
+          "watchedTime"
+        ) as WatchedTimeType[];
+        const removeWatchedTime = storedWatchedTime.filter(
+          (item) => item.ep !== ep
+        );
+        art.storage.set("watchedTime", removeWatchedTime);
 
-          if (autonext) {
-            router.push(`/watch/${nextEp.episodeId}`);
-          }
-        });
-      }
+        if (autonext) {
+          router.push(`/watch/${nextEp.episodeId}`);
+        }
+      });
 
       art.on("video:timeupdate", () => {
         const currentTime = art.currentTime;
         const duration = art.duration;
+        const autoskipIntro = JSON.parse(
+          localStorage.getItem("autoskip") as string
+        );
 
-        if (currentSkiptime) {
+        if (streamingLink) {
           if (
-            currentTime > currentSkiptime.intro.start &&
-            currentTime < currentSkiptime.intro.end
+            currentTime > streamingLink.intro.start &&
+            currentTime < streamingLink.intro.end
           ) {
             if (autoskipIntro) {
-              art.currentTime = currentSkiptime.intro.end;
+              art.currentTime = streamingLink.intro.end;
             }
           }
 
           if (
-            currentTime > currentSkiptime.outro.start &&
-            currentTime < currentSkiptime.outro.end
+            currentTime > streamingLink.outro.start &&
+            currentTime < streamingLink.outro.end
           ) {
             if (autoskipIntro) {
-              art.currentTime = currentSkiptime.outro.end;
+              art.currentTime = streamingLink.outro.end;
             }
           }
         }
@@ -194,23 +193,13 @@ const VideoPlayerRow = ({
         }
       });
     },
-    [
-      autoplay,
-      autonext,
-      currentSkiptime,
-      ep,
-      episodeServer,
-      infoId,
-      nextEp,
-      router,
-      autoskipIntro,
-    ]
+    [ep, streamingLink, episodeServer, infoId, nextEp, router]
   );
 
   return (
     <>
       <div className="relative">
-        {!streamingLink?.sources && !isLoading ? (
+        {isError ? (
           <div className="flex flex-col gap-8 items-center justify-center aspect-video bg-white/5 rounded backdrop-blur-sm mb-2">
             <TbFaceIdError className="text-zinc-700 scale-[5]" />
             <p className="text-zinc-700 text-xl">Something went wrong</p>
@@ -222,7 +211,6 @@ const VideoPlayerRow = ({
         ) : (
           <>
             <Artplayer
-              currentSkiptime={currentSkiptime}
               streamingLink={streamingLink}
               option={{
                 poster: bannerImage || "",
@@ -244,8 +232,8 @@ const VideoPlayerRow = ({
                 fullscreen: true,
                 fullscreenWeb: true,
                 subtitleOffset: false,
-                miniProgressBar: true,
-                mutex: true,
+                miniProgressBar: false,
+                mutex: false,
                 backdrop: true,
                 playsInline: true,
                 autoPlayback: true,
@@ -260,12 +248,6 @@ const VideoPlayerRow = ({
 
       <PlayerSettings
         episodeServer={episodeServer}
-        setAutoplay={setAutoplay}
-        autoplay={autoplay}
-        setAutonext={setAutonext}
-        autonext={autonext}
-        setAutoskipIntro={setAutoskipIntro}
-        autoskipIntro={autoskipIntro}
         setServer={setServer}
         server={server}
         setCategory={setCategory}
