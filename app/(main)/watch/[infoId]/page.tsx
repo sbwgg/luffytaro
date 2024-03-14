@@ -49,9 +49,7 @@ const getAnimeInfo = async (infoId: string) => {
   const res = await fetch(
     `${process.env.ANIWATCH_URL}/anime/info/?id=${infoId}`,
     {
-      next: {
-        revalidate: 60,
-      },
+      cache: "no-store",
     }
   );
   if (!res.ok) {
@@ -64,9 +62,7 @@ const getAnimeEpisodes = async (infoId: string) => {
   const res = await fetch(
     `${process.env.ANIWATCH_URL}/anime/episodes/${infoId}`,
     {
-      next: {
-        revalidate: 60,
-      },
+      cache: "no-store",
     }
   );
   if (!res.ok) {
@@ -79,9 +75,7 @@ const getEpisodeServer = async (infoId: string, ep: string) => {
   const res = await fetch(
     `${process.env.ANIWATCH_URL}/anime/servers?episodeId=${infoId}?ep=${ep}`,
     {
-      next: {
-        revalidate: 60,
-      },
+      cache: "no-store",
     }
   );
   if (!res.ok) {
@@ -128,7 +122,7 @@ export const generateMetadata = async ({
   const animeInfo: AnimeInfoType = await getAnimeInfo(params.infoId);
 
   return {
-    title: `Watch ${animeInfo.anime.info.name} Sub/Dub for free on LuffyTaro`,
+    title: `Watch ${animeInfo?.anime?.info?.name} Sub/Dub for free on LuffyTaro`,
   };
 };
 

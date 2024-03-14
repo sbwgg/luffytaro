@@ -5,7 +5,7 @@ import { StreamingLinkType } from "./videoPlayerRow";
 import artplayerPluginHlsQuality from "artplayer-plugin-hls-quality";
 
 type PlayerProp = {
-  streamingLink: StreamingLinkType | undefined;
+  streamingLink: StreamingLinkType | null;
   option: {
     id: string;
     poster: string;
@@ -28,6 +28,7 @@ type PlayerProp = {
     subtitleOffset: boolean;
     miniProgressBar: boolean;
     mutex: boolean;
+    fastForward: boolean;
     backdrop: boolean;
     playsInline: boolean;
     autoPlayback: boolean;
@@ -91,6 +92,7 @@ export default function Player({
       },
       theme: "red",
       lang: navigator.language.toLowerCase(),
+
       plugins: [
         artplayerPluginHlsQuality({
           setting: true,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { EpisodeServerType } from "../page";
 import axios from "axios";
 import PlayerSettings from "./playerSettings";
@@ -11,8 +11,6 @@ import { TbFaceIdError } from "react-icons/tb";
 import { MetaAnilistInfoType } from "@/app/(main)/[infoId]/page";
 import NextEpisodeTime from "@/components/nextEpisodeTime";
 import Artplayer from "./artPlayer";
-import artplayer from "artplayer";
-import { useQuery } from "@tanstack/react-query";
 
 interface VideoPlayerRowProp {
   episodeServer: EpisodeServerType;
@@ -64,29 +62,32 @@ const VideoPlayerRow = ({
   bannerImage,
 }: VideoPlayerRowProp) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [streamingLink, setStreamingLink] = useState<StreamingLinkType | null>(
+    null
+  );
   const [server, setServer] = useLocalStorage("server", "vidstreaming");
   const [category, setCategory] = useLocalStorage("category", "sub");
 
-  const {
-    data: streamingLink,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["streaming-link", episodeServer.episodeId, server, category],
-    enabled: episodeServer.episodeId !== undefined,
-    queryFn: async () => {
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+
       try {
         const res = await axios.get<StreamingLinkType>(
           `${process.env.NEXT_PUBLIC_ANIWATCH_URL}/anime/episode-srcs?id=${episodeServer.episodeId}&server=${server}&category=${category}`
         );
-        return res.data;
-      } catch (error) {
-        console.log(error);
+        setStreamingLink(res.data);
+      } catch {
+        setStreamingLink(null);
+      } finally {
+        setIsLoading(false);
       }
-    },
-  });
+    })();
+  }, [episodeServer.episodeId, server, category]);
 
   const defaultUrl = streamingLink?.sources?.find((url) => url?.type === "hls");
+
   const currentEpWatching = animeEpisodes?.episodes?.findIndex(
     (item) => item?.episodeId === episodeServer?.episodeId
   );
@@ -94,7 +95,7 @@ const VideoPlayerRow = ({
   const prevEp = animeEpisodes?.episodes[currentEpWatching - 1];
 
   const getInstance = useCallback(
-    (art: artplayer) => {
+    (art: Artplayer) => {
       art.on("ready", () => {
         const autoplay = JSON.parse(localStorage.getItem("autoplay") as string);
         if (autoplay) {
@@ -199,7 +200,7 @@ const VideoPlayerRow = ({
   return (
     <>
       <div className="relative">
-        {isError ? (
+        {!isLoading && !streamingLink?.sources.length ? (
           <div className="flex flex-col gap-8 items-center justify-center aspect-video bg-white/5 rounded backdrop-blur-sm mb-2">
             <TbFaceIdError className="text-zinc-700 scale-[5]" />
             <p className="text-zinc-700 text-xl">Something went wrong</p>
@@ -211,6 +212,7 @@ const VideoPlayerRow = ({
         ) : (
           <>
             <Artplayer
+              key={defaultUrl?.url}
               streamingLink={streamingLink}
               option={{
                 poster: bannerImage || "",
@@ -234,12 +236,12 @@ const VideoPlayerRow = ({
                 subtitleOffset: false,
                 miniProgressBar: false,
                 mutex: false,
+                fastForward: true,
                 backdrop: true,
                 playsInline: true,
-                autoPlayback: true,
-                airplay: true,
+                autoPlayback: false,
+                airplay: false,
               }}
-              key={defaultUrl?.url}
               getInstance={getInstance}
             />
           </>

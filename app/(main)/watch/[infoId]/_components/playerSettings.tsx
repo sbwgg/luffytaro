@@ -86,9 +86,7 @@ const PlayerSettings = ({
               <button
                 onClick={() => {
                   setServer(
-                    sub.serverName === "vidsrc"
-                      ? "vidstreaming"
-                      : sub.serverName
+                    sub.serverName === "hd-1" ? "vidstreaming" : sub.serverName
                   );
                   setCategory("sub");
                 }}
@@ -98,7 +96,7 @@ const PlayerSettings = ({
                     category === "sub" &&
                     "bg-red-500 text-white sm:hover:bg-red-500",
                   server === "vidstreaming" &&
-                    sub.serverName === "vidsrc" &&
+                    sub.serverName === "hd-1" &&
                     category === "sub" &&
                     "bg-red-500 text-white sm:hover:bg-red-500"
                 )}
@@ -117,9 +115,7 @@ const PlayerSettings = ({
               <button
                 onClick={() => {
                   setServer(
-                    dub.serverName === "vidsrc"
-                      ? "vidstreaming"
-                      : dub.serverName
+                    dub.serverName === "hd-1" ? "vidstreaming" : dub.serverName
                   );
                   setCategory("dub");
                 }}
@@ -129,7 +125,7 @@ const PlayerSettings = ({
                     category === "dub" &&
                     "bg-red-500 text-white sm:hover:bg-red-500",
                   server === "vidstreaming" &&
-                    dub.serverName === "vidsrc" &&
+                    dub.serverName === "hd-1" &&
                     category === "dub" &&
                     "bg-red-500 text-white sm:hover:bg-red-500"
                 )}
