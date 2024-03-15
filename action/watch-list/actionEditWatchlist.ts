@@ -4,23 +4,22 @@ import { revalidatePath } from "next/cache";
 import db from "@/lib/prismadb";
 
 export default async function actionEditWatchlist(
-  id: string | undefined,
-  status: string,
-  path: string
+  infoId: string,
+  status: string
 ) {
   try {
-    const data = await db.watchList.update({
+    await db.watchList.update({
       where: {
-        id,
+        infoId,
       },
       data: {
         status,
       },
     });
 
-    revalidatePath(`/${path}`);
-    return data;
-  } catch (error) {
-    console.log(error);
+    revalidatePath("/");
+    revalidatePath(`/${infoId}`);
+  } catch {
+    throw new Error("Editing watchlist Error");
   }
 }

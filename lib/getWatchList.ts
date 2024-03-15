@@ -1,5 +1,5 @@
 import db from "@/lib/prismadb";
-import getUser from "@/utils/user";
+import getUser from "@/lib/user";
 
 export default async function getWatchList() {
   const user = await getUser();

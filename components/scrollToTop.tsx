@@ -25,12 +25,12 @@ const ScrollToTop = () => {
   return (
     <>
       {showbutton && (
-        <div className="fixed bottom-4 right-4 z-[30]">
+        <div className="fixed bottom-6 right-5 sm:right-7 z-[300]">
           <button
             onClick={() => window.scrollTo(0, 0)}
-            className="rounded-full p-3 bg-zinc-800"
+            className="rounded-full p-3 sm:p-4 bg-white/50 backdrop-blur-sm text-black"
           >
-            <BiSolidChevronUp />
+            <BiSolidChevronUp className="text-2xl" />
           </button>
         </div>
       )}

@@ -87,3 +87,7 @@
 ::-webkit-scrollbar-track {
   background-color: rgb(59, 59, 59);
 }
+
+#disqus_thread {
+  color: red;
+}

@@ -8,6 +8,7 @@ import axios from "axios";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import EstimatedScheduleCard from "./estimatedScheduleCard";
+import { FiLoader } from "react-icons/fi";
 
 interface MonthDatesType {
   date: string;
@@ -86,9 +87,13 @@ const EstimatedSchedule = () => {
     return daysOfWeek[dayIndex];
   };
 
-  const { data: schedule } = useQuery({
+  const {
+    data: schedule,
+    isLoading,
+    isSuccess,
+  } = useQuery({
     queryKey: ["schedule", defaultDate],
-    enabled: defaultDate !== undefined,
+    enabled: defaultDate !== "",
     queryFn: async () => {
       try {
         const res = await axios.get<ScheduleType>(
@@ -167,25 +172,36 @@ const EstimatedSchedule = () => {
         </button>
       </div>
 
-      {schedule && schedule?.scheduledAnimes?.length < 1 ? (
+      {schedule && schedule?.scheduledAnimes?.length === 0 ? (
         <div className="min-h-[40dvh] flex items-center justify-center text-zinc-400">
           No results
         </div>
       ) : (
         <div className="relative">
-          {schedule && schedule.scheduledAnimes.length > 6 && showAll <= 6 && (
-            <div
-              className={cn(
-                "flex items-end justify-center h-[12rem] from-black to-transparent absolute bottom-[-3rem] inset-x-0 z-[90]",
-                showAll > 6 ? "" : "bg-gradient-to-t"
-              )}
-            >
-              <button onClick={() => setShowAll(500)}>Show all</button>
+          {schedule &&
+            schedule.scheduledAnimes.length > 6 &&
+            showAll <= 6 &&
+            !isLoading && (
+              <div
+                className={cn(
+                  "flex items-end justify-center h-[12rem] from-black to-transparent absolute bottom-0 inset-x-0 z-[90]",
+                  showAll > 6 ? "" : "bg-gradient-to-t"
+                )}
+              >
+                <button onClick={() => setShowAll(500)}>Show all</button>
+              </div>
+            )}
+          {isSuccess &&
+            schedule?.scheduledAnimes
+              ?.slice(0, showAll)
+              .map((sched) => (
+                <EstimatedScheduleCard key={sched.id} sched={sched} />
+              ))}
+          {isLoading && (
+            <div className="flex items-center justify-center min-h-[40dvh]">
+              <FiLoader className="animate-spin text-3xl text-zinc-500" />
             </div>
           )}
-          {schedule?.scheduledAnimes?.slice(0, showAll).map((sched) => (
-            <EstimatedScheduleCard key={sched.id} sched={sched} />
-          ))}
         </div>
       )}
     </div>

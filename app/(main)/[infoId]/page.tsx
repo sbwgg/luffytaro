@@ -127,9 +127,7 @@ const getAnimeInfo = async (infoId: string) => {
   const res = await fetch(
     `${process.env.ANIWATCH_URL}/anime/info/?id=${infoId}`,
     {
-      next: {
-        revalidate: 60,
-      },
+      cache: "no-store",
     }
   );
   if (!res.ok) {

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Pathway_Extreme } from "next/font/google";
 import "./globals.css";
-import ReactQueryProvider from "@/lib/reactquery";
-import ProgressbarProvider from "@/lib/progressbar";
+import ReactQueryProvider from "@/utils/reactquery";
+import ProgressbarProvider from "@/utils/progressbar";
 import Signin from "@/components/signin";
-import SocketProvider from "@/lib/socketProvider";
-import getUser from "@/utils/user";
+import SocketProvider from "@/utils/socketProvider";
+import getUser from "@/lib/user";
 
 const pathway_extreme = Pathway_Extreme({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],

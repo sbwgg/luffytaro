@@ -3,20 +3,17 @@
 import { revalidatePath } from "next/cache";
 import db from "@/lib/prismadb";
 
-export default async function actionRemoveAnime(
-  id: string | undefined,
-  path: string | undefined
-) {
+export default async function actionRemoveAnime(infoId: string) {
   try {
-    const data = await db.watchList.delete({
+    await db.watchList.delete({
       where: {
-        id,
+        infoId,
       },
     });
 
-    revalidatePath(`/${path}`);
-    return data;
-  } catch (error) {
-    console.log(error);
+    revalidatePath("/");
+    revalidatePath(`/${infoId}`);
+  } catch {
+    throw new Error("Deleting Error");
   }
 }

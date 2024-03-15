@@ -1,7 +1,7 @@
 "use server";
 
 import db from "@/lib/prismadb";
-import getUser from "@/utils/user";
+import getUser from "@/lib/user";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 

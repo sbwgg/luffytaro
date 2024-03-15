@@ -7,16 +7,13 @@ import React, { useEffect, useState, useTransition } from "react";
 import LuffyTaro from "@/image/wp11567850.webp";
 import { usePathname, useRouter } from "next/navigation";
 import SearchForm from "./searchForm";
-import { useOpenAuth } from "@/lib/zustand";
+import { useOpenAuth } from "@/utils/zustand";
 import defaultProfile from "@/image/defaultprofile.jpg";
 import actionLogout from "@/action/auth/actionLogout";
-import { FaBell, FaHeart, FaUser } from "react-icons/fa";
+import { FaHeart, FaUser } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
-import { useSocket } from "@/lib/socketProvider";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { NotificationType } from "@/app/(main)/notification/_components/notificationsRow";
+import { useSocket } from "@/utils/socketProvider";
 
 interface NavbarProp {
   user: {
@@ -30,7 +27,6 @@ interface NavbarProp {
 }
 
 export default function Navbar({ user }: NavbarProp) {
-  const queryClient = useQueryClient();
   const [activeNav, setActiveNav] = useState(false);
   const { socket } = useSocket();
   const pathname = usePathname();
@@ -38,21 +34,6 @@ export default function Navbar({ user }: NavbarProp) {
   const setIsOpen = useOpenAuth((state) => state.setIsOpen);
   const [pending, setTransition] = useTransition();
   const [showProfileSettings, setShowProfileSettings] = useState(false);
-
-  const { data: notifications } = useQuery({
-    queryKey: ["notifications", user?.id],
-    enabled: user?.id !== undefined,
-    queryFn: async () => {
-      try {
-        const res = await axios.get<NotificationType[]>(
-          `${process.env.NEXT_PUBLIC_MAIN_URL}/api/notification?userId=${user?.id}`
-        );
-        return res.data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,16 +48,6 @@ export default function Navbar({ user }: NavbarProp) {
   useEffect(() => {
     setShowProfileSettings(false);
   }, [pathname]);
-
-  useEffect(() => {
-    socket.current?.on("getNotification", (data: NotificationType) => {
-      if (data) {
-        queryClient.invalidateQueries({
-          queryKey: ["notifications", user?.id],
-        });
-      }
-    });
-  }, [queryClient, user?.id, socket]);
 
   return (
     <nav
@@ -175,27 +146,7 @@ export default function Navbar({ user }: NavbarProp) {
                   <FaHeart />
                   Watch list
                 </Link>
-                <Link
-                  href="/notification"
-                  className="flex items-center justify-between mb-[6px] rounded-full p-2 px-4 bg-zinc-700 hover:bg-zinc-800 duration-200 text-sm"
-                >
-                  <span className="flex items-center gap-x-2">
-                    <FaBell />
-                    Notification
-                  </span>
-                  {notifications &&
-                    notifications?.filter(
-                      (item) => item.markAllAsRead === false
-                    ).length > 0 && (
-                      <span className="bg-red-500 text-xs rounded-full p-[.1rem] px-[.5rem]">
-                        {
-                          notifications?.filter(
-                            (item) => item.markAllAsRead === false
-                          ).length
-                        }
-                      </span>
-                    )}
-                </Link>
+
                 <div>
                   <button
                     disabled={pending}

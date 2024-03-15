@@ -1,4 +1,4 @@
-import getUser from "@/utils/user";
+import getUser from "@/lib/user";
 import React from "react";
 
 import ProfileRow from "./_components/profileRow";

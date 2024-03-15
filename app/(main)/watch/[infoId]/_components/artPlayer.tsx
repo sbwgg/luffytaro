@@ -33,6 +33,7 @@ type PlayerProp = {
     playsInline: boolean;
     autoPlayback: boolean;
     airplay: boolean;
+    lock: boolean;
   };
   getInstance: (art: Artplayer) => void;
 };
@@ -82,6 +83,8 @@ export default function Player({
     return currentOutro;
   }, [streamingLink]);
 
+  /*  const thumbnails = streamingLink?.tracks.find((t) => t.kind === "thumbnails"); */
+
   useEffect(() => {
     const art = new Artplayer({
       ...option,
@@ -92,7 +95,6 @@ export default function Player({
       },
       theme: "red",
       lang: navigator.language.toLowerCase(),
-
       plugins: [
         artplayerPluginHlsQuality({
           setting: true,
@@ -136,10 +138,8 @@ export default function Player({
       subtitle: {
         url: `${sub?.find((item) => item.default === true)?.url}`,
         type: "srt",
-        style: {
-          fontSize: "20px",
-        },
         encoding: "utf-8",
+        escape: true,
       },
       highlight: [...intro, ...outro],
     });

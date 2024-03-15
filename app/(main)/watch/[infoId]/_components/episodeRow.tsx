@@ -3,14 +3,20 @@
 import { EpisodeType } from "@/app/(main)/[infoId]/_components/animeInfo";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Element, scroller } from "react-scroll";
 
 interface EpisodeRowProp {
   animeEpisodes: EpisodeType;
   ep: string;
+  infoId: string;
 }
 
-const EpisodeRow = ({ animeEpisodes, ep }: EpisodeRowProp) => {
+export default function EpisodeRow({
+  animeEpisodes,
+  ep,
+  infoId,
+}: EpisodeRowProp) {
   const [epshowed, setEpshowed] = useState<number | undefined>(undefined);
   const { episodes } = animeEpisodes;
 
@@ -34,10 +40,6 @@ const EpisodeRow = ({ animeEpisodes, ep }: EpisodeRowProp) => {
     item.episodesId.some((item) => item.episodeId.split("=")[1] === ep)
   );
 
-  const isFiller = animeEpisodes.episodes.find(
-    (filler) => filler.episodeId.split("=")[1] === ep
-  )?.isFiller;
-
   return (
     <>
       <div className="flex items-center justify-between mb-4">
@@ -58,34 +60,75 @@ const EpisodeRow = ({ animeEpisodes, ep }: EpisodeRowProp) => {
         )}
       </div>
 
-      <div className="relative flex-1 overflow-auto">
+      <div id="scrollContainer" className="relative flex-1 overflow-auto">
         <div className="lg:absolute inset-0 lg:pr-2 max-h-[17.4rem]">
           <div className="gridEpisodes gap-1">
             {chunkEpisodes[
               epshowed === undefined ? defaultValue : epshowed
             ]?.map((episode) => (
-              <Fragment key={episode.episodeId}>
-                <Link
-                  href={`/watch/${episode.episodeId}`}
-                  className={cn(
-                    "bg-zinc-900 hover:bg-zinc-700 p-[.5rem] text-sm text-center",
-                    episode.episodeId.split("=")[1] === ep &&
-                      "bg-red-500 hover:bg-red-500",
-                    episode.episodeId.split("=")[1] === ep &&
-                      isFiller &&
-                      "bg-gradient-to-tr from-orange-700 to-orange-400",
-                    episode.isFiller && "bg-orange-300/30 hover:bg-orange-600"
-                  )}
-                >
-                  {episode.number}
-                </Link>
-              </Fragment>
+              <EpisodeNumberCard
+                key={episode.episodeId}
+                episode={episode}
+                animeEpisodes={animeEpisodes}
+                ep={ep}
+                infoId={infoId}
+              />
             ))}
           </div>
         </div>
       </div>
     </>
   );
-};
+}
 
-export default EpisodeRow;
+function EpisodeNumberCard({
+  episode,
+  animeEpisodes,
+  ep,
+  infoId,
+}: {
+  episode: {
+    title: string;
+    episodeId: string;
+    number: number;
+    isFiller: string;
+  };
+  animeEpisodes: EpisodeType;
+  ep: string;
+  infoId: string;
+}) {
+  const isFiller = animeEpisodes.episodes.find(
+    (filler) => filler.episodeId.split("=")[1] === ep
+  )?.isFiller;
+
+  const episodeWatching = episode.episodeId === `${infoId}?ep=${ep}`;
+
+  useEffect(() => {
+    if (episodeWatching) {
+      scroller.scrollTo(ep, {
+        duration: 200,
+        smooth: true,
+        containerId: "scrollContainer",
+      });
+    }
+  }, [episodeWatching, ep]);
+
+  return (
+    <Link href={`/watch/${episode.episodeId}`} key={episode.episodeId}>
+      <Element
+        name={ep}
+        className={cn(
+          "bg-zinc-900 hover:bg-zinc-700 p-[.5rem] text-sm text-center",
+          episode.episodeId.split("=")[1] === ep &&
+            "bg-red-500 hover:bg-red-500",
+          episode.episodeId.split("=")[1] === ep &&
+            isFiller &&
+            "bg-gradient-to-tr from-orange-700 to-orange-400",
+          episode.isFiller && "bg-orange-300/30 hover:bg-orange-600"
+        )}
+      >
+        {episode.number}
+      </Element>
+    </Link>
+  );
+}

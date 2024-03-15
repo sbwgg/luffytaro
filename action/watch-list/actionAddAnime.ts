@@ -1,36 +1,68 @@
 "use server";
 
 import db from "@/lib/prismadb";
-import getUser from "@/utils/user";
+import getUser from "@/lib/user";
 import { revalidatePath } from "next/cache";
 
-interface anime {
-  poster: string;
+type AnimeInfoType = {
+  id: string;
   name: string;
-  rating: string;
-  quality: string;
-  sub: number;
-  dub: number;
-  type: string;
-  infoId: string;
-  duration: string;
-}
+  poster: string;
+  description: string;
+  stats: {
+    rating: string;
+    quality: string;
+    episodes: {
+      sub: number;
+      dub: number;
+    };
+    type: string;
+    duration: string;
+  };
+};
 
-export default async function actionAddAnime(anime: anime, status: string) {
+export default async function actionAddAnime(
+  status: string,
+  animeInfo: AnimeInfoType
+) {
   const user = await getUser();
 
+  const isAlreadyAdded = await db.watchList.findUnique({
+    where: {
+      infoId: animeInfo.id,
+    },
+  });
+
+  if (!user) {
+    return {
+      error: "Sign in to add " + animeInfo.name + " to your watch list.",
+    };
+  }
+
+  if (isAlreadyAdded) {
+    return { error: "This anime is already in your watch list" };
+  }
+
   try {
-    const data = await db.watchList.create({
+    await db.watchList.create({
       data: {
-        userId: user?.id as string,
-        ...anime,
+        infoId: animeInfo.id,
+        name: animeInfo.name,
+        poster: animeInfo.poster,
         status,
+        userId: user?.id as string,
+        dub: animeInfo.stats.episodes.dub,
+        sub: animeInfo.stats.episodes.sub,
+        duration: animeInfo.stats.duration,
+        quality: animeInfo.stats.quality,
+        rating: animeInfo.stats.rating,
+        type: animeInfo.stats.type,
       },
     });
 
-    revalidatePath(`/${anime.infoId}`);
-    return data;
-  } catch (error) {
-    console.log(error);
+    revalidatePath("/");
+    revalidatePath(`/${animeInfo.id}`);
+  } catch {
+    throw new Error("Adding anime to watch list error");
   }
 }

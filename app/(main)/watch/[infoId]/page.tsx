@@ -15,7 +15,6 @@ import AnimeDetails from "./_components/animeDetails";
 const CommentRow = dynamic(() => import("./_components/commentRow"), {
   ssr: false,
 });
-import getUser from "@/utils/user";
 
 export interface EpisodeServerType {
   sub: {
@@ -131,10 +130,10 @@ const WatchPage = async ({
   searchParams,
 }: {
   params: { infoId: string };
-  searchParams: { ep: string; crId: string };
+  searchParams: { ep: string };
 }) => {
   const { infoId } = params;
-  const { ep, crId } = searchParams;
+  const { ep } = searchParams;
   const animeInfo: AnimeInfoType = await getAnimeInfo(infoId);
   const animeEpisodes: EpisodeType = await getAnimeEpisodes(infoId);
   const episodeServer: EpisodeServerType = await getEpisodeServer(infoId, ep);
@@ -151,7 +150,6 @@ const WatchPage = async ({
     (item) => item.episodeId == episodeServer.episodeId
   );
   const bannerImage = await getBannerImage(alID);
-  const user = await getUser();
 
   return (
     <div className="pt-20">
@@ -174,7 +172,7 @@ const WatchPage = async ({
           />
         </div>
         <div className="basis-[19.4rem] flex flex-col px-3 lg:mt-0 mt-5 rounded-md">
-          <EpisodeRow animeEpisodes={animeEpisodes} ep={ep} />
+          <EpisodeRow animeEpisodes={animeEpisodes} ep={ep} infoId={infoId} />
         </div>
       </div>
 
@@ -184,7 +182,12 @@ const WatchPage = async ({
       <div className="lg:flex gap-x-4 px-3 lg:px-10 mt-12">
         <div className="flex-1">
           <div className="mb-10">
-            <CommentRow user={user} infoId={infoId} ep={ep} crId={crId} />
+            <h1 className="sm:text-xl cursor-pointer mb-5">
+              <span className="p-1 mr-3 bg-red-500 rounded-lg" />
+              Comments
+            </h1>
+
+            <CommentRow identifier={ep} title={animeInfo.anime.info.name} />
           </div>
 
           <div>

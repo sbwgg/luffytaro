@@ -8,7 +8,7 @@ import { AnimeInfoType } from "../page";
 import NextEpisodeTime from "@/components/nextEpisodeTime";
 import Description from "./description";
 import AddToListButton from "./addToListButton";
-import getUser from "@/utils/user";
+import getWatchList from "@/lib/getWatchList";
 
 interface AnimeInfoProp {
   animeInfo: AnimeInfoType;
@@ -34,7 +34,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
     `${process.env.ANIWATCH_URL}/anime/episodes/${animeInfo.anime.info.id}`,
     { cache: "no-store" }
   ).then((res) => res.json());
-  const user = await getUser();
+  const watchList = await getWatchList();
 
   return (
     <div className="flex lg:flex-row flex-col gap-x-10 px-3 lg:px-10 xl:px-24 pt-28">
@@ -102,7 +102,9 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
           <div className="flex items-center md:justify-start justify-center gap-x-2 mb-5">
             {animeInfo.anime.moreInfo.status !== "Not yet aired" && (
               <Link
-                href={`/watch/${episode.episodes[0]?.episodeId}`}
+                href={`/watch/${
+                  episode?.episodes[episode?.episodes.length - 1]?.episodeId
+                }`}
                 className="flex items-center gap-x-1 px-4 py-2 rounded-full md:rounded bg-red-500"
               >
                 <IoMdPlay />
@@ -112,7 +114,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
             {animeInfo.anime.moreInfo.status === "Not yet aired" ? (
               <p>UPCOMING</p>
             ) : (
-              <AddToListButton animeInfo={animeInfo} user={user} />
+              <AddToListButton animeInfo={animeInfo} watchList={watchList} />
             )}
           </div>
 

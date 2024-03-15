@@ -43,12 +43,13 @@ const WatchListCard = ({
     localStorage.getItem("watched-time") as string
   );
 
-  const filteredWatchedTime = watchedTime.find(
-    (w) => w.lastViewed && w.infoId === item.infoId
-  );
+  const filteredWatchedTime = watchedTime.length
+    ? watchedTime?.find((w) => w.lastViewed && w.infoId === item.infoId)
+    : null;
 
   const { data: episodes } = useQuery({
     queryKey: ["episodes", item.infoId],
+    enabled: item.infoId !== undefined,
     queryFn: async () => {
       try {
         const res = await axios.get<EpisodeType>(
@@ -89,23 +90,17 @@ const WatchListCard = ({
                   onClick={async () => {
                     if (s !== "Remove") {
                       setShowStatus("");
-                      await actionEditWatchlist(item.id, s, "profile");
-                      toast("Success", {
-                        description: `Change to ${s}`,
-                        action: {
-                          label: "X",
-                          onClick: () => {},
-                        },
+                      actionEditWatchlist(item.infoId, s).then(() => {
+                        toast("Success", {
+                          description: `Change to ${s}`,
+                        });
                       });
                     } else {
                       setShowStatus("");
-                      await actionRemoveAnime(item.id, "profile");
-                      toast("success", {
-                        description: `Remove ${item?.name} to your Watch List`,
-                        action: {
-                          label: "X",
-                          onClick: () => {},
-                        },
+                      actionRemoveAnime(item.infoId).then(() => {
+                        toast("success", {
+                          description: `Remove ${item?.name} to your Watch List`,
+                        });
                       });
                     }
                   }}

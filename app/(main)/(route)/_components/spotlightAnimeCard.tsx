@@ -97,7 +97,9 @@ const SpotlightAnimeCard = ({ s }: SpotlightAnimeCardProp) => {
           <div className="flex items-center gap-x-2 mt-3 md:mt-8">
             <Link
               className="flex items-center gap-x-2 bg-red-500 sm:p-2 sm:px-4 sm:text-base text-sm p-2 px-3 md:rounded rounded-full"
-              href={`/watch/${episodes?.episodes[0]?.episodeId}`}
+              href={`/watch/${
+                episodes?.episodes[episodes?.episodes.length - 1]?.episodeId
+              }`}
             >
               <IoMdPlay />
               Watch now

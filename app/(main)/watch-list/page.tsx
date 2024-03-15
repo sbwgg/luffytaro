@@ -5,7 +5,7 @@ const WatchListRow = dynamic(() => import("./_components/watchListRow"), {
 });
 import "./_components/watchList.css";
 import dynamic from "next/dynamic";
-import getWatchList from "@/get-data/watch-list/getWatchList";
+import getWatchList from "@/lib/getWatchList";
 
 const WatchListPage = async () => {
   const watchList = await getWatchList();

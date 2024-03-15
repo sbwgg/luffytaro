@@ -56,23 +56,24 @@ const WatchListRow = ({ watchList }: WatchListRowProp) => {
         ))}
       </div>
 
-      {watchList &&
+      {!!watchList?.length &&
       watchList?.filter((i) => i.status.includes(filterStatus)).length < 1 ? (
         <div className="min-h-[50dvh] flex justify-center items-center">
           No {filterStatus || "anime watch list"}
         </div>
       ) : (
         <div className="gridCard gap-2 gap-y-7 w-full">
-          {watchList
-            ?.filter((i) => i.status.includes(filterStatus))
-            .map((item) => (
-              <WatchListCard
-                setShowStatus={setShowStatus}
-                showStatus={showStatus}
-                item={item}
-                key={item.id}
-              />
-            ))}
+          {!!watchList?.length &&
+            watchList
+              ?.filter((i) => i.status.includes(filterStatus))
+              .map((item) => (
+                <WatchListCard
+                  setShowStatus={setShowStatus}
+                  showStatus={showStatus}
+                  item={item}
+                  key={item.id}
+                />
+              ))}
         </div>
       )}
     </div>

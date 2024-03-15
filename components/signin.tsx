@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { useOpenAuth } from "@/lib/zustand";
+import { useOpenAuth } from "@/utils/zustand";
 import { IoClose } from "react-icons/io5";
 import actionSignUp from "@/action/auth/actionSignUp";
 import actionSignIn from "@/action/auth/actionSignIn";

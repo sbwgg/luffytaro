@@ -1,7 +1,7 @@
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import ScrollToTop from "@/components/scrollToTop";
-import getUser from "@/utils/user";
+import getUser from "@/lib/user";
 import React from "react";
 import { Toaster } from "@/components/ui/sonner";
 

@@ -98,6 +98,7 @@ const VideoPlayerRow = ({
     (art: Artplayer) => {
       art.on("ready", () => {
         const autoplay = JSON.parse(localStorage.getItem("autoplay") as string);
+
         if (autoplay) {
           art.play();
           art.poster = "";
@@ -238,9 +239,10 @@ const VideoPlayerRow = ({
                 mutex: false,
                 fastForward: true,
                 backdrop: true,
-                playsInline: true,
-                autoPlayback: false,
+                playsInline: false,
+                autoPlayback: true,
                 airplay: false,
+                lock: true,
               }}
               getInstance={getInstance}
             />
