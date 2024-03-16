@@ -39,12 +39,11 @@ const WatchListCard = ({
   setShowStatus,
   showStatus,
 }: WatchListCardProp) => {
-  const watchedTime: WatchedTimeType[] = JSON.parse(
-    localStorage.getItem("watched-time") as string
-  );
+  const watchedTime: WatchedTimeType[] =
+    JSON.parse(localStorage.getItem("watched-time") as string) || [];
 
-  const filteredWatchedTime = watchedTime.length
-    ? watchedTime?.find((w) => w.lastViewed && w.infoId === item.infoId)
+  const filteredWatchedTime = watchedTime?.length
+    ? watchedTime?.find((w) => w?.lastViewed && w?.infoId === item.infoId)
     : null;
 
   const { data: episodes } = useQuery({
@@ -77,13 +76,13 @@ const WatchListCard = ({
         <div className="relative w-full h-[14rem] md:h-[16rem]">
           <button
             onClick={() =>
-              setShowStatus((prev) => (prev === item.id ? "" : item.id))
+              setShowStatus((prev) => (prev === item?.id ? "" : item?.id))
             }
             className="bg-white text-black p-1 rounded absolute right-2 top-2 z-[10]"
           >
             <HiDotsVertical />
           </button>
-          {item.id === showStatus && (
+          {item?.id === showStatus && (
             <div className="absolute right-2 top-10 overflow-hidden text-xs w-[9rem] bg-white rounded text-black flex flex-col z-[10]">
               {status.map((s) => (
                 <button

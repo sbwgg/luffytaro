@@ -57,7 +57,7 @@ const WatchListRow = ({ watchList }: WatchListRowProp) => {
       </div>
 
       {!!watchList?.length &&
-      watchList?.filter((i) => i.status.includes(filterStatus)).length < 1 ? (
+      watchList?.filter((i) => i.status.includes(filterStatus))?.length < 1 ? (
         <div className="min-h-[50dvh] flex justify-center items-center">
           No {filterStatus || "anime watch list"}
         </div>
