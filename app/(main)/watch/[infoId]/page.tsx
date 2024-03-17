@@ -146,20 +146,11 @@ const WatchPage = async ({
     }
   ).then((res) => res.json());
   const metaAnilistInfo: MetaAnilistInfoType = await getMetaAnilistInfo(alID);
-  const isFiller = animeEpisodes.episodes.find(
-    (item) => item.episodeId == episodeServer.episodeId
-  );
+
   const bannerImage = await getBannerImage(alID);
 
   return (
     <div className="pt-20">
-      <p className="lg:px-10 px-3 mb-3 text-xs sm:text-sm text-zinc-400">
-        You are watching{" "}
-        <span className="text-red-500">
-          {animeInfo.anime.info.name} {isFiller?.isFiller && "filler"} episode{" "}
-          {episodeServer.episodeNo}
-        </span>
-      </p>
       <div className="lg:flex lg:px-10 ">
         <div className="flex-1">
           <VideoPlayerRow
@@ -169,6 +160,7 @@ const WatchPage = async ({
             ep={ep}
             metaAnilistInfo={metaAnilistInfo}
             bannerImage={bannerImage?.bannerImage}
+            animeInfo={animeInfo}
           />
         </div>
         <div className="basis-[19.4rem] flex flex-col px-3 lg:mt-0 mt-5 rounded-md">
@@ -177,7 +169,10 @@ const WatchPage = async ({
       </div>
 
       <MoreSeasons seasons={animeInfo.seasons} />
-      <AnimeDetails animeInfo={animeInfo} />
+      <AnimeDetails
+        animeInfo={animeInfo}
+        totalEpisodes={animeEpisodes.totalEpisodes}
+      />
 
       <div className="lg:flex gap-x-4 px-3 lg:px-10 mt-12">
         <div className="flex-1">

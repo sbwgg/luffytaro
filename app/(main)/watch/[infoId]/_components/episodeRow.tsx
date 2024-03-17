@@ -69,7 +69,6 @@ export default function EpisodeRow({
               <EpisodeNumberCard
                 key={episode.episodeId}
                 episode={episode}
-                animeEpisodes={animeEpisodes}
                 ep={ep}
                 infoId={infoId}
               />
@@ -83,7 +82,6 @@ export default function EpisodeRow({
 
 function EpisodeNumberCard({
   episode,
-  animeEpisodes,
   ep,
   infoId,
 }: {
@@ -93,38 +91,37 @@ function EpisodeNumberCard({
     number: number;
     isFiller: string;
   };
-  animeEpisodes: EpisodeType;
   ep: string;
   infoId: string;
 }) {
-  const isFiller = animeEpisodes.episodes.find(
-    (filler) => filler.episodeId.split("=")[1] === ep
-  )?.isFiller;
-
   const episodeWatching = episode.episodeId === `${infoId}?ep=${ep}`;
 
   useEffect(() => {
-    if (episodeWatching) {
-      scroller.scrollTo(ep, {
-        duration: 200,
+    if (episode.episodeId === `${infoId}?ep=${ep}`) {
+      scroller.scrollTo(episode.episodeId, {
+        duration: 300,
         smooth: true,
         containerId: "scrollContainer",
       });
     }
-  }, [episodeWatching, ep]);
+  }, [episode.episodeId, infoId, ep]);
 
   return (
     <Link href={`/watch/${episode.episodeId}`} key={episode.episodeId}>
       <Element
-        name={ep}
+        title={
+          episode.isFiller
+            ? `Filler Episodes ${episode.number}`
+            : `Episodes ${episode.number}`
+        }
+        name={episode.episodeId}
         className={cn(
-          "bg-zinc-900 hover:bg-zinc-700 p-[.5rem] text-sm text-center",
-          episode.episodeId.split("=")[1] === ep &&
-            "bg-red-500 hover:bg-red-500",
-          episode.episodeId.split("=")[1] === ep &&
-            isFiller &&
-            "bg-gradient-to-tr from-orange-700 to-orange-400",
-          episode.isFiller && "bg-orange-300/30 hover:bg-orange-600"
+          "border border-zinc-800 p-[.4rem] text-[13.5px] hover:bg-red-600 hover:text-zinc-300 md:text-sm text-center text-zinc-500",
+          episodeWatching && "bg-red-600 hover:bg-red-600 text-zinc-300",
+          episodeWatching &&
+            episode.isFiller &&
+            "bg-gradient-to-tr from-pink-700 to-pink-500",
+          episode.isFiller && "bg-pink-600/60 hover:bg-pink-700"
         )}
       >
         {episode.number}

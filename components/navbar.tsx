@@ -119,7 +119,7 @@ export default function Navbar({ user }: NavbarProp) {
             {showProfileSettings && (
               <div
                 onClick={() => setShowProfileSettings(false)}
-                className="flex flex-col absolute right-0 top-[3.5rem] bg-zinc-900/80 backdrop-blur-sm w-[16rem] rounded-lg p-4"
+                className="flex flex-col absolute right-0 top-[3.5rem] bg-zinc-900 backdrop-blur-sm w-[16rem] rounded-lg p-4"
               >
                 <div className="mb-4">
                   <p className="text-sm">{user.username}</p>

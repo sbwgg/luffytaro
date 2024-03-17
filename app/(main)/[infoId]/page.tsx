@@ -201,7 +201,7 @@ const MoreDetailPage = async ({ params }: { params: { infoId: string } }) => {
               >
                 <div className="relative">
                   <div className="flex items-end text-sm justify-center absolute inset-0 bg-black/50 z-[30] p-3">
-                    <p className="seasontitleEllipsis italic text-center">
+                    <p className="seasontitleEllipsis text-center">
                       {season.title}
                     </p>
                   </div>

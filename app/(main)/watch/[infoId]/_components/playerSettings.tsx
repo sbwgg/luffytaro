@@ -5,6 +5,8 @@ import { FaForward, FaBackward } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import { AnimeInfoType } from "@/app/(main)/[infoId]/page";
+import { EpisodeType } from "@/app/(main)/[infoId]/_components/animeInfo";
 
 interface PlayerSettingsProp {
   episodeServer: EpisodeServerType;
@@ -14,9 +16,19 @@ interface PlayerSettingsProp {
   category: string;
   nextEp?: string;
   prevEp?: string;
+  animeInfo: AnimeInfoType;
+  animeEpisodes: EpisodeType;
 }
 
-const PlayerSettings = ({
+type ServerRowsProp = {
+  episodeServer: EpisodeServerType;
+  setServer: React.Dispatch<React.SetStateAction<string>>;
+  server: string;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  category: string;
+};
+
+export default function PlayerSettings({
   episodeServer,
   setServer,
   server,
@@ -24,11 +36,17 @@ const PlayerSettings = ({
   category,
   nextEp,
   prevEp,
-}: PlayerSettingsProp) => {
+  animeInfo,
+  animeEpisodes,
+}: PlayerSettingsProp) {
   const router = useRouter();
   const [autoplay, setAutoplay] = useLocalStorage("autoplay", false);
   const [autonext, setAutonext] = useLocalStorage("autonext", false);
   const [autoskipIntro, setAutoskipIntro] = useLocalStorage("autoskip", false);
+
+  const isFiller = animeEpisodes.episodes.find(
+    (item) => item.episodeId == episodeServer.episodeId
+  );
 
   return (
     <div className="px-3 lg:px-0">
@@ -78,67 +96,117 @@ const PlayerSettings = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-x-4 gap-y-1 flex-wrap mt-5">
+      <div className="flex md:flex-row flex-col  md:gap-4 bg-zinc-950 mt-5">
+        <div className="flex items-center justify-center md:max-w-[18rem] text-[13px] text-zinc-500 py-4 px-2 bg-zinc-900">
+          <p className="flex flex-col text-center p-2">
+            <span>
+              You are watching{" "}
+              <span className="text-zinc-300">
+                {isFiller?.isFiller && "Filler"} Episode{" "}
+                {episodeServer.episodeNo}
+              </span>
+            </span>
+            <span>
+              (If current server doesn&apos;t work please try other servers
+              beside.)
+            </span>
+          </p>
+        </div>
+
+        <ServerRows
+          episodeServer={episodeServer}
+          setServer={setServer}
+          server={server}
+          setCategory={setCategory}
+          category={category}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ServerRows({
+  episodeServer,
+  setServer,
+  server,
+  setCategory,
+  category,
+}: ServerRowsProp) {
+  return (
+    <>
+      <div className="flex flex-col justify-center gap-y-1 py-4 px-3">
         {episodeServer.sub.length ? (
-          <div className="flex items-center flex-wrap gap-x-1 gap-y-1">
-            <p className="text-xs text-zinc-400 mr-3">SUB:</p>
-            {episodeServer.sub.map((sub) => (
-              <button
-                onClick={() => {
-                  setServer(
-                    sub.serverName === "hd-1" ? "vidstreaming" : sub.serverName
-                  );
-                  setCategory("sub");
-                }}
-                className={cn(
-                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm text-zinc-400",
-                  server === sub.serverName &&
-                    category === "sub" &&
-                    "bg-red-500 text-white sm:hover:bg-red-500",
-                  server === "vidstreaming" &&
-                    sub.serverName === "hd-1" &&
-                    category === "sub" &&
-                    "bg-red-500 text-white sm:hover:bg-red-500"
-                )}
-                key={sub.serverId}
-              >
-                {sub.serverName}
-              </button>
-            ))}
+          <div className="flex gap-x-1 gap-y-1">
+            <div className="flex">
+              <p className="text-xs text-zinc-400 w-[2.5rem] py-2">SUB:</p>
+            </div>
+
+            <div className="flex flex-wrap gap-1">
+              {episodeServer.sub.map((sub) => (
+                <button
+                  onClick={() => {
+                    setServer(
+                      sub.serverName === "hd-1"
+                        ? "vidstreaming"
+                        : sub.serverName
+                    );
+                    setCategory("sub");
+                  }}
+                  className={cn(
+                    "bg-zinc-900 sm:hover:bg-zinc-800 py-2 px-4 text-xs md:text-sm text-zinc-400",
+                    server === sub.serverName &&
+                      category === "sub" &&
+                      "bg-red-500 text-white sm:hover:bg-red-500",
+                    server === "vidstreaming" &&
+                      sub.serverName === "hd-1" &&
+                      category === "sub" &&
+                      "bg-red-500 text-white sm:hover:bg-red-500"
+                  )}
+                  key={sub.serverId}
+                >
+                  {sub.serverName}
+                </button>
+              ))}
+            </div>
           </div>
         ) : null}
 
         {episodeServer.dub.length ? (
-          <div className="flex items-center flex-wrap gap-x-1 gap-y-1">
-            <p className="text-xs text-zinc-400 mr-3">DUB:</p>
-            {episodeServer.dub.map((dub) => (
-              <button
-                onClick={() => {
-                  setServer(
-                    dub.serverName === "hd-1" ? "vidstreaming" : dub.serverName
-                  );
-                  setCategory("dub");
-                }}
-                className={cn(
-                  "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs sm:text-sm text-zinc-400",
-                  server === dub.serverName &&
-                    category === "dub" &&
-                    "bg-red-500 text-white sm:hover:bg-red-500",
-                  server === "vidstreaming" &&
-                    dub.serverName === "hd-1" &&
-                    category === "dub" &&
-                    "bg-red-500 text-white sm:hover:bg-red-500"
-                )}
-                key={dub.serverId}
-              >
-                {dub.serverName}
-              </button>
-            ))}
+          <div className="flex gap-x-1 gap-y-1">
+            <div className="flex">
+              <p className="text-xs text-zinc-400 w-[2.5rem] py-2">DUB:</p>
+            </div>
+
+            <div className="flex flex-wrap gap-1">
+              {episodeServer.dub.map((dub) => (
+                <button
+                  onClick={() => {
+                    setServer(
+                      dub.serverName === "hd-1"
+                        ? "vidstreaming"
+                        : dub.serverName
+                    );
+                    setCategory("dub");
+                  }}
+                  className={cn(
+                    "bg-zinc-900 sm:hover:bg-zinc-800 p-2 px-4 text-xs md:text-sm text-zinc-400",
+                    server === dub.serverName &&
+                      category === "dub" &&
+                      "bg-red-500 text-white sm:hover:bg-red-500",
+                    server === "vidstreaming" &&
+                      dub.serverName === "hd-1" &&
+                      category === "dub" &&
+                      "bg-red-500 text-white sm:hover:bg-red-500"
+                  )}
+                  key={dub.serverId}
+                >
+                  {dub.serverName}
+                </button>
+              ))}
+            </div>
           </div>
         ) : null}
       </div>
-    </div>
+    </>
   );
-};
-
-export default PlayerSettings;
+}

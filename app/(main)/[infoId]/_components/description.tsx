@@ -1,24 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import { cn } from "@/lib/utils";
+import React, { ElementRef, useEffect, useRef, useState } from "react";
 
 const Description = ({ description }: { description: string }) => {
-  const [seemore, setSeemore] = useState<number | undefined>(350);
+  const [seemore, setSeemore] = useState(false);
+  const [show, setShow] = useState(false);
+  const ref = useRef<ElementRef<"p">>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      setShow(ref.current.scrollHeight !== ref.current.clientHeight);
+    }
+  }, []);
 
   return (
     <>
-      <p className="text-zinc-400">
-        {description.slice(0, seemore) +
-          `${description.slice(0, seemore).length > 350 ? "" : "..."}`}
-        {description.length > 350 && (
-          <span
-            onClick={() => setSeemore((prev) => (!prev ? 350 : undefined))}
-            className="font-semibold cursor-pointer"
+      <div className="space-y-1 text-zinc-400">
+        <p className={cn(seemore ? "" : "line-clamp-4")} ref={ref}>
+          {description}
+        </p>
+        {show && (
+          <button
+            onClick={() => setSeemore(!seemore)}
+            className="flex border border-zinc-900 bg-zinc-500/30 text-xs p-1 font-semibold cursor-pointer"
           >
-            {seemore === undefined ? " see less-" : " see more+"}
-          </span>
+            {seemore ? " see less-" : " see more+"}
+          </button>
         )}
-      </p>
+      </div>
     </>
   );
 };

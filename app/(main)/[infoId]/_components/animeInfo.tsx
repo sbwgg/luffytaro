@@ -112,14 +112,18 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
               </Link>
             )}
             {animeInfo.anime.moreInfo.status === "Not yet aired" ? (
-              <p>UPCOMING</p>
+              <p className="border border-zinc-600 bg-zinc-500/30 py-2 px-6 text-sm">
+                UPCOMING
+              </p>
             ) : (
               <AddToListButton animeInfo={animeInfo} watchList={watchList} />
             )}
           </div>
 
           <div className="text-[14px]">
-            <Description description={animeInfo.anime.info.description} />
+            {animeInfo?.anime?.info?.description && (
+              <Description description={animeInfo.anime.info.description} />
+            )}
 
             <p className="mt-5 text-zinc-400">
               LuffyTaro is the best site to watch {animeInfo?.anime?.info?.name}{" "}

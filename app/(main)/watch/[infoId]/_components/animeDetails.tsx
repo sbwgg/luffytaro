@@ -2,7 +2,7 @@
 
 import { AnimeInfoType } from "@/app/(main)/[infoId]/page";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { FaClosedCaptioning, FaMicrophone } from "react-icons/fa6";
 import {
   FacebookShareButton,
@@ -18,14 +18,17 @@ import {
 } from "next-share";
 import Link from "next/link";
 import { IoMdInformationCircle } from "react-icons/io";
+import { cn } from "@/lib/utils";
 
 interface AnimeDetailsProp {
   animeInfo: AnimeInfoType;
+  totalEpisodes: number;
 }
 
-const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
-  const [seemore, setSeemore] = useState<number | undefined>(350);
-
+export default function AnimeDetails({
+  animeInfo,
+  totalEpisodes,
+}: AnimeDetailsProp) {
   return (
     <>
       <div className="flex sm:flex-row flex-col sm:items-start items-center gap-4 lg:px-10 px-3 mt-5">
@@ -38,7 +41,7 @@ const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
           className="w-[5rem] h-[7rem] object-cover"
         />
 
-        <div>
+        <div className="flex-1">
           <p className="text-lg text-center sm:text-start font-semibold mb-2">
             {animeInfo?.anime?.info?.name}
           </p>
@@ -68,33 +71,8 @@ const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
               {animeInfo?.anime?.info?.stats?.duration}
             </p>
           </div>
-          <p className="text-sm text-zinc-400">
-            {animeInfo?.anime?.info?.description.slice(0, seemore) +
-              `${
-                animeInfo?.anime?.info?.description.slice(0, seemore)?.length >
-                350
-                  ? ""
-                  : "..."
-              }`}{" "}
-            {animeInfo?.anime?.info?.description?.length > 350 && (
-              <span
-                onClick={() => setSeemore((prev) => (!prev ? 350 : undefined))}
-                className="font-semibold cursor-pointer"
-              >
-                {seemore ? "see more+" : "see less-"}
-              </span>
-            )}
-          </p>
 
-          <button className="mt-2 text-xs p-1 px-3 bg-white text-black font-medium">
-            <Link
-              href={`/${animeInfo.anime.info.id}`}
-              className="flex items-center gap-x-1"
-            >
-              <IoMdInformationCircle />
-              MORE DETAILS
-            </Link>
-          </button>
+          <AnimeInfos animeInfo={animeInfo} totalEpisodes={totalEpisodes} />
 
           <div className="flex items-center gap-x-2 mt-5">
             <h1 className="text-sm">Share this anime to your friend:</h1>
@@ -128,6 +106,130 @@ const AnimeDetails = ({ animeInfo }: AnimeDetailsProp) => {
       </div>
     </>
   );
-};
+}
 
-export default AnimeDetails;
+function AnimeInfos({
+  animeInfo,
+  totalEpisodes,
+}: {
+  animeInfo: AnimeInfoType;
+  totalEpisodes: number;
+}) {
+  const [seemore, setSeemore] = useState(false);
+  const ref = useRef<ElementRef<"p">>(null);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (ref.current) {
+      setShow(ref.current.scrollHeight !== ref.current.clientHeight);
+    }
+  }, []);
+
+  return (
+    <>
+      <div className="flex xl:flex-row flex-col gap-8">
+        <div className="flex-1">
+          <div className="text-sm text-zinc-400">
+            <p ref={ref} className={cn(seemore ? "" : "line-clamp-4")}>
+              {animeInfo.anime.info.description}
+            </p>
+            {show && (
+              <button
+                onClick={() => setSeemore(!seemore)}
+                className="text-xs border border-zinc-700 bg-zinc-800 p-1 mt-1"
+              >
+                <span
+                  onClick={() => setSeemore(!seemore)}
+                  className="font-semibold cursor-pointer"
+                >
+                  {!seemore ? "see more+" : "see less-"}
+                </span>
+              </button>
+            )}
+          </div>
+          <button className="mt-5 text-xs p-1 px-3 bg-white text-black font-medium">
+            <Link
+              href={`/${animeInfo.anime.info.id}`}
+              className="flex items-center gap-x-1"
+            >
+              <IoMdInformationCircle />
+              MORE DETAILS
+            </Link>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1 text-[13.5px] xl:max-w-[40rem]">
+          <ul className="space-y-1">
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem]">Type:</p>{" "}
+              <p className="text-zinc-300">{animeInfo.anime.info.stats.type}</p>
+            </li>
+
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem]">Premiered:</p>{" "}
+              <p className="text-zinc-300">
+                {animeInfo.anime.moreInfo.premiered}
+              </p>
+            </li>
+
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem]">Status:</p>{" "}
+              <p className="text-zinc-300">{animeInfo.anime.moreInfo.status}</p>
+            </li>
+
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem]">Status:</p>{" "}
+              <p className="text-zinc-300">{animeInfo.anime.moreInfo.status}</p>
+            </li>
+
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem]">Duration:</p>{" "}
+              <p className="text-zinc-300">
+                {animeInfo.anime.moreInfo.duration}
+              </p>
+            </li>
+
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem]">Studios:</p>{" "}
+              <p className="text-zinc-300">
+                {animeInfo.anime.moreInfo.studios}
+              </p>
+            </li>
+
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem] shrink-0">Producers:</p>{" "}
+              <p className="flex flex-wrap text-zinc-300">
+                {animeInfo.anime.moreInfo.producers.join(", ")}
+              </p>
+            </li>
+          </ul>
+
+          <ul className="space-y-1">
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem] shrink-0">Date aired:</p>{" "}
+              <p className="flex flex-wrap text-zinc-300">
+                {animeInfo.anime.moreInfo.aired}
+              </p>
+            </li>
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem] shrink-0">MAL:</p>{" "}
+              <p className="flex flex-wrap text-zinc-300">
+                {animeInfo.anime.moreInfo.malscore}
+              </p>
+            </li>
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem] shrink-0">Episodes:</p>{" "}
+              <p className="flex flex-wrap text-zinc-300">{totalEpisodes}</p>
+            </li>
+            <li className="flex">
+              <p className="text-zinc-500 w-[7rem] shrink-0">Genre:</p>{" "}
+              <p className="flex flex-wrap text-zinc-300 whitespace-pre-wrap">
+                {animeInfo.anime.moreInfo.genres.join(", ")}
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </>
+  );
+}

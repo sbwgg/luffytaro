@@ -8,7 +8,7 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 import { EpisodeType } from "@/app/(main)/[infoId]/_components/animeInfo";
 import { useRouter } from "next/navigation";
 import { TbFaceIdError } from "react-icons/tb";
-import { MetaAnilistInfoType } from "@/app/(main)/[infoId]/page";
+import { AnimeInfoType, MetaAnilistInfoType } from "@/app/(main)/[infoId]/page";
 import NextEpisodeTime from "@/components/nextEpisodeTime";
 import Artplayer from "./artPlayer";
 
@@ -19,6 +19,7 @@ interface VideoPlayerRowProp {
   ep: string;
   metaAnilistInfo: MetaAnilistInfoType;
   bannerImage: string | undefined;
+  animeInfo: AnimeInfoType;
 }
 
 export interface StreamingLinkType {
@@ -60,6 +61,7 @@ const VideoPlayerRow = ({
   ep,
   metaAnilistInfo,
   bannerImage,
+  animeInfo,
 }: VideoPlayerRowProp) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -258,6 +260,8 @@ const VideoPlayerRow = ({
         category={category}
         nextEp={nextEp?.episodeId}
         prevEp={prevEp?.episodeId}
+        animeInfo={animeInfo}
+        animeEpisodes={animeEpisodes}
       />
 
       {metaAnilistInfo?.nextAiringEpisode ? (
