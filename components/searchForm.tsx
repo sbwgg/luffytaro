@@ -83,6 +83,7 @@ const SearchForm = () => {
           "flex-1 lg:static fixed inset-x-3 lg:mt-0 mt-6",
           showInput ? "block" : "hidden lg:block"
         )}
+        style={{ backgroundColor: "#333" }} // Change background color to dark grey
       >
         <form onSubmit={handleSubmit} className="flex items-center">
           <button className="absolute left-3 text-black">
@@ -101,10 +102,11 @@ const SearchForm = () => {
             value={inputValue}
             className="p-2 text-sm text-zinc-500 outline-none rounded pl-10 lg:w-[18.5rem] flex-1"
             placeholder="Search anime..."
+            style={{ backgroundColor: "#333", color: "#fff" }} // Change background and text color to dark grey and white
           />
         </form>
 
-        <div className="flex flex-col absolute inset-x-0 bg-black/90">
+        <div className="flex flex-col absolute inset-x-0" style={{ backgroundColor: "#333" }}> {/* Change background color to dark grey */}
           <div
             className={cn(
               "overflow-auto flex-1 duration-300",
@@ -168,16 +170,17 @@ const SearchForm = () => {
 
         <div
           className={cn(
-            "absolute inset-x-0 flex items-center justify-center bg-black duration-300",
+            "absolute inset-x-0 flex items-center justify-center duration-300",
             inputValue && isLoading && showSuggest ? "py-4" : "p-0"
           )}
+          style={{ backgroundColor: "#333" }} // Change background color to dark grey
         >
           {isLoading && inputValue ? <p>Loading...</p> : null}
         </div>
 
         <div
           className={cn(
-            "absolute inset-x-0 flex items-center justify-center bg-black duration-300",
+            "absolute inset-x-0 flex items-center justify-center duration-300",
             isSuccess &&
               searchSuggest &&
               showSuggest &&
@@ -185,6 +188,7 @@ const SearchForm = () => {
               ? "py-4"
               : "p-0"
           )}
+          style={{ backgroundColor: "#333" }} // Change background color to dark grey
         >
           {isSuccess &&
           searchSuggest &&
