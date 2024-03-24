@@ -164,7 +164,7 @@ const SearchForm = () => {
               <Link
                 onClick={() => setInputValue("")}
                 href={`/search?keyw=${inputValue}`}
-                className="bg-red-500 p-3 flex justify-center text-sm"
+                className="bg-red-500 rounded-b-lg p-3 flex justify-center text-sm"
               >
                 View all results
               </Link>
