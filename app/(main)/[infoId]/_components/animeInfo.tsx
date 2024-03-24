@@ -126,10 +126,10 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
             )}
 
             <p className="mt-5 text-zinc-400">
-              LuffyTaro is the best site to watch {animeInfo?.anime?.info?.name}{" "}
+              bertoo.pro is the best site to watch {animeInfo?.anime?.info?.name}{" "}
               SUB online, or you can even watch {animeInfo?.anime?.info?.name}{" "}
               DUB in HD quality. You can also find Studio Pierrot anime on
-              LuffyTaro website.
+              bertoo.pro website.
             </p>
 
             <div className="mt-5 text-zinc-400">

@@ -62,7 +62,7 @@ export const generateMetadata = async ({
   const animeGenre: AnimeGenreType = await getAnimeGenre(genre, page);
 
   return {
-    title: `Watch ${animeGenre.genreName} on LuffyTaro for free`,
+    title: `Watch ${animeGenre.genreName} on bertoo.pro for free`,
   };
 };
 

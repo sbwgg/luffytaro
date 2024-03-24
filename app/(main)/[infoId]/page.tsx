@@ -157,7 +157,7 @@ export const generateMetadata = async ({
   const animeInfo: AnimeInfoType = await getAnimeInfo(params.infoId);
 
   return {
-    title: `${animeInfo.anime.info.name} Sub/Dub for free on LuffyTaro`,
+    title: `${animeInfo.anime.info.name} Sub/Dub for free on bertoo.pro`,
   };
 };
 

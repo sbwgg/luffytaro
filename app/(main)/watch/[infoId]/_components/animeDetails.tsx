@@ -78,7 +78,7 @@ export default function AnimeDetails({
             <h1 className="text-sm">Share this anime to your friend:</h1>
             <FacebookShareButton
               url={process.env.NEXT_PUBLIC_MAIN_URL!}
-              hashtag="#shareLuffyTaro"
+              hashtag="#sharebertoo"
             >
               <FacebookIcon round className="w-[2.5rem] h-[2.5rem]" />
             </FacebookShareButton>

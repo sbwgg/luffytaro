@@ -30,13 +30,13 @@ const Footer = () => {
           priority
         />
         <Link href="/" className="text-sm md:text-xl font-medium">
-          LUFFYTARO
+          bertoo.pro
         </Link>
       </div>
 
       <div className="mt-5">
         <p className="text-zinc-500 text-center text-sm">
-          LuffyTaro does not store any files on our server, we only linked to
+          Bertoo.pro does not store any files on our server, we only linked to
           the media which is hosted on 3rd party services.
         </p>
       </div>
@@ -44,7 +44,7 @@ const Footer = () => {
       <div className="space-x-1 mt-5">
         <FacebookShareButton
           url={process.env.NEXT_PUBLIC_MAIN_URL!}
-          hashtag="#shareLuffyTaro"
+          hashtag="#sharebertoo"
         >
           <FacebookIcon round className="sm:w-[3rem] w-[2.5rem]" />
         </FacebookShareButton>

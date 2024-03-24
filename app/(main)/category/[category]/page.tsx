@@ -87,7 +87,7 @@ export const generateMetadata = async ({
   );
 
   return {
-    title: `Watch ${categoryAnime.category} Anime on LuffyTaro for free`,
+    title: `Watch ${categoryAnime.category} Anime on bertoo.pro for free`,
   };
 };
 

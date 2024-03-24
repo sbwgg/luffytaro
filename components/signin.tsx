@@ -129,7 +129,7 @@ const Signin = () => {
         <div className="mt-24 text-[14px]">
           <p>
             <span className="text-zinc-500">
-              {isSignUp ? "Already a User?" : "New to LuffyTaro?"}
+              {isSignUp ? "Already a User?" : "New to bertoo?"}
             </span>{" "}
             <span
               className="cursor-pointer"
