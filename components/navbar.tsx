@@ -112,17 +112,17 @@ export default function Navbar({ user }: NavbarProp) {
           >
            Dub
         </Link>
-  <span className="inline-block h-4 border-l border-gray-300"></span>
-  <Link
-    href="/category/subbed-anime"
-    className={cn(
-      pathname === "/category/subbed-anime"
-        ? "text-red-500 font-semibold"
-        : ""
-    )}
-  >
-    Sub
-  </Link>
+          <span className="inline-block h-4 border-l border-gray-300"></span>
+        <Link
+           href="/category/subbed-anime"
+            className={cn(
+             pathname === "/category/subbed-anime"
+             ? "text-red-500 font-semibold"
+             : ""
+           )}
+         >
+          Sub
+        </Link>
 </div>
       </div>
       
