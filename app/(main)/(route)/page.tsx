@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import SpotlightAnime from "./_components/spotlightAnime";
 import "./_components/home.css";
 import TrendingAnime from "./_components/trendingAnime";
@@ -114,6 +114,8 @@ async function getAnimeHome() {
 
 const HomePage = async () => {
   const animeHome: AnimeHome = await getAnimeHome();
+  const [showSub, setShowSub] = useState(false);
+  const [showDub, setShowDub] = useState(false);
 
   const greenGenre = [0, 5, 10, 15, 20, 25, 30, 35, 40];
   const pinkGenre = [1, 6, 11, 16, 21, 26, 31, 36, 41];
@@ -144,10 +146,37 @@ const HomePage = async () => {
             </Link>
           </h1>
 
+          <div className="flex items-center mt-3">
+            <button
+              className={`mr-3 ${
+                showSub ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => setShowSub(!showSub)}
+            >
+              Sub
+            </button>
+            <button
+              className={`mr-3 ${
+                showDub ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => setShowDub(!showDub)}
+            >
+              Dub
+            </button>
+          </div>
+
           <div className="gridCard gap-x-2 gap-y-8 mt-5">
-            {animeHome.latestEpisodeAnimes.slice(0, 10).map((latest) => (
-              <GridCardAnime key={latest.id} anime={latest} />
-            ))}
+            {animeHome.latestEpisodeAnimes
+              .filter((latest) => {
+                if (showSub && showDub) return true;
+                if (showSub) return latest.episodes.sub !== null;
+                if (showDub) return latest.episodes.dub !== null;
+                return true;
+              })
+              .slice(0, 10)
+              .map((latest) => (
+                <GridCardAnime key={latest.id} anime={latest} />
+              ))}
           </div>
 
           <h1 className="sm:text-xl mt-10">
