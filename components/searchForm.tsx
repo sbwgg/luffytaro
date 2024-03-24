@@ -126,7 +126,7 @@ const SearchForm = () => {
                 key={s.id}
                 className={cn(
                   "flex items-center gap-3 p-3 border-b border-dashed group/item hover:bg-zinc-800 cursor-pointer",
-                  index % 2 === 0 ? "bg-gray-900" : "bg-gray-800" // Alternating background colors
+                  index % 2 === 0 ? "bg-zinc-900" : "bg-zinc-800" // Alternating background colors
                 )}
               >
                 <Image
