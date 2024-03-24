@@ -106,7 +106,7 @@ const SearchForm = () => {
           />
         </form>
 
-        <div className="flex flex-col absolute inset-x-0" style={{ backgroundColor: "#333" }}> {/* Change background color to dark grey */}
+        <div className="flex flex-col absolute inset-x-0" style={{ backgroundColor: "#333" }}>
           <div
             className={cn(
               "overflow-auto flex-1 duration-300",
@@ -119,12 +119,15 @@ const SearchForm = () => {
                 : "max-h-0"
             )}
           >
-            {searchSuggest?.suggestions.map((s) => (
+            {searchSuggest?.suggestions.map((s, index) => (
               <Link
                 href={`/${s.id}`}
                 onClick={() => setInputValue("")}
                 key={s.id}
-                className="flex items-center gap-3 p-3 border-b border-dashed border-zinc-800 group/item hover:bg-zinc-800 cursor-pointer"
+                className={cn(
+                  "flex items-center gap-3 p-3 border-b border-dashed group/item hover:bg-zinc-800 cursor-pointer",
+                  index % 2 === 0 ? "bg-gray-900" : "bg-gray-800" // Alternating background colors
+                )}
               >
                 <Image
                   src={s.poster}
