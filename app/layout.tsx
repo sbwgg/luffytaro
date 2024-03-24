@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Pathway_Extreme } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react" 
 import "./globals.css";
 import ReactQueryProvider from "@/utils/reactquery";
 import ProgressbarProvider from "@/utils/progressbar";
