@@ -106,7 +106,7 @@ const SearchForm = () => {
           />
         </form>
 
-        <div className="flex flex-col absolute inset-x-0" style={{ backgroundColor: "#333" }}>
+        <div className="flex flex-col absolute invisible inset-x-0">
           <div
             className={cn(
               "overflow-auto flex-1 duration-300",
