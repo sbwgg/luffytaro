@@ -100,7 +100,7 @@ const SearchForm = () => {
               setShowSuggest(true);
             }}
             value={inputValue}
-            className="p-2 text-sm text-zinc-500 outline-none rounded pl-10 lg:w-[18.5rem] flex-1"
+            className="p-2 text-sm text-zinc-500 rounded-full outline-none rounded pl-10 lg:w-[18.5rem] flex-1"
             placeholder="Search anime..."
             style={{ backgroundColor: "#333", color: "#fff" }} // Change background and text color to dark grey and white
           />
