@@ -99,6 +99,26 @@ export default function Navbar({ user }: NavbarProp) {
           >
             Most favorite
           </Link>
+          <Link
+            href="/category/dubbed-anime"
+            className={cn(
+              pathname === "/category/dubbed-anime"
+                ? "text-red-500 font-semibold"
+                : ""
+            )}
+          >
+            Dub
+          </Link>
+          <Link
+            href="/category/subbed-anime"
+            className={cn(
+              pathname === "/category/subbed-anime"
+                ? "text-red-500 font-semibold"
+                : ""
+            )}
+          >
+            Sub
+          </Link>
         </div>
       </div>
 
