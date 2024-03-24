@@ -55,7 +55,7 @@ const AnimeInfo = async ({ animeInfo, nextAiringEpisode }: AnimeInfoProp) => {
               width={400}
               height={100}
               priority
-              className="xl:w-[12rem] xl:h-[12rem] w-[10rem] h-[10rem] rounded-full object-cover shrink-0 m-auto"
+              className="xl:w-[12rem] xl:h-[12rem] w-[10rem] h-[15rem] rounded-sm object-cover shrink-0 m-auto"
             />
           </div>
         </div>
