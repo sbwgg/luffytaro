@@ -99,6 +99,9 @@ export default function Navbar({ user }: NavbarProp) {
           >
             Most favorite
           </Link>
+
+        </div>
+        <div className="hidden lg:flex items-center gap-x-2 text-sm font-light">
           <Link
             href="/category/dubbed-anime"
             className={cn(
