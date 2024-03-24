@@ -101,29 +101,29 @@ export default function Navbar({ user }: NavbarProp) {
           </Link>
 
         </div>
-        <div className="hidden lg:flex items-center gap-x-2 text-sm font-light border-t border-b border-gray-300 py-2">
-         <Link
-            href="/category/dubbed-anime"
-             className={cn(
+        <div className="hidden lg:flex items-center gap-x-2 text-sm font-light">
+          <Link
+           href="/category/dubbed-anime"
+            className={cn(
               pathname === "/category/dubbed-anime"
-               ? "text-red-500 font-semibold"
+                ? "text-red-500 font-semibold"
+                : ""
+           )}
+          >
+           Dub
+           </Link>
+        <span className="inline-block h-4 border-l border-gray-300"></span>
+         <Link
+           href="/category/subbed-anime"
+            className={cn(
+              pathname === "/category/subbed-anime"
+                ? "text-red-500 font-semibold"
                : ""
             )}
           >
-           Dub
+           Sub
         </Link>
-          <span className="inline-block h-4 border-l border-gray-300"></span>
-        <Link
-           href="/category/subbed-anime"
-            className={cn(
-             pathname === "/category/subbed-anime"
-             ? "text-red-500 font-semibold"
-             : ""
-           )}
-         >
-          Sub
-        </Link>
-</div>
+        </div>
       </div>
       
 
