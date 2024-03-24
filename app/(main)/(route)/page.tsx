@@ -121,7 +121,7 @@ const HomePage = async () => {
   const pinkGenre = [1, 6, 11, 16, 21, 26, 31, 36, 41];
   const blueGenre = [2, 7, 12, 17, 22, 27, 32, 37, 42];
   const yellowGenre = [3, 8, 13, 18, 23, 28, 33, 38, 43];
-  const whiteGnre = [4, 9, 14, 19, 24, 29, 34, 39, 44];
+  const whiteGenre = [4, 9, 14, 19, 24, 29, 34, 39, 44];
 
   return (
     <main>
