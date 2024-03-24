@@ -97,7 +97,7 @@ const EstimatedSchedule = () => {
     queryFn: async () => {
       try {
         const res = await axios.get<ScheduleType>(
-          `https://api-aniwatch.onrender.com/anime/schedule?date=${defaultDate}`
+          `https://aniwatch-api-ruddy.vercel.app/anime/schedule?date=${defaultDate}`
         );
         return res.data;
       } catch (e) {
