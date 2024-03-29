@@ -180,7 +180,7 @@ const ScheduleAnime = () => {
                     "w-48 rounded-none mr-6 h-12",
                     isActive && "bg-red-600"
                   )}
-                  variant="outline"
+                  variant="secondary"
                   key={index}
                   onClick={() =>
                     handleShow(
