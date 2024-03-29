@@ -61,13 +61,7 @@ const EstimatedSchedule = () => {
     }
 
     setMonthDates(datesArray);
-
-    // Scroll to today's date
-    if (ref.current) {
-      const todayIndex = monthDates.findIndex(date => date.value === defaultDate);
-      ref.current.swiper.slideTo(todayIndex, 0);
-    }
-  }, [monthDates, defaultDate]);
+  }, []);
 
   const getDayName = (dayIndex: number) => {
     const daysOfWeek = [
@@ -80,6 +74,17 @@ const EstimatedSchedule = () => {
       "Saturday",
     ];
     return daysOfWeek[dayIndex];
+  };
+
+  const scrollToToday = () => {
+    if (ref.current) {
+      const todayIndex = monthDates.findIndex(date => date.value === defaultDate);
+      ref.current.swiper.slideTo(todayIndex, 0);
+    }
+  };
+
+  const handleDateClick = (dateValue: string) => {
+    setDefaultDate(dateValue);
   };
 
   const {
@@ -137,7 +142,7 @@ const EstimatedSchedule = () => {
           {monthDates.map((date) => (
             <SwiperSlide key={date.date}>
               <button
-                onClick={() => setDefaultDate(date.value)}
+                onClick={() => handleDateClick(date.value)}
                 className={cn(
                   "flex items-center flex-col p-2 w-full duration-200 transition-all",
                   defaultDate === date.value ? "bg-red-500 " : "bg-zinc-700/40"
