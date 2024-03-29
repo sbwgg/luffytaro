@@ -237,7 +237,7 @@ const ScheduleAnime = () => {
             const isEven = index % 2;
             return(
               <div
-                className={cn("w-full py-3 border-b border-y-muted flex gap-x-2 justify-between px-2", isEven && "bg-slate-200 dark:bg-neutral-800")}
+                className={cn("w-full py-3 border-b border-y-muted flex gap-x-2 justify-between px-2", isEven && "bg-zinc-700/40 dark:bg-neutral-800")}
                 key={index}
               >
                 <Link
