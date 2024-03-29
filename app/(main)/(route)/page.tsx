@@ -169,14 +169,9 @@ const HomePage = async () => {
 
           <Category />
         </div>
-      </div>
+      </div> 
 
-      <div className="px-3 lg:px-10 mt-10">
-        <h1 className="sm:text-xl">
-          <span className="p-1 mr-3 bg-red-500 rounded-lg" />
-          ESTIMATED SCHEDULE
-        </h1>
-
+      <div className="px-4">
         <EstimatedSchedule />
       </div>
 
