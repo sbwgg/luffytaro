@@ -42,11 +42,7 @@ const Footer = () => {
       </div>
 
       <div className="space-x-1 mt-5">
-
-        <a href="https://discord.gg/yAv5QDtNhj" target="_blank" className=" hover:text-gray-900 dark:hover:text...">
-         <span className="sr-only">Discord community</span>
-        </a>
-
+        
         <FacebookShareButton
           url={process.env.NEXT_PUBLIC_MAIN_URL!}
           hashtag="#sharebertoo"
