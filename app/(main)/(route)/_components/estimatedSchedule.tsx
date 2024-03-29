@@ -61,7 +61,13 @@ const EstimatedSchedule = () => {
     }
 
     setMonthDates(datesArray);
-  }, []);
+
+    // Scroll to today's date
+    if (ref.current) {
+      const todayIndex = monthDates.findIndex(date => date.value === defaultDate);
+      ref.current.swiper.slideTo(todayIndex, 0);
+    }
+  }, [monthDates, defaultDate]);
 
   const getDayName = (dayIndex: number) => {
     const daysOfWeek = [
