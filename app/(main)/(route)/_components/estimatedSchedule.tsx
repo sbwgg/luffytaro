@@ -242,12 +242,12 @@ const ScheduleAnime = () => {
               >
                 <Link
                   href={`/${data.id}`}
-                  className="text-md font-medium text-base hover:text-primary duration-200"
+                  className="text-md font-medium text-base hover:text-white duration-200"
                 >
                   {data.name}
                 </Link>
 
-                <p className="text-primary">{data.time}</p>
+                <p className="text-white">{data.time}</p>
               </div>
             )
           })}
