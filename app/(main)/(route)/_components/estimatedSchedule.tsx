@@ -178,7 +178,7 @@ const ScheduleAnime = () => {
                 <Button
                   className={cn(
                     "w-48 rounded-none mr-6 h-12",
-                    isActive && "bg-primary"
+                    isActive && "bg-red-600"
                   )}
                   variant="outline"
                   key={index}
