@@ -1,211 +1,258 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
-import { TiChevronRight, TiChevronLeft } from "react-icons/ti";
-import "swiper/swiper-bundle.css";
-import axios from "axios";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import EstimatedScheduleCard from "./estimatedScheduleCard";
-import { FiLoader } from "react-icons/fi";
+import ReactSimplyCarousel from "react-simply-carousel";
+import { Button, buttonVariants } from "../_components/ui/button";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { useEffect, useMemo, useState } from "react";
+import date from "date-and-time";
+import Link from "next/link";
+import { ScheduleAnimeTypes } from "@/types";
 
-interface MonthDatesType {
-  date: string;
-  value: string;
-  day: string;
-}
+const primaryUrl =
+  process.env.NODE_ENV !== "production"
+    ? "http://localhost:4000"
+    : process.env.NEXT_PUBLIC_ANIME_URL;
+const backupUrl = "https://api-aniwatch.onrender.com";
 
-interface ScheduleType {
-  scheduledAnimes: {
-    id: string;
-    jname: string;
-    name: string;
-    time: string;
-  }[];
-}
+const ScheduleAnime = () => {
+  const now = useMemo(() => new Date(), [])
 
-const EstimatedSchedule = () => {
-  const [monthDates, setMonthDates] = useState<MonthDatesType[]>([]);
-  const [defaultDate, setDefaultDate] = useState("");
-  const [showAll, setShowAll] = useState(6);
-  const ref = useRef<SwiperRef>(null);
+  let current = date.format(now, "[GMT]ZZ DD/MM/YYYY hh:mm:ss A");
+  let today = date.format(now, "YYYY-MM-DD");
+
+  const [currentTime, setCurrentTime] = useState(current);
+  const [prevDays, setPrevDays] = useState<Date[]>([]);
+  const [upcomingDays, setUpcomingDays] = useState<Date[]>([]);
+  const [fetchDate, setFetchDate] = useState<string>(today);
+  const [data, setData] = useState<ScheduleAnimeTypes[]>([]);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(14);
 
   useEffect(() => {
-    const today = new Date();
-    const defaultDate = today.toLocaleDateString("en-CA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    setDefaultDate(defaultDate);
+    const intervalId = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(date.format(now, "hh:mm:ss"));
+    }, 1000);
 
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-    const datesArray = [];
-
-    for (let day = firstDayOfMonth; day <= lastDayOfMonth; day.setDate(day.getDate() + 1)) {
-      const dayOfWeek = day.getDay();
-      const dateValue = day.toLocaleDateString("en-CA", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
-
-      datesArray.push({
-        date: day.toLocaleDateString([], { dateStyle: "full" }).split(",")[1],
-        value: dateValue,
-        day: getDayName(dayOfWeek),
-      });
-    }
-
-    setMonthDates(datesArray);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
-  const getDayName = (dayIndex: number) => {
-    const daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    return daysOfWeek[dayIndex];
-  };
+  useEffect(() => {
+    const prevDays = Array.from({ length: 15 }).map((_, index) => {
+      return date.addDays(now, -(index + 1));
+    });
 
-  const scrollToToday = () => {
-    if (ref.current) {
-      const todayIndex = monthDates.findIndex(date => date.value === defaultDate);
-      ref.current.swiper.slideTo(todayIndex, 0);
+    setPrevDays(prevDays);
+
+    const upcomingDays = Array.from({ length: 15 }).map((_, index) => {
+      return date.addDays(now, index);
+    });
+
+    setUpcomingDays(upcomingDays);
+  }, [now]);
+
+  const fetchAnimeSchedule = async (date: string) => {
+    try {
+      const data = await fetch(`${primaryUrl}/anime/schedule?date=${date}`);
+
+      if (data.status === 409) {
+        const data = await fetch(`${backupUrl}/anime/schedule?date=${date}`);
+        const res = await data.json();
+        return res.scheduledAnimes as ScheduleAnimeTypes[];
+      }
+
+      const res = await data.json();
+      return res.scheduledAnimes as ScheduleAnimeTypes[];
+    } catch (error) {
+      throw error as Error;
     }
   };
 
-  const handleDateClick = (dateValue: string) => {
-    setDefaultDate(dateValue);
+  useEffect(() => {
+    if (fetchDate) {
+      const newData = async () => {
+        const schedule = await fetchAnimeSchedule(fetchDate);
+        setData(schedule);
+      };
+
+      newData();
+    }
+  }, [fetchDate]);
+
+  const handleShow = (date: number, month: number, year: number) => {
+    const data =
+      year +
+      "-" +
+      (month + 1 < 10 ? "0" + (month + 1) : month + 1) +
+      "-" +
+      (date < 10 ? "0" + date : date);
+    return setFetchDate(data);
   };
 
-  const {
-    data: schedule,
-    isLoading,
-    isSuccess,
-  } = useQuery({
-    queryKey: ["schedule", defaultDate],
-    enabled: defaultDate !== "",
-    queryFn: async () => {
-      try {
-        const res = await axios.get<ScheduleType>(
-          `https://aniwatch-api-ruddy.vercel.app/anime/schedule?date=${defaultDate}`
-        );
-        return res.data;
-      } catch (e) {
-        console.log(e);
-      }
-    },
-  });
+  const dayAbbreviations = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className="mt-5">
-      <div className="relative flex items-center justify-center md:w-auto swiperScheduleBreakPoints mx-auto mt-10 mb-4 flex-1">
-        <button
-          onClick={() => ref.current?.swiper?.slidePrev()}
-          className="absolute -left-2 bg-white z-[50] p-2 rounded-full text-black"
-        >
-          <TiChevronLeft />
-        </button>
-        <Swiper
-          ref={ref}
-          spaceBetween={8}
-          breakpoints={{
-            100: {
-              slidesPerView: 3,
-            },
-            500: {
-              slidesPerView: 4,
-            },
-            700: {
-              slidesPerView: 5,
-            },
-            900: {
-              slidesPerView: 6,
-            },
-            1120: {
-              slidesPerView: 7,
-            },
-            1366: {
-              slidesPerView: 8,
-            },
-          }}
-        >
-          {monthDates.map((date) => (
-            <SwiperSlide key={date.date}>
-              <button
-                onClick={() => handleDateClick(date.value)}
-                className={cn(
-                  "flex items-center flex-col p-2 w-full duration-200 transition-all",
-                  defaultDate === date.value ? "bg-red-500 " : "bg-zinc-700/40"
-                )}
-              >
-                <span className="font-semibold uppercase sm:text-base text-sm mb-1">
-                  {date.day.slice(0, 3)}
-                </span>
-                <span
-                  className={cn(
-                    "text-xs",
-                    defaultDate === date.value ? "text-white" : "text-zinc-400"
-                  )}
-                >
-                  {date.date.split(" ")[1].slice(0, 3)}{" "}
-                  {date.date.split(" ")[2]}
-                </span>
-              </button>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <button
-          onClick={() => ref.current?.swiper?.slideNext()}
-          className="absolute -right-2 bg-white z-[50] p-2 rounded-full text-black"
-        >
-          <TiChevronRight />
-        </button>
+    <>
+      <div className="flex sm:flex-row flex-col gap-y-2 justify-between w-full">
+        <h6 className="text-2xl font-semibold text-primary">
+          Estimated Schedule
+        </h6>
+        <p className="font-semibold sm:py-0 py-2 text-sm bg-secondary flex gap-1 items-center px-3 rounded-full">
+          {current}
+        </p>
       </div>
 
-      {schedule && schedule?.scheduledAnimes?.length === 0 ? (
-        <div className="min-h-[40dvh] flex items-center justify-center text-zinc-400">
-          No results
-        </div>
-      ) : (
-        <div className="relative">
-          {schedule &&
-            schedule.scheduledAnimes.length > 6 &&
-            showAll <= 6 &&
-            !isLoading && (
-              <div
+      <div className="relative my-4 w-full">
+        <ReactSimplyCarousel
+          activeSlideIndex={activeSlideIndex}
+          onRequestChange={setActiveSlideIndex}
+          itemsToShow={6}
+          itemsToScroll={1}
+          swipeTreshold={100}
+          forwardBtnProps={{
+            //here you can also pass className, or any other button element attributes
+            className:
+              "h-full z-10 absolute right-0 bottom-1/2 translate-y-1/2",
+            children: (
+              <span
                 className={cn(
-                  "flex items-end justify-center h-[12rem] from-black to-transparent absolute bottom-0 inset-x-0 z-[90]",
-                  showAll > 6 ? "" : "bg-gradient-to-t"
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "icon",
+                    className: "h-full w-full rounded-none",
+                  })
                 )}
               >
-                <button onClick={() => setShowAll(500)}>Show all</button>
+                <GrFormNext className="h-8 w-8" />
+              </span>
+            ),
+          }}
+          backwardBtnProps={{
+            //here you can also pass className, or any other button element attributes
+            className:
+              "z-10 absolute h-full left-0 top-1/2 -translate-y-1/2",
+            children: (
+              <span
+                className={cn(
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "icon",
+                    className: "h-full w-full rounded-none",
+                  })
+                )}
+              >
+                <GrFormPrevious className="h-8 w-8" />
+              </span>
+            ),
+          }}
+          responsiveProps={[
+            {
+              itemsToShow: 12,
+              itemsToScroll: 1,
+              minWidth: 768,
+              maxWidth: 1536,
+            },
+          ]}
+          speed={400}
+          infinite={false}
+          disableSwipeByTouch
+          disableSwipeByMouse
+          easing="ease-in-out"
+        >
+          {prevDays
+            .map((prev, index) => {
+              const isActive =
+                prev.getFullYear() +
+                  "-" +
+                  (prev.getMonth() + 1 < 10
+                    ? "0" + (prev.getMonth() + 1)
+                    : prev.getMonth() + 1) +
+                  "-" +
+                  (prev.getDate() < 10
+                    ? "0" + prev.getDate()
+                    : prev.getDate()) ===
+                fetchDate;
+              return (
+                <Button
+                  className={cn(
+                    "w-48 rounded-none mr-6 h-12",
+                    isActive && "bg-primary"
+                  )}
+                  variant="outline"
+                  key={index}
+                  onClick={() =>
+                    handleShow(
+                      prev.getDate(),
+                      prev.getMonth(),
+                      prev.getFullYear()
+                    )
+                  }
+                >
+                  {dayAbbreviations[prev.getDay()]} {prev.getDate()}
+                </Button>
+              );
+            })
+            .reverse()}
+          {upcomingDays.map((next, index) => {
+            const isActive =
+              next.getFullYear() +
+                "-" +
+                (next.getMonth() + 1 < 10
+                  ? "0" + (next.getMonth() + 1)
+                  : next.getMonth() + 1) +
+                "-" +
+                (next.getDate() < 10
+                  ? "0" + next.getDate()
+                  : next.getDate()) ===
+              fetchDate;
+            return (
+              <Button
+                key={index}
+                className={cn(
+                  "w-48 rounded-none mr-6 h-12",
+                  isActive && "bg-primary text-white hover:bg-rose-400"
+                )}
+                variant="secondary"
+                onClick={() =>
+                  handleShow(
+                    next.getDate(),
+                    next.getMonth(),
+                    next.getFullYear()
+                  )
+                }
+              >
+                {dayAbbreviations[next.getDay()]} {next.getDate()}
+              </Button>
+            );
+          })}
+        </ReactSimplyCarousel>
+      </div>
+
+      <div className="w-full h-auto">
+        {!data
+          ? "loading"
+          : data?.map((data, index) => {
+            const isEven = index % 2;
+            return(
+              <div
+                className={cn("w-full py-3 border-b border-y-muted flex gap-x-2 justify-between px-2", isEven && "bg-slate-200 dark:bg-neutral-800")}
+                key={index}
+              >
+                <Link
+                  href={`/${data.id}`}
+                  className="text-md font-medium text-base hover:text-primary duration-200"
+                >
+                  {data.name}
+                </Link>
+
+                <p className="text-primary">{data.time}</p>
               </div>
-            )}
-          {isSuccess &&
-            schedule?.scheduledAnimes
-              ?.slice(0, showAll)
-              .map((sched) => (
-                <EstimatedScheduleCard key={sched.id} sched={sched} />
-              ))}
-          {isLoading && (
-            <div className="flex items-center justify-center min-h-[40dvh]">
-              <FiLoader className="animate-spin text-3xl text-zinc-500" />
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            )
+          })}
+      </div>
+    </>
   );
 };
-
-export default EstimatedSchedule;
+export default ScheduleAnime;
