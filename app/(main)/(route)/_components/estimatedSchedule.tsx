@@ -234,10 +234,9 @@ const ScheduleAnime = () => {
         {!data
           ? "loading"
           : data?.map((data, index) => {
-            const isEven = index % 2;
             return(
               <div
-                className={cn("w-full py-3 border-b border-y-muted flex gap-x-2 justify-between px-2", isEven && "bg-zinc-700/40 dark:bg-neutral-800")}
+                className={cn("w-full py-3  flex gap-x-2 justify-between px-2 bg-zinc-900/60 hover:bg-zinc-900/50")}
                 key={index}
               >
                 <Link
