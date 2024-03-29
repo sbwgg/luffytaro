@@ -212,7 +212,7 @@ const ScheduleAnime = () => {
                 key={index}
                 className={cn(
                   "w-48 rounded-none mr-6 h-12",
-                  isActive && "bg-primary text-white hover:bg-rose-400"
+                  isActive && "bg-rose-400 text-white hover:bg-rose-300"
                 )}
                 variant="secondary"
                 onClick={() =>
