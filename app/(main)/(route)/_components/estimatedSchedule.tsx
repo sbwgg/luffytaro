@@ -1,3 +1,4 @@
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
@@ -5,12 +6,9 @@ import { TiChevronRight, TiChevronLeft } from "react-icons/ti";
 import "swiper/swiper-bundle.css";
 import axios from "axios";
 import { cn } from "@/lib/utils";
-import { useQuery, QueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import EstimatedScheduleCard from "./estimatedScheduleCard";
 import { FiLoader } from "react-icons/fi";
-
-
-
 
 interface MonthDatesType {
   date: string;
@@ -36,7 +34,9 @@ const EstimatedSchedule = () => {
   useEffect(() => {
     const today = new Date();
 
-    const defaultDate = today.toLocaleDateString("en-CA", {
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    const defaultDate = firstDayOfMonth.toLocaleDateString("en-CA", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -44,12 +44,19 @@ const EstimatedSchedule = () => {
 
     setDefaultDate(defaultDate);
 
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const lastDayOfMonth = new Date(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      0
+    );
 
     const datesArray = [];
 
-    for (let day = firstDayOfMonth; day <= lastDayOfMonth; day.setDate(day.getDate() + 1)) {
+    for (
+      let day = firstDayOfMonth;
+      day <= lastDayOfMonth;
+      day.setDate(day.getDate() + 1)
+    ) {
       const dayOfWeek = day.getDay();
       const dateValue = day.toLocaleDateString("en-CA", {
         year: "numeric",
@@ -98,8 +105,6 @@ const EstimatedSchedule = () => {
       }
     },
   });
-
-"use client";
 
   return (
     <div className="mt-5">
