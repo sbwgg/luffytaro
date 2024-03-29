@@ -1,12 +1,16 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import { TiChevronRight, TiChevronLeft } from "react-icons/ti";
 import "swiper/swiper-bundle.css";
 import axios from "axios";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, QueryClient } from "@tanstack/react-query";
 import EstimatedScheduleCard from "./estimatedScheduleCard";
 import { FiLoader } from "react-icons/fi";
+
+
+
 
 interface MonthDatesType {
   date: string;
@@ -94,6 +98,8 @@ const EstimatedSchedule = () => {
       }
     },
   });
+
+"use client";
 
   return (
     <div className="mt-5">
