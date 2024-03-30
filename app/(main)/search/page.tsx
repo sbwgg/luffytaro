@@ -1,7 +1,6 @@
-'use client';
-
-import React, { useState, useEffect } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
+import React from "react";
+import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
 
@@ -34,9 +33,9 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string, dubSub: string) => {
+const getSearchResult = async (keyw: string, page: string) => {
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&language=${dubSub}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
     {
       next: {
         revalidate: 60,
@@ -49,18 +48,25 @@ const getSearchResult = async (keyw: string, page: string, dubSub: string) => {
   return res.json();
 };
 
+export const generateMetadata = async ({
+  searchParams,
+}: {
+  searchParams: { keyw: string };
+}) => {
+  const { keyw } = searchParams;
+
+  return {
+    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
+  };
+};
+
 const SearchPage = async ({
   searchParams,
 }: {
   searchParams: { keyw: string; page: string };
 }) => {
   const { keyw, page } = searchParams;
-  const [dubSub, setDubSub] = useState(""); // State variable for dub/sub option
-  const searchResult: SearchResultType = await getSearchResult(keyw, page, dubSub);
-
-  const handleDubSubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setDubSub(event.target.value);
-  };
+  const searchResult: SearchResultType = await getSearchResult(keyw, page);
 
   return (
     <div className="pt-24">
@@ -70,13 +76,6 @@ const SearchPage = async ({
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
-
-          <select value={dubSub} onChange={handleDubSubChange}>
-            <option value="">Select Dub/Sub</option>
-            <option value="sub">Sub</option>
-            <option value="dub">Dub</option>
-            <option value="sub-&-dub">Sub & Dub</option>
-          </select>
 
           {!searchResult.animes.length ? (
             <div className="flex items-center justify-center text-gray-300 min-h-[80dvh]">
