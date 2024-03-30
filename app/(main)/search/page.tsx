@@ -1,8 +1,10 @@
+'use client';
+
+import React, { useState } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
-import React from "react";
-import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
+import "./search.css";
 
 export interface SearchResultType {
   animes: {
@@ -33,9 +35,10 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string) => {
+const getSearchResult = async (keyw: string, page: string, filters: { type?: string; rating?: string }) => {
+  const filterParams = new URLSearchParams(filters).toString();
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&${filterParams}`,
     {
       next: {
         revalidate: 60,
@@ -48,25 +51,20 @@ const getSearchResult = async (keyw: string, page: string) => {
   return res.json();
 };
 
-export const generateMetadata = async ({
-  searchParams,
-}: {
-  searchParams: { keyw: string };
-}) => {
-  const { keyw } = searchParams;
-
-  return {
-    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
-  };
-};
-
-const SearchPage = async ({
-  searchParams,
-}: {
-  searchParams: { keyw: string; page: string };
-}) => {
+const SearchPage = async ({ searchParams }: { searchParams: { keyw: string; page: string } }) => {
   const { keyw, page } = searchParams;
-  const searchResult: SearchResultType = await getSearchResult(keyw, page);
+  const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
+  const [selectedRating, setSelectedRating] = useState<string | undefined>(undefined);
+  
+  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedType(event.target.value);
+  };
+
+  const handleRatingChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRating(event.target.value);
+  };
+
+  const searchResult: SearchResultType = await getSearchResult(keyw, page, { type: selectedType, rating: selectedRating });
 
   return (
     <div className="pt-24">
@@ -76,6 +74,25 @@ const SearchPage = async ({
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
+
+          <div className="flex gap-x-4 mt-5">
+            <label htmlFor="type">Type:</label>
+            <select id="type" value={selectedType || ""} onChange={handleTypeChange}>
+              <option value="">All</option>
+              <option value="TV">TV</option>
+              <option value="Movie">Movie</option>
+              <option value="OVA">OVA</option>
+              {/* Add more options as needed */}
+            </select>
+
+            <label htmlFor="rating">Rating:</label>
+            <select id="rating" value={selectedRating || ""} onChange={handleRatingChange}>
+              <option value="">All</option>
+              <option value="PG-13">PG-13</option>
+              <option value="R">R</option>
+              {/* Add more options as needed */}
+            </select>
+          </div>
 
           {!searchResult.animes.length ? (
             <div className="flex items-center justify-center text-gray-300 min-h-[80dvh]">
