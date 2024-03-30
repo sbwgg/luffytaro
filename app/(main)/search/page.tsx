@@ -52,10 +52,10 @@ const getSearchResult = async (keyw: string, page: string, filters: { type?: str
     filterParams.append('rating', filters.rating);
   }
 
-  const url = `https://aniwatch-api-ruddy.vercel.app/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`;
-  console.log("URL:", url); // Log the URL
+  const urlapi = `https://aniwatch-api-ruddy.vercel.app/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`;
+  console.log("URL:", urlapi); // Log the URL
 
-  const res = await fetch(url, {
+  const res = await fetch(urlapi, {
     next: {
       revalidate: 60,
     },
