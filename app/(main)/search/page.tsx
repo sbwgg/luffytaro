@@ -1,7 +1,6 @@
-'use client';
-
-import React, { useState } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
+import React from "react";
+import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
 
@@ -34,9 +33,9 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string, language: string) => {
+const getSearchResult = async (keyw: string, page: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&language=${language}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
     {
       next: {
         revalidate: 60,
@@ -49,18 +48,25 @@ const getSearchResult = async (keyw: string, page: string, language: string) => 
   return res.json();
 };
 
+export const generateMetadata = async ({
+  searchParams,
+}: {
+  searchParams: { keyw: string };
+}) => {
+  const { keyw } = searchParams;
+
+  return {
+    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
+  };
+};
+
 const SearchPage = async ({
   searchParams,
 }: {
   searchParams: { keyw: string; page: string };
 }) => {
-  const [language, setLanguage] = useState("sub"); // Default to subbed anime
   const { keyw, page } = searchParams;
-  const searchResult: SearchResultType = await getSearchResult(keyw, page, language);
-
-  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(event.target.value);
-  };
+  const searchResult: SearchResultType = await getSearchResult(keyw, page);
 
   return (
     <div className="pt-24">
@@ -70,21 +76,6 @@ const SearchPage = async ({
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
-
-          <div className="mt-4 mb-4">
-            <label htmlFor="language" className="mr-2">
-              Select Sub/Dub:
-            </label>
-            <select
-              id="language"
-              value={language}
-              onChange={handleLanguageChange}
-              className="p-1 border border-gray-300 rounded-md"
-            >
-              <option value="sub">Subbed</option>
-              <option value="dub">Dubbed</option>
-            </select>
-          </div>
 
           {!searchResult.animes.length ? (
             <div className="flex items-center justify-center text-gray-300 min-h-[80dvh]">
