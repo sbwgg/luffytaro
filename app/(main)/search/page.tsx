@@ -1,35 +1,39 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
 import "./search.css";
 
-export interface SearchResultType {
-  animes: {
-    id: string;
-    name: string;
-    poster: string;
-    duration: string;
-    type: string;
-    rating: string;
-    episodes: {
-      sub: number;
-      dub: number | null;
-    };
-  }[];
-  mostPopularAnimes: {
-    id: string;
-    name: string;
-    jname: string;
-    poster: string;
-    episodes: {
-      sub: number;
-      dub: number;
-    };
-    type: string;
-  }[];
+interface Anime {
+  id: string;
+  name: string;
+  poster: string;
+  duration: string;
+  type: string;
+  rating: string;
+  episodes: {
+    sub: number;
+    dub: number | null;
+  };
+}
+
+interface MostPopularAnime {
+  id: string;
+  name: string;
+  jname: string;
+  poster: string;
+  episodes: {
+    sub: number;
+    dub: number;
+  };
+  type: string;
+}
+
+interface SearchResultType {
+  animes: Anime[];
+  mostPopularAnimes: MostPopularAnime[];
   currentPage: number;
   hasNextPage: boolean;
   totalPages: number;
@@ -38,7 +42,7 @@ export interface SearchResultType {
 const getSearchResult = async (keyw: string, page: string, filters: { type?: string; rating?: string }) => {
   const filterParams = new URLSearchParams(filters).toString();
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/search?q=${keyw}&page=${page || ""}&${filterParams}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&${filterParams}`,
     {
       next: {
         revalidate: 60,
@@ -48,14 +52,14 @@ const getSearchResult = async (keyw: string, page: string, filters: { type?: str
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
-  return res.json();
+  return res.json() as Promise<SearchResultType>;
 };
 
-const SearchPage = async ({ searchParams }: { searchParams: { keyw: string; page: string } }) => {
+const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = ({ searchParams }) => {
   const { keyw, page } = searchParams;
   const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
   const [selectedRating, setSelectedRating] = useState<string | undefined>(undefined);
-  
+
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedType(event.target.value);
   };
@@ -64,7 +68,29 @@ const SearchPage = async ({ searchParams }: { searchParams: { keyw: string; page
     setSelectedRating(event.target.value);
   };
 
-  const searchResult: SearchResultType = await getSearchResult(keyw, page, { type: selectedType, rating: selectedRating });
+  const pageNumber = page || "1";
+  const typeFilter = selectedType !== undefined ? selectedType : "";
+  const ratingFilter = selectedRating !== undefined ? selectedRating : "";
+
+  const [searchResult, setSearchResult] = useState<SearchResultType>({
+    animes: [],
+    mostPopularAnimes: [],
+    currentPage: 1,
+    hasNextPage: false,
+    totalPages: 1,
+  });
+
+  useEffect(() => {
+    const fetchSearchResult = async () => {
+      try {
+        const result = await getSearchResult(keyw, pageNumber, { type: typeFilter, rating: ratingFilter });
+        setSearchResult(result);
+      } catch (error) {
+        console.error("Error fetching search result:", error);
+      }
+    };
+    fetchSearchResult();
+  }, [keyw, pageNumber, typeFilter, ratingFilter]);
 
   return (
     <div className="pt-24">
@@ -109,7 +135,7 @@ const SearchPage = async ({ searchParams }: { searchParams: { keyw: string; page
           {searchResult.totalPages > 1 && (
             <div className="flex items-center justify-center mt-12">
               <Pagination
-                page={parseInt(page) || 1}
+                page={parseInt(pageNumber) || 1}
                 url={`/search?keyw=${keyw.replace(" ", "+")}&`}
                 totalPages={searchResult.totalPages}
               />
