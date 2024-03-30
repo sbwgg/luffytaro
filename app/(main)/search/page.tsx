@@ -40,18 +40,31 @@ interface SearchResultType {
 }
 
 const getSearchResult = async (keyw: string, page: string, filters: { type?: string; rating?: string }) => {
-  const filterParams = new URLSearchParams(filters).toString();
+  const filterParams = new URLSearchParams();
+
+  // Add type parameter if it exists
+  if (filters.type) {
+    filterParams.append('type', filters.type);
+  }
+
+  // Add rating parameter if it exists
+  if (filters.rating) {
+    filterParams.append('rating', filters.rating);
+  }
+
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || "1"}&${filterParams}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`,
     {
       next: {
         revalidate: 60,
       },
     }
   );
+
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
+
   return res.json() as Promise<SearchResultType>;
 };
 
