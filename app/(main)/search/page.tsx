@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
 import MostPopularAnime from "@/components/mostPopularAnime";
