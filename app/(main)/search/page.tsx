@@ -1,6 +1,5 @@
+import React, { useState, useEffect } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
-import React from "react";
-import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
 
@@ -33,45 +32,97 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string) => {
-  const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
-    {
-      next: {
-        revalidate: 60,
-      },
-    }
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-};
-
-export const generateMetadata = async ({
-  searchParams,
-}: {
-  searchParams: { keyw: string };
-}) => {
-  const { keyw } = searchParams;
-
-  return {
-    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
-  };
-};
-
 const SearchPage = async ({
   searchParams,
 }: {
   searchParams: { keyw: string; page: string };
 }) => {
   const { keyw, page } = searchParams;
-  const searchResult: SearchResultType = await getSearchResult(keyw, page);
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+  const [rated, setRated] = useState("");
+  const [score, setScore] = useState("");
+  const [season, setSeason] = useState("");
+  const [language, setLanguage] = useState("");
+  const [start_date, setStartDate] = useState("");
+  const [end_date, setEndDate] = useState("");
+
+  const [searchResult, setSearchResult] = useState<SearchResultType>({
+    animes: [],
+    mostPopularAnimes: [],
+    currentPage: 1,
+    hasNextPage: false,
+    totalPages: 1,
+  });
+
+  useEffect(() => {
+    const getSearchResult = async () => {
+      const res = await fetch(
+        `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&type=${type}&status=${status}&rated=${rated}&score=${score}&season=${season}&language=${language}&start_date=${start_date}&end_date=${end_date}`,
+        {
+          next: {
+            revalidate: 60,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await res.json();
+      setSearchResult(data);
+    };
+
+    getSearchResult();
+  }, [keyw, page, type, status, rated, score, season, language, start_date, end_date]);
+
+  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setType(event.target.value);
+  };
+
+  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatus(event.target.value);
+  };
+
+  const handleRatedChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setRated(event.target.value);
+  };
+
+  const handleScoreChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setScore(event.target.value);
+  };
+
+  const handleSeasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSeason(event.target.value);
+  };
+
+  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(event.target.value);
+  };
+
+  const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(event.target.value);
+  };
 
   return (
     <div className="pt-24">
       <div className="lg:flex gap-x-4 px-3 lg:px-10">
         <div className="flex-1">
+          <select value={type} onChange={handleTypeChange}>
+            <option value="">Select Type</option>
+            <option value="movie">Movie</option>
+            <option value="series">Series</option>
+          </select>
+          <select value={status} onChange={handleStatusChange}>
+            <option value="">Select Status</option>
+            <option value="finished-airing">Finished Airing</option>
+            <option value="currently-airing">Currently Airing</option>
+          </select>
+          {/* Implement other dropdown menus for filters */}
+
           <h1 className="sm:text-xl">
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
