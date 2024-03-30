@@ -34,20 +34,6 @@ export type MonthAnimeProps = {
   poster: string;
 };
 
-export type Top10AnimeProps = {
-  month: MonthAnimeProps[];
-  today: MonthAnimeProps[];
-  week: MonthAnimeProps[];
-};
-
-export type TopAiringAnimesProps = {
-  id: string;
-  jname: string;
-  name: string;
-  poster: string;
-  otherInfo: string[];
-};
-
 export type TopUpcomingAnimes = {
   duration: string;
   episodes: Episodes;
@@ -65,17 +51,7 @@ export type TrendingAnimeProps = {
   rank: number | null;
 };
 
-export type HomeAnimeProps = {
-  genres: string[];
-  latestEpisodeAnimes: LatestAnimeProps[];
-  spotlightAnimes: SpotLightAnimesProps[];
-  top10Animes: Top10AnimeProps;
-  topAiringAnimes: TopAiringAnimesProps[];
-  topUpcomingAnimes: TopUpcomingAnimes[];
-  trendingAnimes: TrendingAnimeProps[];
-  status: number;
-  message: string;
-};
+
 
 export type StatsProps = {
   duration: string;
@@ -218,25 +194,6 @@ export type AnimeStreamingProp = {
   message: string;
 };
 
-export type AnimeByCategoryTypes = {
-  animes: AnimesProps[];
-  category: string;
-  currentPage: number;
-  genres: string[];
-  hasNextPage: boolean;
-  top10Animes: Top10AnimeProps;
-  totalPages: number;
-};
-
-export type AnimeByGenreTypes = {
-  animes: AnimesProps[];
-  currentPage: number;
-  genreName: string;
-  genres: string[];
-  hasNextPage: boolean;
-  topAiringAnimes: Top10AnimeProps;
-  totalPages: number;
-};
 
 export type ScheduleAnimeTypes = {
   name: string;
