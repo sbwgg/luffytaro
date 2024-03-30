@@ -141,17 +141,15 @@ const ScheduleAnime = () => {
                 className="w-full py-3 flex gap-x-2 justify-between px-2 bg-zinc-900/60 hover:bg-zinc-900/50"
                 key={index}
               >
-                <div>
-                  <div className="flex items-center">
-                    <IoIosPlay className="text-zinc-500 scale-[1.1] group-hover/play:text-white" />
-                    <span>Episodes: {episodeData[anime.id] || "Loading..."}</span>
-                  </div>
+                <div className="flex items-center">
+                  <IoIosPlay className="text-zinc-500 scale-[1.1] group-hover/play:text-white" />
+                  <span>Episodes: {episodeData[anime.id] || "Loading..."}</span>
                 </div>
-                <div className="flex-grow ml-4">
+                <div>
                   <Link href={`/${anime.id}`} className="text-md font-medium text-base hover:text-white duration-200">
                     {anime.name}
                   </Link>
-                  <span className="text-sm text-gray-400 ml-2">{anime.time}</span>
+                  <span className="text-sm text-gray-400">{anime.time}</span>
                 </div>
               </div>
             ))}
