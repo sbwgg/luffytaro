@@ -52,14 +52,14 @@ const getSearchResult = async (keyw: string, page: string, filters: { type?: str
     filterParams.append('rating', filters.rating);
   }
 
-  const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`,
-    {
-      next: {
-        revalidate: 60,
-      },
-    }
-  );
+  const url = `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`;
+  console.log("URL:", url); // Log the URL
+
+  const res = await fetch(url, {
+    next: {
+      revalidate: 60,
+    },
+  });
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
