@@ -1,6 +1,5 @@
+import React, { useState } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
-import React from "react";
-import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
 
@@ -33,9 +32,9 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string) => {
+const getSearchResult = async (keyw: string, page: string, subOrDub: string) => {
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&language=${subOrDub}`,
     {
       next: {
         revalidate: 60,
@@ -48,25 +47,18 @@ const getSearchResult = async (keyw: string, page: string) => {
   return res.json();
 };
 
-export const generateMetadata = async ({
-  searchParams,
-}: {
-  searchParams: { keyw: string };
-}) => {
-  const { keyw } = searchParams;
-
-  return {
-    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
-  };
-};
-
 const SearchPage = async ({
   searchParams,
 }: {
   searchParams: { keyw: string; page: string };
 }) => {
+  const [subOrDub, setSubOrDub] = useState("sub"); // Default to subbed anime
   const { keyw, page } = searchParams;
-  const searchResult: SearchResultType = await getSearchResult(keyw, page);
+  const searchResult: SearchResultType = await getSearchResult(keyw, page, subOrDub);
+
+  const handleSubOrDubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSubOrDub(event.target.value);
+  };
 
   return (
     <div className="pt-24">
@@ -76,6 +68,21 @@ const SearchPage = async ({
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
+
+          <div className="mt-4 mb-4">
+            <label htmlFor="subOrDub" className="mr-2">
+              Select Sub/Dub:
+            </label>
+            <select
+              id="subOrDub"
+              value={subOrDub}
+              onChange={handleSubOrDubChange}
+              className="p-1 border border-gray-300 rounded-md"
+            >
+              <option value="sub">Subbed</option>
+              <option value="dub">Dubbed</option>
+            </select>
+          </div>
 
           {!searchResult.animes.length ? (
             <div className="flex items-center justify-center text-gray-300 min-h-[80dvh]">
