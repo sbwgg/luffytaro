@@ -38,7 +38,7 @@ export interface SearchResultType {
 const getSearchResult = async (keyw: string, page: string, filters: { type?: string; rating?: string }) => {
   const filterParams = new URLSearchParams(filters).toString();
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&${filterParams}`,
+    `${process.env.ANIWATCH_URL}/search?q=${keyw}&page=${page || ""}&${filterParams}`,
     {
       next: {
         revalidate: 60,
