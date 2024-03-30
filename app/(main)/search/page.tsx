@@ -52,7 +52,7 @@ const getSearchResult = async (keyw: string, page: string, filters: { type?: str
     filterParams.append('rating', filters.rating);
   }
 
-  const url = `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`;
+  const url = `https://aniwatch-api-ruddy.vercel.app/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`;
   console.log("URL:", url); // Log the URL
 
   const res = await fetch(url, {
