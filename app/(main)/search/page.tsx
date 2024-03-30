@@ -32,9 +32,9 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string, subOrDub: string) => {
+const getSearchResult = async (keyw: string, page: string, language: string) => {
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&language=${subOrDub}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&language=${language}`,
     {
       next: {
         revalidate: 60,
@@ -52,12 +52,12 @@ const SearchPage = async ({
 }: {
   searchParams: { keyw: string; page: string };
 }) => {
-  const [subOrDub, setSubOrDub] = useState("sub"); // Default to subbed anime
+  const [language, setLanguage] = useState("sub"); // Default to subbed anime
   const { keyw, page } = searchParams;
-  const searchResult: SearchResultType = await getSearchResult(keyw, page, subOrDub);
+  const searchResult: SearchResultType = await getSearchResult(keyw, page, language);
 
-  const handleSubOrDubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSubOrDub(event.target.value);
+  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(event.target.value);
   };
 
   return (
@@ -70,13 +70,13 @@ const SearchPage = async ({
           </h1>
 
           <div className="mt-4 mb-4">
-            <label htmlFor="subOrDub" className="mr-2">
+            <label htmlFor="language" className="mr-2">
               Select Sub/Dub:
             </label>
             <select
-              id="subOrDub"
-              value={subOrDub}
-              onChange={handleSubOrDubChange}
+              id="language"
+              value={language}
+              onChange={handleLanguageChange}
               className="p-1 border border-gray-300 rounded-md"
             >
               <option value="sub">Subbed</option>
