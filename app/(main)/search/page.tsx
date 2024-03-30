@@ -1,108 +1,72 @@
-
-import React, { useState, useEffect } from "react";
 import GridCardAnime from "@/components/gridCardAnime";
+import React from "react";
+import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
-import "./search.css";
 
-interface Anime {
-  id: string;
-  name: string;
-  poster: string;
-  duration: string;
-  type: string;
-  rating: string;
-  episodes: {
-    sub: number;
-    dub: number | null;
-  };
-}
-
-interface MostPopularAnime {
-  id: string;
-  name: string;
-  jname: string;
-  poster: string;
-  episodes: {
-    sub: number;
-    dub: number;
-  };
-  type: string;
-}
-
-interface SearchResultType {
-  animes: Anime[];
-  mostPopularAnimes: MostPopularAnime[];
+export interface SearchResultType {
+  animes: {
+    id: string;
+    name: string;
+    poster: string;
+    duration: string;
+    type: string;
+    rating: string;
+    episodes: {
+      sub: number;
+      dub: number | null;
+    };
+  }[];
+  mostPopularAnimes: {
+    id: string;
+    name: string;
+    jname: string;
+    poster: string;
+    episodes: {
+      sub: number;
+      dub: number;
+    };
+    type: string;
+  }[];
   currentPage: number;
   hasNextPage: boolean;
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string, filters: { type?: string; rating?: string }) => {
-  const filterParams = new URLSearchParams();
-
-  // Add type parameter if it exists
-  if (filters.type) {
-    filterParams.append('type', filters.type);
-  }
-
-  // Add rating parameter if it exists
-  if (filters.rating) {
-    filterParams.append('rating', filters.rating);
-  }
-
-  const urlapi = `https://aniwatch-api-ruddy.vercel.app/anime/search?q=${keyw}&page=${page || "1"}${filterParams.toString()}`;
-  console.log("URL:", urlapi); // Log the URL
-
-  const res = await fetch(urlapi, {
-    next: {
-      revalidate: 60,
-    },
-  });
-
+const getSearchResult = async (keyw: string, page: string) => {
+  const res = await fetch(
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
+    {
+      next: {
+        revalidate: 60,
+      },
+    }
+  );
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
-
-  return res.json() as Promise<SearchResultType>;
+  return res.json();
 };
 
-const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = ({ searchParams }) => {
+export const generateMetadata = async ({
+  searchParams,
+}: {
+  searchParams: { keyw: string };
+}) => {
+  const { keyw } = searchParams;
+
+  return {
+    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
+  };
+};
+
+const SearchPage = async ({
+  searchParams,
+}: {
+  searchParams: { keyw: string; page: string };
+}) => {
   const { keyw, page } = searchParams;
-  const [selectedType, setSelectedType] = useState<string | undefined>(undefined);
-  const [selectedRating, setSelectedRating] = useState<string | undefined>(undefined);
-
-  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedType(event.target.value);
-  };
-
-  const handleRatingChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRating(event.target.value);
-  };
-
-  const pageNumber = page || "1";
-  const typeFilter = selectedType !== undefined ? selectedType : "";
-  const ratingFilter = selectedRating !== undefined ? selectedRating : "";
-
-  const [searchResult, setSearchResult] = useState<SearchResultType>({
-    animes: [],
-    mostPopularAnimes: [],
-    currentPage: 1,
-    hasNextPage: false,
-    totalPages: 1,
-  });
-
-  useEffect(() => {
-    const fetchSearchResult = async () => {
-      try {
-        const result = await getSearchResult(keyw, pageNumber, { type: typeFilter, rating: ratingFilter });
-        setSearchResult(result);
-      } catch (error) {
-        console.error("Error fetching search result:", error);
-      }
-    };
-    fetchSearchResult();
-  }, [keyw, pageNumber, typeFilter, ratingFilter]);
+  const searchResult: SearchResultType = await getSearchResult(keyw, page);
 
   return (
     <div className="pt-24">
@@ -112,25 +76,6 @@ const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = (
             <span className="p-1 mr-3 bg-red-500 rounded-lg" />
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
-
-          <div className="flex gap-x-4 mt-5">
-            <label htmlFor="type">Type:</label>
-            <select id="type" value={selectedType || ""} onChange={handleTypeChange}>
-              <option value="">All</option>
-              <option value="TV">TV</option>
-              <option value="Movie">Movie</option>
-              <option value="OVA">OVA</option>
-              {/* Add more options as needed */}
-            </select>
-
-            <label htmlFor="rating">Rating:</label>
-            <select id="rating" value={selectedRating || ""} onChange={handleRatingChange}>
-              <option value="">All</option>
-              <option value="PG-13">PG-13</option>
-              <option value="R">R</option>
-              {/* Add more options as needed */}
-            </select>
-          </div>
 
           {!searchResult.animes.length ? (
             <div className="flex items-center justify-center text-gray-300 min-h-[80dvh]">
@@ -147,7 +92,7 @@ const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = (
           {searchResult.totalPages > 1 && (
             <div className="flex items-center justify-center mt-12">
               <Pagination
-                page={parseInt(pageNumber) || 1}
+                page={parseInt(page) || 1}
                 url={`/search?keyw=${keyw.replace(" ", "+")}&`}
                 totalPages={searchResult.totalPages}
               />
