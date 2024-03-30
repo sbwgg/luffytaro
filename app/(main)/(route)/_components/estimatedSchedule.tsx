@@ -178,7 +178,7 @@ const ScheduleAnime = () => {
                 <Button
                   className={cn(
                     "w-48 rounded-none mr-6 h-12",
-                    isActive && "bg-red-500"
+                    isActive && "bg-red-600"
                   )}
                   variant="secondary"
                   key={index}
@@ -212,7 +212,7 @@ const ScheduleAnime = () => {
                 key={index}
                 className={cn(
                   "w-48 rounded-none mr-6 h-12",
-                  isActive && "bg-red-500 text-white hover:bg-red-500"
+                  isActive && "bg-rose-400 text-white hover:bg-rose-400"
                 )}
                 variant="secondary"
                 onClick={() =>
