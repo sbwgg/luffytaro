@@ -9,19 +9,20 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
-interface SearchResult {
-  id: string;
-  jname: string;
-  moreInfo: string[];
-  name: string;
-  poster: string;
+interface SearchSuggestProp {
+  suggestions: {
+    id: string;
+    jname: string;
+    moreInfo: string[];
+    name: string;
+    poster: string;
+  }[];
 }
 
-const SearchForm: React.FC = () => {
+const SearchForm = () => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggest, setShowSuggest] = useState(true);
   const [showInput, setShowInput] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -29,18 +30,17 @@ const SearchForm: React.FC = () => {
     data: searchSuggest,
     isLoading,
     isSuccess,
-  } = useQuery<SearchResult[]>({
+  } = useQuery({
     queryKey: ["search", inputValue],
     enabled: inputValue !== "",
     queryFn: async () => {
       try {
-        const res = await axios.get<SearchResult[]>(
+        const res = await axios.get<SearchSuggestProp>(
           `${process.env.NEXT_PUBLIC_ANIWATCH_URL}/anime/search/suggest?q=${inputValue}`
         );
         return res.data;
       } catch (e) {
         console.log(e);
-        return [];
       }
     },
   });
@@ -83,7 +83,7 @@ const SearchForm: React.FC = () => {
           "flex-1 rounded-lg lg:static fixed inset-x-3 lg:mt-0 mt-6",
           showInput ? "block" : "hidden lg:block"
         )}
-        style={{ backgroundColor: "#333" }}
+        style={{ backgroundColor: "#333" }} // Change background color to dark grey
       >
         <form onSubmit={handleSubmit} className="flex items-center">
           <button className="absolute left-3 text-black">
@@ -91,8 +91,6 @@ const SearchForm: React.FC = () => {
           </button>
           <input
             type="text"
-            onFocus={() => setIsInputFocused(true)}
-            onBlur={() => setIsInputFocused(false)}
             onClick={(e) => {
               e.stopPropagation();
               setShowSuggest(true);
@@ -102,12 +100,9 @@ const SearchForm: React.FC = () => {
               setShowSuggest(true);
             }}
             value={inputValue}
-            className={cn(
-              "p-2 text-sm text-zinc-500 outline-none rounded pl-10 lg:w-[18.5rem] flex-1",
-              { "border-blue-500": isInputFocused } // Apply border when input is focused
-            )}
+            className="p-2 text-sm text-zinc-500 outline-none rounded pl-10 lg:w-[18.5rem] flex-1"
             placeholder="Search anime..."
-            style={{ backgroundColor: "#131313", color: "#fff" }}
+            style={{ backgroundColor: "#131313", color: "#fff" }} // Change background and text color to dark grey and white
           />
         </form>
 
@@ -117,14 +112,14 @@ const SearchForm: React.FC = () => {
               "overflow-auto flex-1 duration-300",
               searchSuggest &&
                 inputValue &&
-                searchSuggest.length > 1 &&
+                searchSuggest.suggestions.length > 1 &&
                 isSuccess &&
                 showSuggest
                 ? "max-h-[29rem]"
                 : "max-h-0"
             )}
           >
-            {searchSuggest?.map((s, index) => (
+            {searchSuggest?.suggestions.map((s, index) => (
               <Link
                 href={`/${s.id}`}
                 onClick={() => setInputValue("")}
@@ -163,7 +158,7 @@ const SearchForm: React.FC = () => {
           </div>
           {searchSuggest &&
             inputValue &&
-            searchSuggest.length > 1 &&
+            searchSuggest.suggestions.length > 1 &&
             isSuccess &&
             showSuggest && (
               <Link
@@ -181,7 +176,7 @@ const SearchForm: React.FC = () => {
             "absolute inset-x-0 flex items-center justify-center duration-300",
             inputValue && isLoading && showSuggest ? "py-4" : "p-0"
           )}
-          style={{ backgroundColor: "#131313" }}
+          style={{ backgroundColor: "#333" }} // Change background color to dark grey
         >
           {isLoading && inputValue ? <p>Loading...</p> : null}
         </div>
@@ -192,15 +187,15 @@ const SearchForm: React.FC = () => {
             isSuccess &&
               searchSuggest &&
               showSuggest &&
-              searchSuggest.length < 1
+              searchSuggest?.suggestions.length < 1
               ? "py-4"
               : "p-0"
           )}
-          style={{ backgroundColor: "#333" }}
+          style={{ backgroundColor: "#333" }} // Change background color to dark grey
         >
           {isSuccess &&
           searchSuggest &&
-          searchSuggest.length < 1 ? (
+          searchSuggest?.suggestions.length < 1 ? (
             <p>{showSuggest && "No results :("}</p>
           ) : null}
         </div>
