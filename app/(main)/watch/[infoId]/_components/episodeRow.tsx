@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import { useEffect, useState } from "react";
 import { Element, scroller } from "react-scroll";
