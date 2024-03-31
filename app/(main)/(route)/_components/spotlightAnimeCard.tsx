@@ -39,6 +39,9 @@ const SpotlightAnimeCard = ({ s }: SpotlightAnimeCardProp) => {
     },
   });
 
+  const truncatedDescription =
+    s.description.length > 150 ? s.description.slice(0, 150) + "..." : s.description;
+
   return (
     <>
       <div
@@ -89,7 +92,9 @@ const SpotlightAnimeCard = ({ s }: SpotlightAnimeCardProp) => {
           </div>
 
           <div className="hidden sm:block">
-            <p className="text-sm text-gray-300">{s.description}</p>
+            <p className="text-sm text-gray-300">
+              {truncatedDescription}
+            </p>
           </div>
 
           <div className="flex items-center gap-x-2 mt-3 md:mt-8">
