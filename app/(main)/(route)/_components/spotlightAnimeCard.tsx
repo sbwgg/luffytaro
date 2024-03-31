@@ -45,19 +45,17 @@ const SpotlightAnimeCard = ({ s }: SpotlightAnimeCardProp) => {
         style={{
           background: `url(${s.poster})`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "100% 100%",
+          backgroundSize: "cover",
         }}
         className="relative flex items-end shadow h-[23rem] sm:h-[30rem] lg:h-[35rem] z-[1]"
       >
         <div className="max-w-[35rem] flex-1 ml-5 lg:ml-20 mb-10">
           <p className="text-red-500 md:mb-3">#{s.rank} Spotlight</p>
-          <h1
-            className={`max-w-[14rem] sm:max-w-full titleEllipsis text-xl lg:text-4xl font-bold md:font-extrabold`}
-          >
+          <h1 className="max-w-[14rem] sm:max-w-full text-xl lg:text-4xl font-bold md:font-extrabold">
             {s.name}
           </h1>
 
-          <div className="hidden sm:flex items-center gap-x-3 my-2 text-sm">
+          <div className="flex flex-wrap items-center gap-x-3 my-2 text-sm">
             <p className="text-green-500 font-semibold">{s.otherInfo[0]}</p>
             {s.otherInfo[1] && (
               <p className="flex items-center gap-x-1">
@@ -90,8 +88,8 @@ const SpotlightAnimeCard = ({ s }: SpotlightAnimeCardProp) => {
             )}
           </div>
 
-          <div className="hidden md:block">
-            <p className="ellipsis text-sm text-gray-300">{s.description}</p>
+          <div className="block sm:hidden">
+            <p className="text-sm text-gray-300">{s.description}</p>
           </div>
 
           <div className="flex items-center gap-x-2 mt-3 md:mt-8">
