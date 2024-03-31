@@ -1,10 +1,8 @@
-"use client";
-
-import { EpisodeType } from "@/app/(main)/[infoId]/_components/animeInfo";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Element, scroller } from "react-scroll";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { EpisodeType } from "@/app/(main)/[infoId]/_components/animeInfo";
 
 interface EpisodeRowProp {
   animeEpisodes: EpisodeType;
@@ -18,14 +16,31 @@ export default function EpisodeRow({
   infoId,
 }: EpisodeRowProp) {
   const [epshowed, setEpshowed] = useState<number | undefined>(undefined);
+  const [searchValue, setSearchValue] = useState<string>("");
+
   const { episodes } = animeEpisodes;
 
+  useEffect(() => {
+    // Highlight episode if search value matches
+    if (searchValue !== "") {
+      const matchedEpisode = episodes.find(
+        (episode) => episode.number === parseInt(searchValue)
+      );
+      if (matchedEpisode) {
+        const matchedIndex = episodes.indexOf(matchedEpisode);
+        setEpshowed(Math.floor(matchedIndex / 100));
+      }
+    }
+  }, [searchValue, episodes]);
+
+  // Chunk episodes into groups of 100
   const chunkEpisodes = [];
   for (let i = 0; i < episodes?.length; i += 100) {
     const chunk = episodes?.slice(i, i + 100);
     chunkEpisodes?.push(chunk);
   }
 
+  // Dropdown options for episode chunks
   const dropDownEp = [];
   for (let i = 0; i < chunkEpisodes.length; i++) {
     dropDownEp.push({
@@ -36,12 +51,25 @@ export default function EpisodeRow({
     });
   }
 
+  // Default value for dropdown based on current episode
   const defaultValue = dropDownEp.findIndex((item) =>
     item.episodesId.some((item) => item.episodeId.split("=")[1] === ep)
   );
 
   return (
     <>
+      {/* Search bar */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search episode number..."
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className="border border-gray-300 px-2 py-1 rounded-md"
+        />
+      </div>
+
+      {/* Episodes dropdown */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm">EPISODES:</p>
 
@@ -60,6 +88,7 @@ export default function EpisodeRow({
         )}
       </div>
 
+      {/* Episode cards */}
       <div id="scrollContainer" className="relative flex-1 overflow-auto">
         <div className="lg:absolute inset-0 lg:pr-2 max-h-[17.4rem]">
           <div className="gridEpisodes gap-1">
@@ -116,7 +145,7 @@ function EpisodeNumberCard({
         }
         name={episode.episodeId}
         className={cn(
-          "border border-zinc-800 p-[.4rem] text-[13.5px] hover:bg-red-600 hover:text-zinc-300 md:text-sm text-center text-zinc-500",
+          "bg-zinc-900 p-[.4rem] text-[13.5px] hover:bg-zinc-800 hover:text-zinc-300 md:text-sm text-center text-zinc-500",
           episodeWatching && "bg-red-600 hover:bg-red-600 text-zinc-300",
           episodeWatching &&
             episode.isFiller &&
