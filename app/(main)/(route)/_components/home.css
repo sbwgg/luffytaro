@@ -4,17 +4,17 @@
   inset: 0;
   background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.6),
+      rgba(27, 27, 27, 0.6),
       transparent,
       transparent,
-      black
+      rgb(26, 26, 26)
     ),
     linear-gradient(
       to right,
-      rgba(0, 0, 0, 0.7),
+      rgba(16, 16, 16, 0.7),
       transparent,
       transparent,
-      black 120%
+      rgb(26, 26, 26) 120%
     );
   z-index: -1;
 }
