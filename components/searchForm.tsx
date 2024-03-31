@@ -104,10 +104,7 @@ const SearchForm: React.FC = () => {
             value={inputValue}
             className={cn(
               "p-2 text-sm text-zinc-500 outline-none rounded pl-10 lg:w-[18.5rem] flex-1",
-              {
-                "border border-blue-500": isInputFocused, // Add border when input is focused
-                "invisible": !showInput // Make input invisible when search is inactive
-              }
+              { "border-blue-500": isInputFocused } // Apply border when input is focused
             )}
             placeholder="Search anime..."
             style={{ backgroundColor: "#131313", color: "#fff" }}
