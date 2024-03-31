@@ -1,3 +1,5 @@
+"use server";
+
 import { useEffect, useState } from "react";
 import { Element, scroller } from "react-scroll";
 import Link from "next/link";
