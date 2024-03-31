@@ -53,8 +53,8 @@ export default function Navbar({ user }: NavbarProp) {
     <nav
       className={cn(
         "fixed inset-x-0 flex items-center justify-between z-[500] duration-200 transition-all ease-in-out px-3 lg:px-10 p-2",
-        activeNav && pathname === "/" ? "bg-black/50 backdrop-blur-[6px]" : "",
-        pathname !== "/" && "bg-black/50 backdrop-blur-[5px]"
+        activeNav && pathname === "/" ? "bg-white/5 backdrop-blur-[6px]" : "",
+        pathname !== "/" && "bg-white/5 backdrop-blur-[5px]"
       )}
     >
       <div className="flex items-center gap-x-5">
