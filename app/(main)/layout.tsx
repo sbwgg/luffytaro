@@ -13,7 +13,7 @@ export default async function MainLayout({
   const user = await getUser();
 
   return (
-    <main className="bg-black text-white min-h-screen">
+    <main className="bg-zinc-900 text-white min-h-screen">
       <div className="max-w-[85rem] mx-auto">
         <Navbar user={user} />
         <ScrollToTop />

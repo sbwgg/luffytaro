@@ -60,16 +60,6 @@ export default function EpisodeRow({
 
   return (
     <>
-      {/* Search bar */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search episode number..."
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          className="border border-gray-300 px-2 py-1 rounded-md"
-        />
-      </div>
 
       {/* Episodes dropdown */}
       <div className="flex items-center justify-between mb-4">
