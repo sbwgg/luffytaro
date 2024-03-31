@@ -125,8 +125,8 @@ const SearchForm = () => {
                 onClick={() => setInputValue("")}
                 key={s.id}
                 className={cn(
-                  "flex items-center gap-3 p-3 group/item hover:bg-zinc-800 cursor-pointer",
-                  index % 2 === 0 ? "bg-zinc-900" : "bg-zinc-800" // Alternating background colors
+                  "flex items-center gap-3 p-3 group/item hover:bg-[#220707] cursor-pointer",
+                  index % 2 === 0 ? "bg-[zinc-900]" : "bg-zinc-800" // Alternating background colors
                 )}
               >
                 <Image
