@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0, 0%, 9%, 1;
+    --background: 127, 100%, 50%, 1;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -36,7 +36,7 @@
   }
 
   .dark {
-    --background: 0, 0%, 9%, 1;
+    --background: 127, 100%, 50%, 1;
     --foreground: 210 40% 98%;
 
     --card: 222.2 84% 4.9%;
@@ -80,7 +80,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(100, 100, 100);
+  background-color: rgb(22, 22, 22);
   border-radius: 20px;
 }
 
