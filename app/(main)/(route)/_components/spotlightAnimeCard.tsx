@@ -88,7 +88,7 @@ const SpotlightAnimeCard = ({ s }: SpotlightAnimeCardProp) => {
             )}
           </div>
 
-          <div className="block sm:hidden">
+          <div className="hidden sm:block">
             <p className="text-sm text-gray-300">{s.description}</p>
           </div>
 
