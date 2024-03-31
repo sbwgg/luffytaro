@@ -53,7 +53,7 @@ export default function Navbar({ user }: NavbarProp) {
     <nav
       className={cn(
         "fixed inset-x-0 flex items-center justify-between z-[500] duration-200 transition-all ease-in-out px-3 lg:px-10 p-2",
-        activeNav ? "bg-zinc-600/50" : "bg-white/5"
+        activeNav ? "bg-zinc-600/50" : "bg-zinc-600/50"
       )}
     >
       <div className="flex items-center gap-x-5">
