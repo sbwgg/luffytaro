@@ -1,11 +1,10 @@
-import Image from "next/image";
 import React from "react";
 import { FaClosedCaptioning } from "react-icons/fa6";
 import { FaMicrophone } from "react-icons/fa";
 import Link from "next/link";
 import { AnimeInfoType } from "@/app/(main)/[infoId]/page";
 
-interface LatestEpisodeProp {
+interface GridCardAnimeProps {
   anime: {
     id: string;
     name: string;
@@ -18,18 +17,10 @@ interface LatestEpisodeProp {
       dub: number | null;
     };
   };
+  animeInfo: AnimeInfoType; // Anime info fetched outside the component
 }
 
-const GridCardAnime = async ({ anime }: LatestEpisodeProp) => {
-  const animeInfo: AnimeInfoType = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/info?id=${anime.id}`,
-    {
-      next: {
-        revalidate: 60,
-      },
-    }
-  ).then((res) => res.json());
-
+const GridCardAnime: React.FC<GridCardAnimeProps> = ({ anime, animeInfo }) => {
   return (
     <div>
       <Link href={`/${anime.id}`}>
@@ -52,14 +43,13 @@ const GridCardAnime = async ({ anime }: LatestEpisodeProp) => {
               </p>
             )}
           </div>
-          <Image
-            src={anime.poster}
-            alt="poster"
-            width={400}
-            height={300}
-            priority
-            className="w-full h-full object-cover shrink-0"
-          />
+          <div style={{ position: "relative", width: "100%", paddingTop: "150%" }}>
+            <img
+              src={anime.poster}
+              alt="poster"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
         </div>
       </Link>
       <div className="mt-2">
