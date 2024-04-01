@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { FaClosedCaptioning } from "react-icons/fa6";
 import { FaMicrophone } from "react-icons/fa";
 import Link from "next/link";
@@ -20,18 +20,29 @@ interface LatestEpisodeProp {
   };
 }
 
-const GridCardAnime = async ({ anime }: LatestEpisodeProp) => {
-  const animeInfo: AnimeInfoType = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/info?id=${anime.id}`,
-    {
-      next: {
-        revalidate: 60,
-      },
-    }
-  ).then((res) => res.json());
+const GridCardAnime = ({ anime }: LatestEpisodeProp) => {
+  const [showInfo, setShowInfo] = useState(false);
+  const [animeInfo, setAnimeInfo] = useState<AnimeInfoType | null>(null);
+
+  const handleMouseEnter = async () => {
+    const fetchedInfo = await fetch(
+      `${process.env.ANIWATCH_URL}/anime/info?id=${anime.id}`,
+      {
+        next: {
+          revalidate: 60,
+        },
+      }
+    ).then((res) => res.json());
+    setAnimeInfo(fetchedInfo);
+    setShowInfo(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowInfo(false);
+  };
 
   return (
-    <div>
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Link href={`/${anime.id}`}>
         <div className="relative w-full sm:h-[16rem] h-[14rem]">
           <span className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
@@ -62,15 +73,19 @@ const GridCardAnime = async ({ anime }: LatestEpisodeProp) => {
           />
         </div>
       </Link>
+      {showInfo && animeInfo && (
+        <div className="absolute top-full left-0 bg-black text-white p-4">
+          <h3>{anime.name}</h3>
+          <p>{animeInfo.anime.info.description}</p>
+          <Link href={`/${anime.id}`}>
+            <button className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Watch Now</button>
+          </Link>
+        </div>
+      )}
       <div className="mt-2">
         <p className="truncate hover:text-red-500 text-sm">
           <Link href={`/${anime.id}`}>{anime.name}</Link>
         </p>
-        {animeInfo?.anime?.info?.description && (
-          <p className="ellip my-2 text-[13px] text-zinc-400">
-            {animeInfo?.anime?.info?.description}
-          </p>
-        )}
         <p className="flex items-center gap-x-2 text-zinc-400 mt-2 text-xs">
           <span className="truncate">{anime.duration}</span> &#x2022;{" "}
           <span className="truncate">{anime.type}</span>
