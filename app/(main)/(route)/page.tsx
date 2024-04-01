@@ -171,7 +171,7 @@ const HomePage = async () => {
         </div>
       </div> 
 
-      <div className="px-4 m-2">
+      <div className="pt-2">
         <EstimatedSchedule />
       </div>
 
