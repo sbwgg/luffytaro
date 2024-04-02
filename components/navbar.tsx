@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState, useTransition } from "react";
-import LuffyTaro from "@/image/wp11567850.webp";
+import LuffyTaro from "@/image/logo.png";
 import { usePathname, useRouter } from "next/navigation";
 import SearchForm from "./searchForm";
 import { useOpenAuth } from "@/utils/zustand";
