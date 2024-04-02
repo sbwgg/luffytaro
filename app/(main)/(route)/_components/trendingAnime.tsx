@@ -55,11 +55,9 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
             <Link href={`/${trend.id}`}>
               <div className="relative mb-2 overflow-hidden">
                 <div
-                  className={`absolute left-0 bg-transparent p-2 px-4 flex justify-center z-[10] ${
-                    index === 0 ? 'text-red-500' : index === 1 ? 'text-yellow-500' : index === 2 ? 'text-orange-500' : 'text-white'
-                  }`}
+                  className={`absolute left-0 bg-transparent p-2 px-4 flex justify-center z-[10] text-white text-shadow-lg`}
                   style={{
-                    fontSize: "2.5rem",
+                    fontSize: "3rem",
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
                     WebkitTextStroke: "2px black",
