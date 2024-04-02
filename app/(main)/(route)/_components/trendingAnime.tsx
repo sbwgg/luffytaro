@@ -6,6 +6,7 @@ import React, { useRef } from "react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
+import "@fontsource/roboto";
 
 interface TrendingAnimeProp {
   trending: {
