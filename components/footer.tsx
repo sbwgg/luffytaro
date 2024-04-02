@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Footer = () => {
-  const discordInviteLink = "https://discord.gg/ZkKYPA5VCD"; // Replace with your actual Discord invite link
+  const discordInviteLink = "https://discord.gg/ZkKYPA5VCD";
+  const donateLink = "https://ko-fi.com/berto0";
 
   return (
     <div className="flex flex-col items-center px-3 py-5 lg:px-10 mt-24 border-t border-zinc-800">
@@ -30,7 +31,6 @@ const Footer = () => {
       </div>
 
       <div className="mt-5">
-        {/* Discord Invite Button */}
         <a
           href={discordInviteLink}
           target="_blank"
@@ -38,6 +38,14 @@ const Footer = () => {
           className="bg-blue-500 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-600"
         >
           Discord
+        </a>
+        <a
+          href={donateLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-blue-500 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-600"
+        >
+          Donate
         </a>
       </div>
     </div>

@@ -59,7 +59,7 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                   style={{
                     fontSize: "3rem",
                     zIndex: 10,
-                    textShadow: "1px 1px 10px rgba(0, 0, 0, 1)",
+                    textShadow: "1px 1px 15px rgba(0, 0, 0, 1)",
                     WebkitTextStroke: "2px white",
                     fontFamily: "Roboto, sans-serif",
                     fontWeight: "bold",
