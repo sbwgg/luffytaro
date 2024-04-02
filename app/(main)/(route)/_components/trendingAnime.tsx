@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useRef } from "react";
@@ -68,7 +66,7 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                     fontSize: "1.5rem", // Larger font size
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    WebkitTextStroke: "1px black", // Add outline stroke
+                    WebkitTextStroke: "2px black", // Increase the thickness of outline stroke
                     fontFamily: "Roboto, sans-serif", // Use Roboto font
                     fontWeight: "bold", // Make the text bold
                     color: "transparent" // Make the text transparent
