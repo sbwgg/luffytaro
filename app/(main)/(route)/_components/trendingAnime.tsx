@@ -65,6 +65,8 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                     fontSize: "1.5rem", // Larger font size
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+                    fontFamily: "Roboto, sans-serif", // Use Roboto font
+                    WebkitTextStroke: "1px black", // Add outline stroke
                   }}
                 >
                   <p className="relative">
