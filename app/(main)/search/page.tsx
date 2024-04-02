@@ -1,7 +1,10 @@
-import React from 'react';
+"Use Client";
+
 import GridCardAnime from "@/components/gridCardAnime";
+import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
+import React, { useState, useEffect } from 'react';
 
 export interface SearchResultType {
   animes: {
@@ -61,9 +64,9 @@ export const generateMetadata = async ({
 
 const SearchPage: React.FC<{ searchParams: { keyw: string; page: string; language: string } }> = ({ searchParams }) => {
   const { keyw, page, language } = searchParams;
-  const [searchResult, setSearchResult] = React.useState<SearchResultType | null>(null);
+  const [searchResult, setSearchResult] = useState<SearchResultType | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await getSearchResult(keyw, page, language);
