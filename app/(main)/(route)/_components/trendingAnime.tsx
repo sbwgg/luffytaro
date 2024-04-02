@@ -7,9 +7,6 @@ import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
 
-// Import Roboto font
-import "@fontsource/roboto";
-
 interface TrendingAnimeProp {
   trending: {
     rank: number;
@@ -23,18 +20,9 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
   const swiperRef = useRef<SwiperRef>(null);
 
   return (
-    <div className="relative flex items-center mt-5 font-roboto">
+    <div className="relative flex items-center mt-5">
       <style jsx global>{`
-        @font-face {
-          font-family: 'Roboto';
-          font-style: normal;
-          font-weight: 400;
-          src: local('Roboto'), url(https://fonts.gstatic.com/s/roboto/v27/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2) format('woff2');
-        }
-        
-        .font-roboto {
-          font-family: 'Roboto', sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
       `}</style>
       <button
         onClick={() => swiperRef.current?.swiper.slidePrev()}
@@ -81,10 +69,13 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
                     WebkitTextStroke: "1px black", // Add outline stroke
+                    fontFamily: "Roboto, sans-serif", // Use Roboto font
+                    fontWeight: "bold", // Make the text bold
+                    color: "transparent" // Make the text transparent
                   }}
                 >
                   <p className="relative">
-                    <span className={`outline-${index < 3 ? ['red', 'orange', 'yellow'][index] : 'white'}`} style={{ color: "transparent", fontWeight: "bold" }}>{`#${trend.rank}`}</span>
+                    <span className={`outline-${index < 3 ? ['red', 'orange', 'yellow'][index] : 'white'}`}>{`#${trend.rank}`}</span>
                   </p>
                 </div>
                 <Image
