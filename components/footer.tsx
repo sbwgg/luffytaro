@@ -30,24 +30,24 @@ const Footer = () => {
         </p>
       </div>
 
-      <div className="mt-5">
-        <a
-          href={discordInviteLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-600"
-        >
-          Discord
-        </a>
-        <a
-          href={donateLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-600"
-        >
-          Donate
-        </a>
-      </div>
+      <div className="mt-5 flex flex-wrap gap-4">
+       <a
+        href={discordInviteLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-blue-500 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-600"
+       >
+        Discord
+       </a>
+      <a
+        href={donateLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-red-500 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-red-600"
+      >
+        Donate
+      </a>
+</div>
     </div>
   );
 };
