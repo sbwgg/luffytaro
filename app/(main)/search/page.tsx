@@ -1,6 +1,5 @@
+import React from 'react';
 import GridCardAnime from "@/components/gridCardAnime";
-import React from "react";
-import "./search.css";
 import MostPopularAnime from "@/components/mostPopularAnime";
 import Pagination from "@/components/pagination";
 
@@ -33,9 +32,9 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string) => {
+const getSearchResult = async (keyw: string, page: string, language: string) => {
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&language=${language}`,
     {
       next: {
         revalidate: 60,
@@ -60,13 +59,22 @@ export const generateMetadata = async ({
   };
 };
 
-const SearchPage = async ({
-  searchParams,
-}: {
-  searchParams: { keyw: string; page: string };
-}) => {
-  const { keyw, page } = searchParams;
-  const searchResult: SearchResultType = await getSearchResult(keyw, page);
+const SearchPage: React.FC<{ searchParams: { keyw: string; page: string; language: string } }> = ({ searchParams }) => {
+  const { keyw, page, language } = searchParams;
+  const [searchResult, setSearchResult] = React.useState<SearchResultType | null>(null);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getSearchResult(keyw, page, language);
+        setSearchResult(result);
+      } catch (error) {
+        console.error('Error fetching search result:', error);
+      }
+    };
+
+    fetchData();
+  }, [keyw, page, language]);
 
   return (
     <div className="pt-24">
@@ -77,23 +85,23 @@ const SearchPage = async ({
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
 
-          {!searchResult.animes.length ? (
+          {!searchResult?.animes.length ? (
             <div className="flex items-center justify-center text-gray-300 min-h-[80dvh]">
               No results
             </div>
           ) : (
             <div className="gridCard gap-x-2 gap-y-8 mt-5">
-              {searchResult.animes.map((anime) => (
+              {searchResult?.animes.map((anime) => (
                 <GridCardAnime key={anime.id} anime={anime} />
               ))}
             </div>
           )}
 
-          {searchResult.totalPages > 1 && (
+          {searchResult?.totalPages && searchResult.totalPages > 1 && (
             <div className="flex items-center justify-center mt-12">
               <Pagination
                 page={parseInt(page) || 1}
-                url={`/search?keyw=${keyw.replace(" ", "+")}&`}
+                url={`/search?keyw=${keyw.replace(" ", "+")}&language=${language}&`}
                 totalPages={searchResult.totalPages}
               />
             </div>
@@ -107,7 +115,7 @@ const SearchPage = async ({
           </h1>
 
           <div className="mt-5 bg-zinc-900 px-4 py-2">
-            {searchResult.mostPopularAnimes.map((mostPopular, i) => (
+            {searchResult?.mostPopularAnimes.map((mostPopular, i) => (
               <MostPopularAnime
                 key={mostPopular.id}
                 mostPopular={mostPopular}
