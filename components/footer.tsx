@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Bertoo from "@/image/logo.png";
 import Link from "next/link";
 
 const Footer = () => {
@@ -9,10 +10,9 @@ const Footer = () => {
   return (
     <div className="flex flex-col items-center px-3 py-5 lg:px-10 mt-24 border-t border-zinc-800">
       <div className="flex items-center gap-x-3">
-        {/* Your logo or image */}
         <Image
-          src="/your-logo.png" // Path to your logo image
-          alt="Logo"
+          src={Bertoo}
+          alt="image"
           width={100}
           height={100}
           className="w-[2.4rem] h-[2.4rem] md:w-[2.9rem] md:h-[2.9rem] rounded-full"

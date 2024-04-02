@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState, useTransition } from "react";
-import LuffyTaro from "@/image/logo.png";
+import Bertoo from "@/image/logo.png";
 import { usePathname, useRouter } from "next/navigation";
 import SearchForm from "./searchForm";
 import { useOpenAuth } from "@/utils/zustand";
@@ -59,7 +59,7 @@ export default function Navbar({ user }: NavbarProp) {
       <div className="flex items-center gap-x-5">
         <div className="flex items-center gap-x-3">
           <Image
-            src={LuffyTaro}
+            src={Bertoo}
             alt="image"
             width={100}
             height={100}
