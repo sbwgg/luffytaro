@@ -56,22 +56,21 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
               <div className="relative mb-2 overflow-hidden">
                 <div
                   className={cn(
-                    "absolute left-0 bg-transparent text-black p-2 px-4 flex justify-center z-[10]",
-                    // Apply red, orange, yellow color to the first three items
-                    index < 3 ? `outline-[red orange yellow][${index}]` : 'outline-white'
+                    "absolute left-0 bg-transparent p-2 px-4 flex justify-center z-[10]",
+                    index < 3 ? `text-${['red', 'orange', 'yellow'][index]}` : 'text-white'
                   )}
                   style={{ // Add outline and shadow to the text
                     fontSize: "2.5rem", // Larger font size
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    WebkitTextStroke: "2px black", // Add outline stroke
+                    WebkitTextStroke: "21.5px", // Add outline stroke
                     fontFamily: "Roboto, sans-serif", // Use Roboto font
                     fontWeight: "bold", // Make the text bold
                     color: "transparent" // Make the text transparent
                   }}
                 >
                   <p className="relative">
-                    <span>{`#${trend.rank}`}</span>
+                    <span className={`outline-${index < 3 ? ['red', 'orange', 'yellow'][index] : 'white'}`}>{`#${trend.rank}`}</span>
                   </p>
                 </div>
                 <Image
