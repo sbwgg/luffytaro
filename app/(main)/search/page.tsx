@@ -1,10 +1,9 @@
+import React, { useState, useEffect } from "react";
+import  GridCardAnime  from "@/components/gridCardAnime";
+import  MostPopularAnime  from "@/components/mostPopularAnime";
+import  Pagination  from "@/components/pagination";
 
-import GridCardAnime from "@/components/gridCardAnime";
-import "./search.css";
-import MostPopularAnime from "@/components/mostPopularAnime";
-import Pagination from "@/components/pagination";
-import React, { useState, useEffect } from 'react';
-
+// Define the search result type
 export interface SearchResultType {
   animes: {
     id: string;
@@ -34,9 +33,10 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-const getSearchResult = async (keyw: string, page: string, language: string) => {
+// Function to fetch search results
+const getSearchResult = async (keyw: string, page: string) => {
   const res = await fetch(
-    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}&language=${language}`,
+    `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
     {
       next: {
         revalidate: 60,
@@ -49,26 +49,16 @@ const getSearchResult = async (keyw: string, page: string, language: string) => 
   return res.json();
 };
 
-export const generateMetadata = async ({
-  searchParams,
-}: {
-  searchParams: { keyw: string };
-}) => {
-  const { keyw } = searchParams;
-
-  return {
-    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
-  };
-};
-
-const SearchPage: React.FC<{ searchParams: { keyw: string; page: string; language: string } }> = ({ searchParams }) => {
-  const { keyw, page, language } = searchParams;
+// Define the SearchPage component
+const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = ({ searchParams }) => {
+  const { keyw, page } = searchParams;
   const [searchResult, setSearchResult] = useState<SearchResultType | null>(null);
 
+  // useEffect hook to fetch search results
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getSearchResult(keyw, page, language);
+        const result = await getSearchResult(keyw, page);
         setSearchResult(result);
       } catch (error) {
         console.error('Error fetching search result:', error);
@@ -76,7 +66,7 @@ const SearchPage: React.FC<{ searchParams: { keyw: string; page: string; languag
     };
 
     fetchData();
-  }, [keyw, page, language]);
+  }, [keyw, page]);
 
   return (
     <div className="pt-24">
@@ -103,7 +93,7 @@ const SearchPage: React.FC<{ searchParams: { keyw: string; page: string; languag
             <div className="flex items-center justify-center mt-12">
               <Pagination
                 page={parseInt(page) || 1}
-                url={`/search?keyw=${keyw.replace(" ", "+")}&language=${language}&`}
+                url={`/search?keyw=${keyw.replace(" ", "+")}&`}
                 totalPages={searchResult.totalPages}
               />
             </div>
