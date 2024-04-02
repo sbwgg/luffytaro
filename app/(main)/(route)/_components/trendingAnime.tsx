@@ -58,13 +58,13 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                   className={cn(
                     "absolute left-0 bg-transparent text-black p-2 px-4 flex justify-center z-[10]",
                     // Apply red, orange, yellow color to the first three items
-                    index < 3 ? `outline-${['red', 'orange', 'yellow'][index]}` : 'outline-white'
+                    index < 3 ? `outline-[red orange yellow][${index}]` : 'outline-white'
                   )}
                   style={{ // Add outline and shadow to the text
-                    fontSize: "1.5rem", // Larger font size
+                    fontSize: "2.5rem", // Larger font size
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    WebkitTextStroke: "1.5px black", // Add outline stroke
+                    WebkitTextStroke: "2px black", // Add outline stroke
                     fontFamily: "Roboto, sans-serif", // Use Roboto font
                     fontWeight: "bold", // Make the text bold
                     color: "transparent" // Make the text transparent
