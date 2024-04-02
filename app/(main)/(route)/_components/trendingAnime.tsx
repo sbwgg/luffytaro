@@ -23,7 +23,7 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
     <div className="relative flex items-center mt-5">
       <button
         onClick={() => swiperRef.current?.swiper.slidePrev()}
-        className="absolute left-[-.3rem] bg-white text-black scale-[1.2] p-2 rounded-full z-[10]"
+        className="absolute left-[-.3rem] bg-white text-black scale-[1.5] p-3 rounded-full z-[10]"
       >
         <FaChevronLeft />
       </button>
@@ -57,13 +57,14 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
               <div className="relative mb-2 overflow-hidden">
                 <div
                   className={cn(
-                    "absolute left-0 bg-white text-black p-1 px-3 flex justify-center z-[10]",
+                    "absolute left-0 bg-white text-black p-2 px-4 flex justify-center z-[10]",
                     // Apply red, orange, yellow color to the first three items
                     index < 3 ? `text-${['red', 'orange', 'yellow'][index]}` : ''
                   )}
-                  style={{ // Add outline to the text
+                  style={{ // Add outline and shadow to the text
                     WebkitTextStroke: "1px black",
-                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)"
+                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+                    fontSize: "1.5rem" // Larger font size
                   }}
                 >
                   <p className="">{`#${trend.rank}`}</p>
@@ -86,7 +87,7 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
       </Swiper>
       <button
         onClick={() => swiperRef.current?.swiper.slideNext()}
-        className="absolute right-[-.3rem] bg-white text-black scale-[1.2] p-2 rounded-full z-[10]"
+        className="absolute right-[-.3rem] bg-white text-black scale-[1.5] p-3 rounded-full z-[10]"
       >
         <FaChevronRight />
       </button>
