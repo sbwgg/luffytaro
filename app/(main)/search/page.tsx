@@ -1,4 +1,4 @@
-"Use Client";
+"use client";
 
 import GridCardAnime from "@/components/gridCardAnime";
 import "./search.css";
