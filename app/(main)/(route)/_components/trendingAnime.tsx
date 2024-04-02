@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useRef } from "react";
@@ -21,9 +20,6 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
 
   return (
     <div className="relative flex items-center mt-5">
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-      `}</style>
       <button
         onClick={() => swiperRef.current?.swiper.slidePrev()}
         className="absolute left-[-.3rem] bg-white text-black scale-[1.5] p-3 rounded-full z-[10]"
@@ -68,7 +64,7 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                     fontSize: "1.5rem", // Larger font size
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    WebkitTextStroke: "2px black", // Increase the thickness of outline stroke
+                    WebkitTextStroke: "1px black", // Add outline stroke
                     fontFamily: "Roboto, sans-serif", // Use Roboto font
                     fontWeight: "bold", // Make the text bold
                     color: "transparent" // Make the text transparent
