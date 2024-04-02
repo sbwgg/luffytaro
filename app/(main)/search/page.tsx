@@ -1,11 +1,9 @@
-"use server";
+import GridCardAnime from "@/components/gridCardAnime";
+import React from "react";
+import "./search.css";
+import MostPopularAnime from "@/components/mostPopularAnime";
+import Pagination from "@/components/pagination";
 
-import React, { useState, useEffect } from "react";
-import  GridCardAnime  from "@/components/gridCardAnime";
-import  MostPopularAnime  from "@/components/mostPopularAnime";
-import  Pagination  from "@/components/pagination";
-
-// Define the search result type
 export interface SearchResultType {
   animes: {
     id: string;
@@ -35,7 +33,6 @@ export interface SearchResultType {
   totalPages: number;
 }
 
-// Function to fetch search results
 const getSearchResult = async (keyw: string, page: string) => {
   const res = await fetch(
     `${process.env.ANIWATCH_URL}/anime/search?q=${keyw}&page=${page || ""}`,
@@ -51,24 +48,25 @@ const getSearchResult = async (keyw: string, page: string) => {
   return res.json();
 };
 
-// Define the SearchPage component
-const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = ({ searchParams }) => {
+export const generateMetadata = async ({
+  searchParams,
+}: {
+  searchParams: { keyw: string };
+}) => {
+  const { keyw } = searchParams;
+
+  return {
+    title: `Search Results For ${keyw.charAt(0).toUpperCase() + keyw.slice(1)}`,
+  };
+};
+
+const SearchPage = async ({
+  searchParams,
+}: {
+  searchParams: { keyw: string; page: string };
+}) => {
   const { keyw, page } = searchParams;
-  const [searchResult, setSearchResult] = useState<SearchResultType | null>(null);
-
-  // useEffect hook to fetch search results
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getSearchResult(keyw, page);
-        setSearchResult(result);
-      } catch (error) {
-        console.error('Error fetching search result:', error);
-      }
-    };
-
-    fetchData();
-  }, [keyw, page]);
+  const searchResult: SearchResultType = await getSearchResult(keyw, page);
 
   return (
     <div className="pt-24">
@@ -79,19 +77,19 @@ const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = (
             SEARCH RESULTS FOR <span className="uppercase">{keyw}</span>
           </h1>
 
-          {!searchResult?.animes.length ? (
+          {!searchResult.animes.length ? (
             <div className="flex items-center justify-center text-gray-300 min-h-[80dvh]">
               No results
             </div>
           ) : (
             <div className="gridCard gap-x-2 gap-y-8 mt-5">
-              {searchResult?.animes.map((anime) => (
+              {searchResult.animes.map((anime) => (
                 <GridCardAnime key={anime.id} anime={anime} />
               ))}
             </div>
           )}
 
-          {searchResult?.totalPages && searchResult.totalPages > 1 && (
+          {searchResult.totalPages > 1 && (
             <div className="flex items-center justify-center mt-12">
               <Pagination
                 page={parseInt(page) || 1}
@@ -109,7 +107,7 @@ const SearchPage: React.FC<{ searchParams: { keyw: string; page: string } }> = (
           </h1>
 
           <div className="mt-5 bg-zinc-900 px-4 py-2">
-            {searchResult?.mostPopularAnimes.map((mostPopular, i) => (
+            {searchResult.mostPopularAnimes.map((mostPopular, i) => (
               <MostPopularAnime
                 key={mostPopular.id}
                 mostPopular={mostPopular}
