@@ -59,15 +59,16 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                   className={cn(
                     "absolute left-0 bg-transparent text-black p-2 px-4 flex justify-center z-[10]",
                     // Apply red, orange, yellow color to the first three items
-                    index < 3 ? `text-${['red', 'orange', 'yellow'][index]}` : ''
+                    index < 3 ? `text-${['red', 'orange', 'yellow'][index]}` : 'text-white'
                   )}
                   style={{ // Add outline and shadow to the text
                     fontSize: "1.5rem", // Larger font size
                     zIndex: 10,
+                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
                   }}
                 >
-                  <p className="relative">{`#${trend.rank}`}
-                    <span className="outline"></span>
+                  <p className="relative">
+                    <span className={`outline-${index < 3 ? ['red', 'orange', 'yellow'][index] : 'white'}`}>{`#${trend.rank}`}</span>
                   </p>
                 </div>
                 <Image
