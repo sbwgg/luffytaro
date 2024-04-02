@@ -6,6 +6,8 @@ import React, { useRef } from "react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
+
+// Import Roboto font
 import "@fontsource/roboto";
 
 interface TrendingAnimeProp {
@@ -21,7 +23,19 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
   const swiperRef = useRef<SwiperRef>(null);
 
   return (
-    <div className="relative flex items-center mt-5">
+    <div className="relative flex items-center mt-5 font-roboto">
+      <style jsx global>{`
+        @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 400;
+          src: local('Roboto'), url(https://fonts.gstatic.com/s/roboto/v27/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2) format('woff2');
+        }
+        
+        .font-roboto {
+          font-family: 'Roboto', sans-serif;
+        }
+      `}</style>
       <button
         onClick={() => swiperRef.current?.swiper.slidePrev()}
         className="absolute left-[-.3rem] bg-white text-black scale-[1.5] p-3 rounded-full z-[10]"
@@ -66,12 +80,11 @@ const TrendingAnime = ({ trending }: TrendingAnimeProp) => {
                     fontSize: "1.5rem", // Larger font size
                     zIndex: 10,
                     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-                    fontFamily: "Roboto, sans-serif", // Use Roboto font
                     WebkitTextStroke: "1px black", // Add outline stroke
                   }}
                 >
                   <p className="relative">
-                    <span className={`outline-${index < 3 ? ['red', 'orange', 'yellow'][index] : 'white'}`}>{`#${trend.rank}`}</span>
+                    <span className={`outline-${index < 3 ? ['red', 'orange', 'yellow'][index] : 'white'}`} style={{ color: "transparent", fontWeight: "bold" }}>{`#${trend.rank}`}</span>
                   </p>
                 </div>
                 <Image
