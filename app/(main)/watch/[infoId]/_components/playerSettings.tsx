@@ -61,7 +61,6 @@ export default function PlayerSettings({
       <div className="flex flex-wrap gap-3 items-center justify-between">
         <div className="flex items-center gap-x-3 text-xs sm:text-[12.5px]">
           <button onClick={() => setAutoplay(!autoplay)}>
-          Auto play{" "}
             {autoplay ? (
               <FaCheck />
             ) : (
@@ -69,20 +68,19 @@ export default function PlayerSettings({
             )} Autoplay
           </button>
           <button onClick={() => setAutonext(!autonext)}>
-            Auto next{" "}
             {autonext ? (
-              <span className="text-green-500">ON</span>
+              <FaCheck />
             ) : (
-              <span className="text-red-500">OFF</span>
-            )}
+              <RiCheckboxBlankFill />
+            )} Autonext
           </button>
           <button onClick={() => setAutoskipIntro(!autoskipIntro)}>
             Auto skip intro{" "}
             {autoskipIntro ? (
-              <span className="text-green-500">ON</span>
+              <FaCheck />
             ) : (
-              <span className="text-red-500">OFF</span>
-            )}
+              <RiCheckboxBlankFill />
+            )} Autonext
           </button>
         </div>
 
