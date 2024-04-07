@@ -7,6 +7,14 @@ import { Button } from "@/components/ui/button";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { AnimeInfoType } from "@/app/(main)/[infoId]/page";
 import { EpisodeType } from "@/app/(main)/[infoId]/_components/animeInfo";
+import {
+  TbPlayerTrackPrevFilled,
+  TbPlayerTrackNextFilled,
+} from 'react-icons/tb';
+import { FaCheck } from 'react-icons/fa6';
+import { RiCheckboxBlankFill } from 'react-icons/ri'
+
+
 
 interface PlayerSettingsProp {
   episodeServer: EpisodeServerType;
