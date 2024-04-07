@@ -62,24 +62,42 @@ export default function PlayerSettings({
         <div className="flex items-center gap-x-3 text-xs sm:text-[12.5px]">
           <button onClick={() => setAutoplay(!autoplay)}>
             {autoplay ? (
-              <FaCheck />
+              <>
+                <FaCheck />
+                <span className="block">Autoplay</span>
+              </>
             ) : (
-              <RiCheckboxBlankFill />
-            )} Autoplay
+              <>
+                <RiCheckboxBlankFill />
+                <span className="block">Autoplay</span>
+              </>
+            )}
           </button>
           <button onClick={() => setAutonext(!autonext)}>
             {autonext ? (
-              <FaCheck />
+              <>
+                <FaCheck />
+                <span className="block">Autonext</span>
+              </>
             ) : (
-              <RiCheckboxBlankFill />
-            )} Autonext
+              <>
+                <RiCheckboxBlankFill />
+                <span className="block">Autonext</span>
+              </>
+            )}
           </button>
           <button onClick={() => setAutoskipIntro(!autoskipIntro)}>
             {autoskipIntro ? (
-              <FaCheck />
+              <>
+                <FaCheck />
+                <span className="block">Auto Skip Intro</span>
+              </>
             ) : (
-              <RiCheckboxBlankFill />
-            )} Auto Skip Intro
+              <>
+                <RiCheckboxBlankFill />
+                <span className="block">Auto Skip Intro</span>
+              </>
+            )}
           </button>
         </div>
 
