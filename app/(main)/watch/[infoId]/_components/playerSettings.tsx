@@ -75,12 +75,11 @@ export default function PlayerSettings({
             )} Autonext
           </button>
           <button onClick={() => setAutoskipIntro(!autoskipIntro)}>
-            Auto skip intro{" "}
             {autoskipIntro ? (
               <FaCheck />
             ) : (
               <RiCheckboxBlankFill />
-            )} Autonext
+            )} Auto Skip Intro
           </button>
         </div>
 
