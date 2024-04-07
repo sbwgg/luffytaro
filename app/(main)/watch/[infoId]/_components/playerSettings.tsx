@@ -60,44 +60,29 @@ export default function PlayerSettings({
     <div className="px-3 lg:px-0">
       <div className="flex flex-wrap gap-3 items-center justify-between">
         <div className="flex items-center gap-x-3 text-xs sm:text-[12.5px]">
-          <button onClick={() => setAutoplay(!autoplay)}>
+          <button onClick={() => setAutoplay(!autoplay)} className="flex items-center gap-x-1">
             {autoplay ? (
-              <>
-                <FaCheck />
-                <span className="block">Autoplay</span>
-              </>
+              <FaCheck />
             ) : (
-              <>
-                <RiCheckboxBlankFill />
-                <span className="block">Autoplay</span>
-              </>
+              <RiCheckboxBlankFill />
             )}
+            <span>Autoplay</span>
           </button>
-          <button onClick={() => setAutonext(!autonext)}>
+          <button onClick={() => setAutonext(!autonext)} className="flex items-center gap-x-1">
             {autonext ? (
-              <>
-                <FaCheck />
-                <span className="block">Autonext</span>
-              </>
+              <FaCheck />
             ) : (
-              <>
-                <RiCheckboxBlankFill />
-                <span className="block">Autonext</span>
-              </>
+              <RiCheckboxBlankFill />
             )}
+            <span>Autonext</span>
           </button>
-          <button onClick={() => setAutoskipIntro(!autoskipIntro)}>
+          <button onClick={() => setAutoskipIntro(!autoskipIntro)} className="flex items-center gap-x-1">
             {autoskipIntro ? (
-              <>
-                <FaCheck />
-                <span className="block">Auto Skip Intro</span>
-              </>
+              <FaCheck />
             ) : (
-              <>
-                <RiCheckboxBlankFill />
-                <span className="block">Auto Skip Intro</span>
-              </>
+              <RiCheckboxBlankFill />
             )}
+            <span>Auto Skip Intro</span>
           </button>
         </div>
 
