@@ -66,7 +66,7 @@ export default function PlayerSettings({
             ) : (
               <RiCheckboxBlankFill />
             )}
-            <span>Autoplay</span>
+            <span className="ml-1">Autoplay</span>
           </button>
           <button onClick={() => setAutonext(!autonext)} className="flex items-center gap-x-1">
             {autonext ? (
@@ -74,7 +74,7 @@ export default function PlayerSettings({
             ) : (
               <RiCheckboxBlankFill />
             )}
-            <span>Autonext</span>
+            <span className="ml-1">Autonext</span>
           </button>
           <button onClick={() => setAutoskipIntro(!autoskipIntro)} className="flex items-center gap-x-1">
             {autoskipIntro ? (
@@ -82,7 +82,7 @@ export default function PlayerSettings({
             ) : (
               <RiCheckboxBlankFill />
             )}
-            <span>Auto Skip Intro</span>
+            <span className="ml-1">Auto Skip Intro</span>
           </button>
         </div>
 
